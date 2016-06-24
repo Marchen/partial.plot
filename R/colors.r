@@ -135,3 +135,32 @@ color.ramp.default <- function(x, pal = gg.colors, ..., unique.pal = FALSE){
 	}
 }
 
+
+#-------------------------------------------------------------------------------
+#'	(Internal) Make color vector based on multiple factors.
+#'
+#'	@param data a data.frame containing factors.
+#'	@param factor.names 
+#'		a character vector of names of columns used for color making.
+#'	@param pal
+#'		a function or character vector.
+#'		For the detail, see \\code{\link{color.ramp}}.
+#'	@param sep
+#'		a character literal used for separator of factors.
+#'	@return
+#'		same as \\code{\link{color.ramp}}.
+#-------------------------------------------------------------------------------
+#	複数の因子から色を作成する。
+#-------------------------------------------------------------------------------
+brew.colors <- function(data, factor.names, pal = gg.colors, sep = ".") {
+	# Make combinations of factors / 因子の組み合わせを作成。
+	combinations <- factor.combinations(data, factor.names)
+	combinations <- apply(
+		sapply(combinations, as.character), 1, paste, collapse = sep
+	)
+	# Make colors / 色を作成。
+	col <- color.ramp(combinations, pal)
+	attr(col, "palette") <- color.ramp(combinations, pal, unique.pal = TRUE)
+	return(col)
+}
+
