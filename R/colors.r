@@ -62,7 +62,9 @@ gg.colors <- function(n){
 #'	@return
 #'		If \\code{unique.pal} is TRUE, unique named character vector of colors.
 #'		If \\code{unique.pal} is FALSE, character vector representing colors 
-#'		with length equal to the length of \\code{x}.
+#'		with length equal to the length of \\code{x}. For this case, the
+#'		character vector has "palette" attribute which contains named vector
+#'		of colors used for the result.
 #'
 #'	@export
 #'
@@ -124,11 +126,12 @@ color.ramp.default <- function(x, pal = gg.colors, ..., unique.pal = FALSE){
 	if (unique.pal){
 		return(pal)
 	} else {
-		if (!is.null(names(pal))){
-			return(pal[as.character(x)])
-		} else {
-			return(pal[as.numeric(as.factor(x))])
-		}
+	   	if (!is.null(names(pal))) {
+	   		result <- pal[as.character(x)]
+	   	} else {
+	   		result <- pal[as.numeric(as.factor(x))]
+	   	}
+		attr(result, "palette") <- pal
 	}
 }
 
