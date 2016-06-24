@@ -11,7 +11,7 @@
 #'	@return a character vector containing colors.
 #'	@export
 #'
-#' @examples
+#'	@examples
 #'	barplot(1:30, col = gg.colors(30))
 #-------------------------------------------------------------------------------
 gg.colors <- function(n){
@@ -36,33 +36,33 @@ gg.colors <- function(n){
 #		unique.pal:
 #			これがTRUEなら色一覧を、FALSEならxと同じ長さの色のベクトルを返す。
 #-------------------------------------------------------------------------------
-#'	Make color vector based on data.
+#'	Make a color vector based on data.
 #'
 #'	@param x
-#'		vector of character or factor. 
+#'		a vector of character or factor. 
 #'		Based on this vector, color vector is generated.
 #'
 #'	@param pal
 #'		a function or character vector.
-#'		If a function is specified for \\code{pal}, \\code{color.ramp} assumes
+#'		If a function is specified for \code{pal}, \code{color.ramp} assumes
 #'		that the function accepts number of params for the first argument
-#'		 (\\code{n}) and produces a charactor vector representing colors.
-#'		e.g. \\code{\\link{gg.colors}}, \\code{\\link[grDevices]{rainbow}}, 
-#'		\\code{\\link[]grDevices]{terrain.colors}}, and 
-#'		\\code{\\link[grDevices{topo.colors}} can be used.
-#'		If a character vector of length 1 is specified for \\code{pal},
-#'		\\code{color.ramp} produces color vector with the single color.
+#'		 (\code{n}) and produces a charactor vector representing colors.
+#'		e.g. \code{\link{gg.colors}}, \code{\link[grDevices]{rainbow}}, 
+#'		\code{\link[grDevices]{terrain.colors}}, and 
+#'		\code{\link[grDevices]{topo.colors}} can be used.
+#'		If a character vector of length 1 is specified for \code{pal},
+#'		\code{color.ramp} produces color vector with the single color.
 #'		If a character vector of length equal to the number of unique values 
 #'		of x is specified, this function assigns each color for each value of
-#'		\\code{x}.
+#'		\code{x}.
 #'
 #'	@param unique.pal
 #'		a logical determining return value of the function.
 #'
 #'	@return
-#'		If \\code{unique.pal} is TRUE, unique named character vector of colors.
-#'		If \\code{unique.pal} is FALSE, character vector representing colors 
-#'		with length equal to the length of \\code{x}. For this case, the
+#'		If \code{unique.pal} is TRUE, unique named character vector of colors.
+#'		If \code{unique.pal} is FALSE, character vector representing colors 
+#'		with length equal to the length of \code{x}. For this case, the
 #'		character vector has "palette" attribute which contains named vector
 #'		of colors used for the result.
 #'
@@ -144,11 +144,11 @@ color.ramp.default <- function(x, pal = gg.colors, ..., unique.pal = FALSE){
 #'		a character vector of names of columns used for color making.
 #'	@param pal
 #'		a function or character vector.
-#'		For the detail, see \\code{\link{color.ramp}}.
+#'		For the detail, see \code{\link{color.ramp}}.
 #'	@param sep
 #'		a character literal used for separator of factors.
 #'	@return
-#'		same as \\code{\link{color.ramp}}.
+#'		same as \code{\link{color.ramp}}.
 #-------------------------------------------------------------------------------
 #	複数の因子から色を作成する。
 #-------------------------------------------------------------------------------
