@@ -137,6 +137,70 @@ color.ramp.default <- function(x, pal = gg.colors, ..., unique.pal = FALSE){
 
 
 #-------------------------------------------------------------------------------
+#	透明色を作る。
+#	Args:
+#		colors: 基本になる色。
+#		alpha: 透明度。
+#		mix: 基本になる色と混ぜる色。
+#		ratio: 基本色と混合色を混ぜる割合。
+#-------------------------------------------------------------------------------
+#'	Make transparent colors.
+#'
+#'	@param colors a character vector representing base colors.
+#'	@param alpha a numeric value between 0 to 1 representing transparency.
+#'	@param mix 
+#'		a character literal of color represent a color. The base colors
+#'		are mixed with this color.
+#'	@param ratio
+#'		a numeric value between 0 to 1 representing mixture ratio of the
+#'		base colors and mix color.
+#'
+#'	@return a character vector of transparent colors.
+#'	@export
+#'
+#'	@examples
+#'	# Example 1: change alpha.
+#'	col1 <- "red"
+#'	col2 <- trans.color(col1, alpha = 0.1, mix = "white", ratio = 0.7)
+#'	col3 <- trans.color(col1, alpha = 0.5, mix = "white", ratio = 0.7)
+#'	col4 <- trans.color(col1, alpha = 0.8, mix = "white", ratio = 0.7)
+#'	barplot(1:4, col = c(col1, col2, col3, col4))
+#'
+#'	# Example 2: mix with black.
+#'	col1 <- "red"
+#'	col2 <- trans.color(col1, alpha = 0.1, mix = "black", ratio = 0.7)
+#'	col3 <- trans.color(col1, alpha = 0.5, mix = "black", ratio = 0.7)
+#'	col4 <- trans.color(col1, alpha = 0.8, mix = "black", ratio = 0.7)
+#'	barplot(1:4, col = c(col1, col2, col3, col4))
+#'
+#'	# Example 3: change ratio.
+#'	col1 <- "red"
+#'	col2 <- trans.color(col1, alpha = 0.3, mix = "white", ratio = 0.1)
+#'	col3 <- trans.color(col1, alpha = 0.3, mix = "white", ratio = 0.4)
+#'	col4 <- trans.color(col1, alpha = 0.3, mix = "white", ratio = 0.9)
+#'	barplot(1:4, col = c(col1, col2, col3, col4))
+#-------------------------------------------------------------------------------
+trans.color <- function(colors, alpha = 0.3, mix = "white", ratio = 0.7) {
+	# Error checks / エラーチェック。
+	if (length(mix) != 1) {
+		stop("Length of 'mix' should be 1.")
+	}
+	if (all(ratio < 0 | ratio > 1)) {
+		stop("'ratio' should be between 0 and 1.")
+	}
+	if (all(alpha < 0 | alpha > 1)) {
+		stop("'alpha' should be between 0 and 1.")
+	}
+	# Convert colors / 色を変換。
+	col1 <- col2rgb(colors) * ratio
+	col2 <- col2rgb(mix) * (1 - ratio)
+	col <- apply(col2, 2, "+", col1)
+	col <- rgb(t(col), max = 255, alpha = 255 * alpha)
+	return(col)
+}
+
+
+#-------------------------------------------------------------------------------
 #'	(Internal) Make color vector based on multiple factors.
 #'
 #'	@param data a data.frame containing factors.
