@@ -123,12 +123,7 @@ gg.colors <- function(n){
 #'	legend("topleft", legend = names(col), col = col, pch = 16, cex = 1)
 #-------------------------------------------------------------------------------
 color.ramp <- function(x, pal = gg.colors, ..., unique.pal = FALSE) {
-	if (!is.function(pal)) {
-		if (length(unique(x)) != length(pal) & length(pal) != 1){
-			stop("Length of pal must be same as length(unique(x)).")
-		}
-	}
-	UseMethod("color.ramp", x)
+	UseMethod("color.ramp")
 }
 
 
@@ -138,7 +133,12 @@ color.ramp <- function(x, pal = gg.colors, ..., unique.pal = FALSE) {
 #'	@export
 #-------------------------------------------------------------------------------
 color.ramp.default <- function(x, pal = gg.colors, ..., unique.pal = FALSE){
-	if (is.null(x)){
+	if (!is.function(pal)) {
+		if (length(unique(x)) != length(pal) & length(pal) != 1){
+			stop("Length of pal must be same as length(unique(x)).")
+		}
+	}
+	if (is.null(x)) {
 		return("black")
 	}
 	fn <- if (is.factor(x)) levels else unique
@@ -171,16 +171,17 @@ color.ramp.default <- function(x, pal = gg.colors, ..., unique.pal = FALSE){
 #'	@method color.ramp data.frame
 #-------------------------------------------------------------------------------
 color.ramp.data.frame <- function(
-	x, factor.names, pal = gg.colors, ..., unique.pal = TRUE
+	x, factor.names, pal = gg.colors, ..., unique.pal = FALSE
 ) {
 	if (missing(factor.names)) {
 		factor.names <- colnames(x)[
 			sapply(x, is.factor) | sapply(x, is.character)
 		]
 	}
-	combinations <- expand.grid(get.unique.factors(x, factor.names))
-	combinations <- combine.columns(combinations)
-	col <- color.ramp.default(combinations, pal)
+	combinations <- combine.columns(x[factor.names])
+	col <- color.ramp.default(
+		combinations, pal, ..., unique.pal = unique.pal
+	)
 	return(col)
 }
 
