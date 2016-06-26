@@ -213,12 +213,12 @@ color.ramp <- function(x, pal = gg.colors, ..., unique.pal = FALSE) {
 color.ramp.default <- function(x, pal = gg.colors, ..., unique.pal = FALSE){
 	palette <- make.palette(pal, x)
 	if (unique.pal){
-		return(pal)
+		return(palette)
 	} else {
-	   	if (!is.null(names(pal))) {
-	   		result <- pal[as.character(x)]
+	   	if (!is.null(names(palette))) {
+	   		result <- palette[as.character(x)]
 	   	} else {
-	   		result <- pal[as.numeric(as.factor(x))]
+	   		result <- palette[as.numeric(as.factor(x))]
 	   	}
 		attr(result, "palette") <- palette
 	}
