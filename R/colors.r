@@ -109,6 +109,7 @@ color.ramp <- function(x, pal = gg.colors, ..., unique.pal = FALSE) {
 #-------------------------------------------------------------------------------
 #'	@describeIn color.ramp
 #'	default S3 method.
+#'	@export
 #-------------------------------------------------------------------------------
 color.ramp.default <- function(x, pal = gg.colors, ..., unique.pal = FALSE){
 	if (is.null(x)){
