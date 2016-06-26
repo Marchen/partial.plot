@@ -117,8 +117,8 @@ make.palette.function <- function(pal, x) {
 #'
 #'	@param factor.names
 #'		a character vector specifying names of factors by which colors are made.
-#'		If missing all character variables and factors are used for making
-#'		colors.
+#'		If missing or length of factor.names is 0, all character variables and
+#'		factors are used for making colors.
 #'
 #'	@param pal
 #'		a function or character vector.
@@ -233,13 +233,10 @@ color.ramp.default <- function(x, pal = gg.colors, ..., unique.pal = FALSE){
 color.ramp.data.frame <- function(
 	x, factor.names, pal = gg.colors, ..., unique.pal = FALSE
 ) {
-	if (missing(factor.names)) {
+	if (missing(factor.names) | length(factor.names) == 0) {
 		factor.names <- colnames(x)[
 			sapply(x, is.factor) | sapply(x, is.character)
 		]
-	}
-	if (length(factor.names) == 0) {
-		stop("'factor.names' is empty")
 	}
 	if (!all(factor.names %in% colnames(x))) {
 		stop("Some factors specified in 'factor.names' are not present in 'x'")	
