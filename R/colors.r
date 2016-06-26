@@ -178,6 +178,12 @@ color.ramp.data.frame <- function(
 			sapply(x, is.factor) | sapply(x, is.character)
 		]
 	}
+	if (length(factor.names) == 0) {
+		stop("'factor.names' is empty")
+	}
+	if (!all(factor.names %in% colnames(x))) {
+		stop("Some factors specified in 'factor.names' are not present in 'x'")	
+	}
 	combinations <- combine.columns(x[factor.names])
 	col <- color.ramp.default(
 		combinations, pal, ..., unique.pal = unique.pal
