@@ -21,6 +21,79 @@ gg.colors <- function(n){
 
 
 #-------------------------------------------------------------------------------
+#'	(Internal) Make color palette.
+#'
+#'	@param pal a color making function or character vector.
+#'	@param x a vector of values that colors are made based on it.
+#'
+#'	@return
+#'		If \code{x} is NULL, a non-named character vector of length 1.
+#'		Otherwise, a named vector of colors with unique values in \code{x} for
+#'		the name of it.
+#-------------------------------------------------------------------------------
+make.palette <- function(pal, x) {
+	UseMethod("make.palette")
+}
+
+
+#-------------------------------------------------------------------------------
+#'	@describeIn make.palette
+#'	Default S3 method, intended to be used for character vector.
+#'	@method make.palette default
+#-------------------------------------------------------------------------------
+make.palette.default <- function(pal, x) { 
+	# If x is NULL, return not named vector of color palette
+	if (is.null(x)) {
+		if (length(pal) == 1) {
+			names(pal) <- NULL
+			return(pal)
+		}
+		stop("'pal' should be of length 1 if 'x' is NULL and 'pal' is character.")
+	}
+	# Define function retrieving unique values.
+	get.unique <- if (is.factor(x)) levels else unique
+	if (!is.null(names(pal))) {
+		# If pal is a named vector, check all unique values of x exists.
+		if (!identical(sort(names(pal)), sort(get.unique(x)))) {
+			stop("'pal' should have values for all unique values in x")
+		}
+		return(pal)
+	}
+	if (length(pal) == 1) {
+		# If pal is a non-named vector of length 1, repeat same color.
+		pal <- rep(pal, length(get.unique(x)))
+	} else {
+		# If pal is a non-named vector of length > 1, use first colors.
+		if (length(pal) < length(get.unique(x))) {
+			stop("'pal' should have larger length than length of unique values in 'x'")
+		}
+		pal <- pal[1:length(get.unique(x))]
+	}
+	names(pal) <- sort(get.unique(x))
+	return(pal)
+}
+
+
+#-------------------------------------------------------------------------------
+#'	@describeIn make.palette
+#'	S3 method for function.
+#'	@method make.palette function
+#-------------------------------------------------------------------------------
+make.palette.function <- function(pal, x) {
+	# If x is NULL, return not named vector of color palette
+	if (is.null(x)) {
+		return(pal(1))
+	}
+	# Define function retrieving unique values.
+	get.unique <- if (is.factor(x)) levels else unique
+	# If pal is a function, apply pal to make colors.
+	pal <- pal(length(sort(get.unique(x))), ...)
+	names(pal) <- sort(get.unique(x))
+	return(pal)
+}
+
+
+#-------------------------------------------------------------------------------
 #	plotのラベルに色をつけられるように色のベクトルを返す。
 #
 #	Args:
@@ -66,10 +139,13 @@ gg.colors <- function(n){
 #'
 #'	@return
 #'		If \code{unique.pal} is TRUE, unique named character vector of colors.
+#'		For this case, this function returns non-named color vector of 
+#'		length 1 if \code{x} is NULL, 
 #'		If \code{unique.pal} is FALSE, character vector representing colors 
 #'		with length equal to the length of \code{x}. For this case, the
 #'		character vector has "palette" attribute which contains named vector
 #'		of colors used for the result.
+
 #'
 #'	@export
 #'
@@ -133,23 +209,7 @@ color.ramp <- function(x, pal = gg.colors, ..., unique.pal = FALSE) {
 #'	@export
 #-------------------------------------------------------------------------------
 color.ramp.default <- function(x, pal = gg.colors, ..., unique.pal = FALSE){
-	if (!is.function(pal)) {
-		if (length(unique(x)) != length(pal) & length(pal) != 1){
-			stop("Length of pal must be same as length(unique(x)).")
-		}
-	}
-	if (is.null(x)) {
-		return("black")
-	}
-	fn <- if (is.factor(x)) levels else unique
-	if (is.function(pal)){
-		pal <- pal(length(sort(fn(x))), ...)
-		names(pal) <- sort(fn(x))
-	}
-	if (length(pal) == 1) {
-		pal <- rep(pal, length(fn(x)))
-		names(pal) <- sort(fn(x))
-	}
+	palette <- make.palette(pal, x)
 	if (unique.pal){
 		return(pal)
 	} else {
@@ -158,7 +218,7 @@ color.ramp.default <- function(x, pal = gg.colors, ..., unique.pal = FALSE){
 	   	} else {
 	   		result <- pal[as.numeric(as.factor(x))]
 	   	}
-		attr(result, "palette") <- pal
+		attr(result, "palette") <- palette
 	}
 	return(result)
 }
