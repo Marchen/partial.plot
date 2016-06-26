@@ -120,10 +120,12 @@ check.params <- function(adapter, x.names) {
 	}
 	# check x.names / x.namesのチェック。
 	if (!all(x.names %in% colnames(adapter$data))) {
-		stop(sprintf("\n Column '%s' is not found in data."))
+		error <- x.names[!x.names %in% colnames(adapter$data)]
+		stop(sprintf("\n Column '%s' is not found in data.", error))
 	}
 	if (!all(x.names %in% adapter$x.names(type = "base"))) {
-		stop(sprintf("\n '%s' is not found in explanatory variables."))
+		error <- x.names[!x.names %in% adapter$x.names(type = "base")]
+		stop(sprintf("\n '%s' is not found in explanatory variables.", error))
 	}
 	# Check number of continuous explanatory variables
 	# 連続値の説明変数の数チェック
