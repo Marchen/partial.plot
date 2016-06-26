@@ -459,6 +459,7 @@ draw.partial.relationship.2d <- function(
 	ylab <- set.ylab.2d(ylab, adapter)
 	# Open new plot.
 	# 新しいプロットを開く。
+	numeric.names <- get.numeric.names(adapter, x.names)
 	open.new.plot(partial.relationship.data, numeric.names, xlab, ylab, ...)
 	# Draw polygons.
 	# ポリゴンを描画
