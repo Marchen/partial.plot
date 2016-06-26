@@ -344,6 +344,43 @@ open.new.plot <- function(partial.residual.data, x.name, xlab, ylab, ...) {
 
 
 #-------------------------------------------------------------------------------
+#	X軸ラベルを設定する。
+#-------------------------------------------------------------------------------
+#'	(Internal) Set X label if original is NULL.
+#'
+#'	@param xlab original x label.
+#'	@param adapter a model.adapter object.
+#'	@param x.names a character vector of focal explanatory variables.
+#'
+#'	@return x label.
+#-------------------------------------------------------------------------------
+set.xlab <- function(xlab, adapter, x.names) {
+	if (is.null(xlab)) {
+		xlab <- get.numeric.names(adapter, x.names)
+	}
+	return(xlab)
+}
+
+
+#-------------------------------------------------------------------------------
+#	Y軸ラベルを設定する。
+#-------------------------------------------------------------------------------
+#'	(Internal) Set Y label if original is NULL.
+#'
+#'	@param xlab original y label.
+#'	@param adapter a model.adapter object.
+#'
+#'	@return y label.
+#-------------------------------------------------------------------------------
+set.ylab <- function(ylab, adapter) {
+	if (is.null(ylab)) {
+		ylab <- adapter$y.names()
+	}
+	return(ylab)
+}
+
+
+#-------------------------------------------------------------------------------
 #	説明変数と応答変数の関係式を描画する。
 #-------------------------------------------------------------------------------
 #'	(Internal) Draw partial relationship graph.
@@ -419,12 +456,8 @@ draw.partial.relationship.2d <- function(
 		unique.pal = TRUE
 	)
 	numeric.names <- get.numeric.names(adapter, x.names)
-	if (is.null(xlab)) {
-		xlab <- numeric.names
-	}
-	if (is.null(ylab)) {
-		ylab <- adapter$y.names()
-	}
+	xlab <- set.xlab(xlab, adapter, x.names)
+	ylab <- set.ylab(ylab, adapter)
 	# Open new plot.
 	# 新しいプロットを開く。
 	open.new.plot(partial.relationship.data, numeric.names, xlab, ylab, ...)
@@ -486,12 +519,8 @@ draw.partial.residual <- function(
 	# グラフィックパラメーターを用意。
 	factors <- get.factor.names(adapter$data, x.names)
 	col <- color.ramp(adapter$data, factors, pal = col)
-	if (is.null(xlab)) {
-		xlab <- get.numeric.names(adapter$data, x.names)
-	}
-	if (is.null(ylab)) {
-		ylab <- adapter$y.names()
-	}
+	xlab <- set.xlab(xlab, adapter, x.names)
+	ylab <- set.ylab(ylab, adapter)
 	# Calculate and draw partial residual
 	# 偏残差を計算して描画。
 	part.resid <- partial.residual(adapter, x.names, adapter$link)
