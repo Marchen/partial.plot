@@ -74,7 +74,9 @@ gg.colors <- function(n){
 #'	@export
 #'
 #'	@examples
+#'	#---------------------------------------------------------------------------
 #'	# Example 1: set point color based on a character vector.
+#'	#---------------------------------------------------------------------------
 #'	data(iris)
 #'	plot(
 #'		Sepal.Length ~ Petal.Length, data = iris, pch = 16,
@@ -82,26 +84,35 @@ gg.colors <- function(n){
 #'	)
 #'	# Add a legend
 #'	col <- color.ramp(iris$Species, unique.pal = TRUE)
-#'	legend("topleft", legend = names(col), col = col, pch = 16, cex = 2)
+#'	legend("topleft", legend = names(col), col = col, pch = 16, cex = 1)
 #'	
-#'	# Example 2: use different color function.
+#'	
+#'	#---------------------------------------------------------------------------
+#'	# Example 2: using different color function.
+#'	#---------------------------------------------------------------------------
 #'	plot(
 #'		Sepal.Length ~ Petal.Length, data = iris, pch = 16, 
 #'		col = color.ramp(Species, pal = rainbow)
 #'	)
 #'	col <- color.ramp(iris$Species, pal = rainbow, unique.pal = TRUE)
-#'	legend("topleft", legend = names(col), col = col, pch = 16, cex = 2)
+#'	legend("topleft", legend = names(col), col = col, pch = 16, cex = 1)
 #'
-#'	Examle 3: use named color palette.
+#'	
+#'	#---------------------------------------------------------------------------
+#'	# Examle 3: using named color palette.
+#'	#---------------------------------------------------------------------------
 #'	pal = c(setosa = "blue", versicolor = "red", virginica = "black")
 #'	plot(
 #'		Sepal.Length ~ Petal.Length, data = iris, pch = 16, 
 #'		col = color.ramp(Species, pal = pal)
 #'	)
 #'	col <- color.ramp(iris$Species, pal = pal, unique.pal = TRUE)
-#'	legend("topleft", legend = names(col), col = col, pch = 16, cex = 2)
+#'	legend("topleft", legend = names(col), col = col, pch = 16, cex = 1)
 #'
+#'
+#'	#---------------------------------------------------------------------------
 #'	# Example 4: using data.frame.
+#'	#---------------------------------------------------------------------------
 #'	iris2 <- iris
 #'	iris2$new.factor <- as.factor(letters[1:2])
 #'	plot(
@@ -197,21 +208,29 @@ color.ramp.data.frame <- function(
 #'	@export
 #'
 #'	@examples
+#'	#---------------------------------------------------------------------------
 #'	# Example 1: change alpha.
+#'	#---------------------------------------------------------------------------
 #'	col1 <- "red"
 #'	col2 <- trans.color(col1, alpha = 0.1, mix = "white", ratio = 0.7)
 #'	col3 <- trans.color(col1, alpha = 0.5, mix = "white", ratio = 0.7)
 #'	col4 <- trans.color(col1, alpha = 0.8, mix = "white", ratio = 0.7)
 #'	barplot(1:4, col = c(col1, col2, col3, col4))
 #'
+#'
+#'	#---------------------------------------------------------------------------
 #'	# Example 2: mix with black.
+#'	#---------------------------------------------------------------------------
 #'	col1 <- "red"
 #'	col2 <- trans.color(col1, alpha = 0.1, mix = "black", ratio = 0.7)
 #'	col3 <- trans.color(col1, alpha = 0.5, mix = "black", ratio = 0.7)
 #'	col4 <- trans.color(col1, alpha = 0.8, mix = "black", ratio = 0.7)
 #'	barplot(1:4, col = c(col1, col2, col3, col4))
 #'
+#'
+#'	#---------------------------------------------------------------------------
 #'	# Example 3: change ratio.
+#'	#---------------------------------------------------------------------------
 #'	col1 <- "red"
 #'	col2 <- trans.color(col1, alpha = 0.3, mix = "white", ratio = 0.1)
 #'	col3 <- trans.color(col1, alpha = 0.3, mix = "white", ratio = 0.4)
