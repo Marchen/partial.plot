@@ -134,6 +134,7 @@ color.ramp.default <- function(x, pal = gg.colors, ..., unique.pal = FALSE){
 	   	}
 		attr(result, "palette") <- pal
 	}
+	return(result)
 }
 
 
