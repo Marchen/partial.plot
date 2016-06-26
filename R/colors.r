@@ -27,13 +27,14 @@ gg.colors <- function(n){
 #'
 #'	@param pal a color making function or character vector.
 #'	@param x a vector of values that colors are made based on it.
+#'	@param ... other parameters passed to color function.
 #'
 #'	@return
 #'		If \code{x} is NULL, a non-named character vector of length 1.
 #'		Otherwise, a named vector of colors with unique values in \code{x} for
 #'		the name of it.
 #-------------------------------------------------------------------------------
-make.palette <- function(pal, x) {
+make.palette <- function(pal, x, ...) {
 	UseMethod("make.palette")
 }
 
@@ -43,7 +44,7 @@ make.palette <- function(pal, x) {
 #'	Default S3 method, intended to be used for character vector.
 #'	@method make.palette default
 #-------------------------------------------------------------------------------
-make.palette.default <- function(pal, x) { 
+make.palette.default <- function(pal, x, ...) { 
 	# If x is NULL, return not named vector of color palette
 	if (is.null(x)) {
 		if (length(pal) == 1) {
@@ -81,10 +82,10 @@ make.palette.default <- function(pal, x) {
 #'	S3 method for function.
 #'	@method make.palette function
 #-------------------------------------------------------------------------------
-make.palette.function <- function(pal, x) {
+make.palette.function <- function(pal, x, ...) {
 	# If x is NULL, return not named vector of color palette
 	if (is.null(x)) {
-		return(pal(1))
+		return(pal(1, ...))
 	}
 	# Define function retrieving unique values.
 	get.unique <- if (is.factor(x)) levels else unique
@@ -211,7 +212,7 @@ color.ramp <- function(x, pal = gg.colors, ..., unique.pal = FALSE) {
 #'	@export
 #-------------------------------------------------------------------------------
 color.ramp.default <- function(x, pal = gg.colors, ..., unique.pal = FALSE){
-	palette <- make.palette(pal, x)
+	palette <- make.palette(pal, x, ...)
 	if (unique.pal){
 		return(palette)
 	} else {
@@ -245,7 +246,7 @@ color.ramp.data.frame <- function(
 	}
 	combinations <- combine.columns(x[factor.names])
 	col <- color.ramp.default(
-		combinations, pal, ..., unique.pal = unique.pal
+		combinations, pal = pal, ..., unique.pal = unique.pal
 	)
 	return(col)
 }
