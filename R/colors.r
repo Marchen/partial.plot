@@ -42,6 +42,11 @@ gg.colors <- function(n){
 #'		a vector of character or factor. 
 #'		Based on this vector, color vector is generated.
 #'
+#'	@param factor.names
+#'		a character vector specifying names of factors by which colors are made.
+#'		If missing all character variables and factors are used for making
+#'		colors.
+#'
 #'	@param pal
 #'		a function or character vector.
 #'		If a function is specified for \code{pal}, \code{color.ramp} assumes
@@ -95,6 +100,16 @@ gg.colors <- function(n){
 #'	)
 #'	col <- color.ramp(iris$Species, pal = pal, unique.pal = TRUE)
 #'	legend("topleft", legend = names(col), col = col, pch = 16, cex = 2)
+#'
+#'	# Example 4: using data.frame.
+#'	iris2 <- iris
+#'	iris2$new.factor <- as.factor(letters[1:2])
+#'	plot(
+#'		Sepal.Length ~ Petal.Length, data = iris2, pch = 16,
+#'		col = color.ramp(iris2)
+#'	)
+#'	col <- color.ramp(iris2, unique.pal = TRUE)
+#'	legend("topleft", legend = names(col), col = col, pch = 16, cex = 1)
 #-------------------------------------------------------------------------------
 color.ramp <- function(x, pal = gg.colors, ..., unique.pal = FALSE) {
 	if (!is.function(pal)) {
@@ -135,6 +150,27 @@ color.ramp.default <- function(x, pal = gg.colors, ..., unique.pal = FALSE){
 		attr(result, "palette") <- pal
 	}
 	return(result)
+}
+
+
+#-------------------------------------------------------------------------------
+#'	@describeIn color.ramp
+#'	method for data.frame.
+#'	@export
+#'	@method color.ramp data.frame
+#-------------------------------------------------------------------------------
+color.ramp.data.frame <- function(
+	x, factor.names, pal = gg.colors, ..., unique.pal = TRUE
+) {
+	if (missing(factor.names)) {
+		factor.names <- colnames(x)[
+			sapply(x, is.factor) | sapply(x, is.character)
+		]
+	}
+	combinations <- expand.grid(get.unique.factors(x, factor.names))
+	combinations <- combine.columns(combinations)
+	col <- color.ramp.default(combinations, pal)
+	return(col)
 }
 
 
@@ -202,31 +238,5 @@ trans.color <- function(colors, alpha = 0.3, mix = "white", ratio = 0.7) {
 }
 
 
-#-------------------------------------------------------------------------------
-#'	Make color vector based on multiple factors.
-#'
-#'	@param data a data.frame containing factors.
-#'	@param factor.names 
-#'		a character vector of names of columns used for color making.
-#'	@param pal
-#'		a function or character vector.
-#'		For the detail, see \code{\link{color.ramp}}.
-#'	@param unique.pal
-#'		a logical indicating make unique palette or vector of colors.
-#'		For the detail, see \code{\link{color.ramp}}.
-#'	@return
-#'		same as \code{\link{color.ramp}}.
-#'	@export
-#-------------------------------------------------------------------------------
-#	複数の因子から色を作成する。
-#-------------------------------------------------------------------------------
-brew.colors <- function(
-	data, factor.names, pal = gg.colors, unique.pal = TRUE
-) {
-	combinations <- expand.grid(get.unique.factors(data, factor.names))
-	combinations <- combine.columns(combinations)
-	col <- color.ramp(combinations, pal)
-	return(col)
-}
 
 
