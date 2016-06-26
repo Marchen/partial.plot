@@ -383,6 +383,40 @@ set.ylab.2d <- function(ylab, adapter) {
 
 
 #-------------------------------------------------------------------------------
+#	グループごとの色ベクトルを設定する。
+#-------------------------------------------------------------------------------
+#'	(Internal) Make color vector for groups.
+#'
+#'	@param adapter a model.adapter object.
+#'	@param x.names a character vector of focal explanatory variables.
+#'	@param col a function or character vector.
+#'	@param unique.pal
+#'		if TRUE, this returns color palette. If FALSE, this returns vector of
+#'		colors.
+#'
+#'	@return
+#'		A character vector same as \code{\link{color.ramp}} function returns.
+#'		If x.names doesn't have factors, this returns color palette with length
+#'		1 which named as "all".
+#-------------------------------------------------------------------------------
+set.group.color <- function(adapter, x.names, col, unique.pal) {
+	factors <- get.factor.names(adapter$data, x.names)
+	if (!length(factors) == 0) {
+		result <- color.palette <- color.ramp(
+			adapter$data, factors, pal = col, unique.pal = unique.pal
+		)
+	} else {
+		col <- col[1]
+		names(col) <- NULL
+		result <- color.ramp(
+			rep("all", nrow(adapter$data)), pal = col, unique.pal = unique.pal
+		)
+	}
+	return(result)
+}
+
+
+#-------------------------------------------------------------------------------
 #	説明変数と応答変数の関係式を描画する。
 #-------------------------------------------------------------------------------
 #'	(Internal) Draw partial relationship graph.
@@ -452,11 +486,8 @@ draw.partial.relationship.2d <- function(
 	adapter, x.names, partial.relationship.data, col, xlab, ylab, ...
 ) {
 	# Prepare graphic parameters.
-	# グラフィックパラメーターを用意。
-	color.palette <- color.ramp(
-		adapter$data, get.factor.names(adapter$data, x.names), pal = col,
-		unique.pal = TRUE
-	)
+	# グラフィックパラメーターを用意。	
+	color.palette <- set.group.color(adapter, x.names, col, TRUE)
 	xlab <- set.xlab.2d(xlab, adapter, x.names)
 	ylab <- set.ylab.2d(ylab, adapter)
 	# Open new plot.
@@ -519,8 +550,7 @@ draw.partial.residual <- function(
 ) {
 	# Prepare graphic parameters.
 	# グラフィックパラメーターを用意。
-	factors <- get.factor.names(adapter$data, x.names)
-	col <- color.ramp(adapter$data, factors, pal = col)
+	col <- set.group.color(adapter, x.names, col, FALSE)
 	xlab <- set.xlab.2d(xlab, adapter, x.names)
 	ylab <- set.ylab.2d(ylab, adapter)
 	# Calculate and draw partial residual
@@ -665,9 +695,8 @@ partial.plot <- function(
 	}
 	# Prepare information for legend.
 	# レジェンド用の情報を準備。
-	factors <- get.factor.names(adapter$data, x.names)
 	legend.info <- list(
-		col = color.ramp(adapter$data, factors, pal = col, unique.pal = TRUE),
+		col = set.group.color(adapter, x.names, col, TRUE),
 		draw.residuals = draw.residuals, 
 		draw.relationships = draw.relationships, others = list(...)
 	)
