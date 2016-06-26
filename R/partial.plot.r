@@ -570,12 +570,12 @@ draw.partial.residual <- function(
 	numerics <- get.numeric.names(adapter$data, x.names)
 	if (!draw.relationships) {
 		plot(
-			adapter$link(adapter$data[[numerics]]), part.resid, col = col,
+			adapter$data[[numerics]], part.resid, col = col,
 			xlab = xlab, ylab = ylab, ...
 		)
 	} else {
 		points(
-			adapter$link(adapter$data[[numerics]]), part.resid, col = col, ...
+			adapter$data[[numerics]], part.resid, col = col, ...
 		)
 	}
 }
