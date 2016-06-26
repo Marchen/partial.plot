@@ -455,9 +455,8 @@ draw.partial.relationship.2d <- function(
 		adapter$data, get.factor.names(adapter$data, x.names), pal = col,
 		unique.pal = TRUE
 	)
-	numeric.names <- get.numeric.names(adapter, x.names)
-	xlab <- set.xlab(xlab, adapter, x.names)
-	ylab <- set.ylab(ylab, adapter)
+	xlab <- set.xlab.2d(xlab, adapter, x.names)
+	ylab <- set.ylab.2d(ylab, adapter)
 	# Open new plot.
 	# 新しいプロットを開く。
 	open.new.plot(partial.relationship.data, numeric.names, xlab, ylab, ...)
@@ -519,8 +518,8 @@ draw.partial.residual <- function(
 	# グラフィックパラメーターを用意。
 	factors <- get.factor.names(adapter$data, x.names)
 	col <- color.ramp(adapter$data, factors, pal = col)
-	xlab <- set.xlab(xlab, adapter, x.names)
-	ylab <- set.ylab(ylab, adapter)
+	xlab <- set.xlab.2d(xlab, adapter, x.names)
+	ylab <- set.ylab.2d(ylab, adapter)
 	# Calculate and draw partial residual
 	# 偏残差を計算して描画。
 	part.resid <- partial.residual(adapter, x.names, adapter$link)
