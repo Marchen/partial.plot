@@ -228,7 +228,7 @@ numeric.sequences <- function(data, x.names, resolution = 100) {
 #'	@param data a data.frame of original data used for modeling.
 #'	@param x.names a character vector of names of focal explanatory variables.
 #'
-#'	@return a named list of data.frame.
+#'	@return a data.frame containing predicted values.
 #-------------------------------------------------------------------------------
 split.and.filter.result <- function(prediction, data, x.names) {
 	# Get list of unique factors.
@@ -256,6 +256,7 @@ split.and.filter.result <- function(prediction, data, x.names) {
 		}
 		result[[split.name]] <- current.pred
 	}
+	result <- do.call(rbind, result)
 	return(result)
 }
 
@@ -285,7 +286,7 @@ split.and.filter.result <- function(prediction, data, x.names) {
 #'		an integer specifing length of prediction to calculate predictions.
 #'
 #'	@return
-#'		a named list of data.frame.
+#'		a data.frame containing predictions.
 #-------------------------------------------------------------------------------
 partial.relationship.lsmeans <- function(
 	model, x.names, data = NULL, resolution = 100
@@ -307,7 +308,9 @@ partial.relationship.lsmeans <- function(
 	colnames(lsm)[colnames(lsm) == "asymp.UCL"] <- "upper"
 	# Remove predictions with out-ranged explanatory variable for each group.
 	# 各グループの説明変数の範囲を外れた予測値を削除。
-	lsm <- split.and.filter.result(lsm, adapter$data, x.names)
+	if (length(factors) != 0) {
+		lsm <- split.and.filter.result(lsm, adapter$data, x.names)
+	}
 	return(lsm)
 }
 
@@ -333,7 +336,6 @@ partial.relationship.lsmeans <- function(
 #'	@param ... other parameters passed to plot function.
 #-------------------------------------------------------------------------------
 open.new.plot <- function(partial.residual.data, x.name, xlab, ylab, ...) {
-	partial.residual.data <- do.call(rbind, partial.residual.data)
 	if (is.null(partial.residual.data$upper)) {
 		x <- partial.residual.data[[x.name]]
 		y <- partial.residual.data$fit
@@ -451,8 +453,7 @@ set.group.color <- function(adapter, x.names, col, unique.pal) {
 #'		label of y axis.
 #'
 #'	@param partial.relationship.data
-#'		a named list of data.frames made by 
-#'		\code{\link{partial.relationship.lsmeans}} function.
+#'		a data.frames made by \code{\link{partial.relationship.lsmeans}}.
 #'
 #'	@param ... other parameters passed to poltting functions.
 #-------------------------------------------------------------------------------
@@ -494,9 +495,19 @@ draw.partial.relationship.2d <- function(
 	# 新しいプロットを開く。
 	numeric.names <- get.numeric.names(adapter, x.names)
 	open.new.plot(partial.relationship.data, numeric.names, xlab, ylab, ...)
+	# Split data.
+	# データを分割。
+	if (length(names(color.palette)) == 1) {
+		partial.relationship.data <- list(all = partial.relationship.data)
+	} else {
+		factors <- get.factor.names(adapter, x.names)
+		partial.relationship.data <- split(
+			partial.relationship.data, partial.relationship.data[factors]
+		)
+	}
 	# Draw polygons.
 	# ポリゴンを描画
-	for (i in names(partial.relationship.data)) {
+	for (i in names(color.palette)) {
 		d <- partial.relationship.data[[i]]
 		x <- c(d[[numeric.names]], rev(d[[numeric.names]]))
 		y <- c(d$lower, rev(d$upper))
@@ -504,7 +515,7 @@ draw.partial.relationship.2d <- function(
 	}
 	# Draw partial relationships.
 	# 関係式をプロット。
-	for (i in names(partial.relationship.data)) {
+	for (i in names(color.palette)) {
 		d <- partial.relationship.data[[i]]
 		lines(d[[numeric.names]], d$fit, col = color.palette[i], ...)
 	}
