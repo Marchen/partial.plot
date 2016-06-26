@@ -203,7 +203,7 @@ trans.color <- function(colors, alpha = 0.3, mix = "white", ratio = 0.7) {
 
 
 #-------------------------------------------------------------------------------
-#'	(Internal) Make color vector based on multiple factors.
+#'	Make color vector based on multiple factors.
 #'
 #'	@param data a data.frame containing factors.
 #'	@param factor.names 
@@ -215,6 +215,7 @@ trans.color <- function(colors, alpha = 0.3, mix = "white", ratio = 0.7) {
 #'		a character literal used for separator of factors.
 #'	@return
 #'		same as \code{\link{color.ramp}}.
+#'	@export
 #-------------------------------------------------------------------------------
 #	複数の因子から色を作成する。
 #-------------------------------------------------------------------------------
