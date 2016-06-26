@@ -354,7 +354,7 @@ open.new.plot <- function(partial.residual.data, x.name, xlab, ylab, ...) {
 #'
 #'	@return x label.
 #-------------------------------------------------------------------------------
-set.xlab <- function(xlab, adapter, x.names) {
+set.xlab.2d <- function(xlab, adapter, x.names) {
 	if (is.null(xlab)) {
 		xlab <- get.numeric.names(adapter, x.names)
 	}
@@ -372,7 +372,7 @@ set.xlab <- function(xlab, adapter, x.names) {
 #'
 #'	@return y label.
 #-------------------------------------------------------------------------------
-set.ylab <- function(ylab, adapter) {
+set.ylab.2d <- function(ylab, adapter) {
 	if (is.null(ylab)) {
 		ylab <- adapter$y.names()
 	}
