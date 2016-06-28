@@ -171,12 +171,12 @@ partial.residual <- function(adapter, x.names, link) {
 		data1[[i]] <- data1[[i]] - mean(data1[[i]])
 	}
 	data1[focal.numerics] <- 0
-	pred1 <- adapter$predict(newdata = data1)$fit[, "fit"]
+	pred1 <- adapter$predict(newdata = data1, type = "terms")$fit[, "fit"]
 	# Calculate prediction 2.
 	# 予測値２を計算。
 	data2 <- adapter$data
 	data2[all.numerics] <- 0
-	pred2 <- adapter$predict(newdata = data2)$fit[, "fit"]
+	pred2 <- adapter$predict(newdata = data2, type = "terms")$fit[, "fit"]
 	# Calculate partial residual.
 	# 偏残差を計算。
 	resid <- link(adapter$data[[adapter$y.names()]]) - (pred1 - pred2)
