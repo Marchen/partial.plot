@@ -114,7 +114,8 @@ get.unique.factors <- function(data, factor.names) {
 #'	@return NULL
 #-------------------------------------------------------------------------------
 check.params <- function(adapter, x.names) {
-	# check availability of data / dataが使えるかを確認。
+	# check availability of data.
+	# dataが使えるかを確認。
 	if (is.null(adapter$data)) {
 		stop("'model' object does not have original data. Please specify 'data' argument.")
 	}
@@ -708,6 +709,7 @@ partial.plot <- function(
 	# レジェンド用の情報を準備。
 	legend.info <- list(
 		col = set.group.color(adapter, x.names, col, TRUE),
+		title = paste0(get.factor.names(adapter, x.names), collapse ="."),
 		draw.residuals = draw.residuals, 
 		draw.relationships = draw.relationships, others = list(...)
 	)
@@ -742,14 +744,18 @@ partial.plot <- function(
 #'	info <- partial.plot(model, c("Sepal.Length", "Species"), pch = 16)
 #'	partial.plot.legend("topleft", legend.info = info)
 #-------------------------------------------------------------------------------
-partial.plot.legend <- function(x, y = NULL, ..., legend.info) {
+partial.plot.legend <- function(x, y = NULL, title = NULL, ..., legend.info) {
 	# Prepare graphic parameters.
 	# グラフィックパラメーターを用意。
 	args <- c(list(...), legend.info$others)
 	args$legend <- names(legend.info$col)
 	args$col <- legend.info$col
+	args$title <- legend.info$title
 	args$x <- x
 	args$y <- y
+	if (!is.null(title)) {
+		args$title <- title
+	}
 	# Set line type based on the setting of partial.plot.
 	# 線の種類をpartial.plotの設定に基づいて決定。
 	if (legend.info$draw.relationship) {
