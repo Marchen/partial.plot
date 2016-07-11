@@ -336,7 +336,7 @@ partial.relationship.lsmeans <- function(
 #'
 #'	@param ... other parameters passed to plot function.
 #-------------------------------------------------------------------------------
-open.new.plot <- function(partial.residual.data, x.name, xlab, ylab, ...) {
+open.new.plot <- function(partial.residual.data, x.name, log, xlab, ylab, ...) {
 	if (is.null(partial.residual.data$upper)) {
 		x <- partial.residual.data[[x.name]]
 		y <- partial.residual.data$fit
@@ -344,7 +344,7 @@ open.new.plot <- function(partial.residual.data, x.name, xlab, ylab, ...) {
 		x <- rep(partial.residual.data[[x.name]], 2)
 		y <- c(partial.residual.data$upper, partial.residual.data$lower)
 	}
-	plot(x, y, type = "n", xlab = xlab, ylab = ylab, ...)
+	plot(x, y, type = "n", log = log, xlab = xlab, ylab = ylab, ...)
 }
 
 
@@ -459,7 +459,7 @@ set.group.color <- function(adapter, x.names, col, unique.pal) {
 #'	@param ... other parameters passed to poltting functions.
 #-------------------------------------------------------------------------------
 draw.partial.relationship <- function(
-	model, x.names, adapter, resolution, col, xlab, ylab, ...
+	model, x.names, adapter, resolution, col, log, xlab, ylab, ...
 ) {
 	# データ作成
 	pr.data <- partial.relationship.lsmeans(
@@ -470,11 +470,11 @@ draw.partial.relationship <- function(
 	numeric.names <- get.numeric.names(adapter, x.names)
 	if (length(numeric.names) == 2) {
 		draw.partial.relationship.3d(
-			adapter, x.names, pr.data, col, xlab, ylab, ...
+			adapter, x.names, pr.data, col, log, xlab, ylab, ...
 		)
 	} else {
 		draw.partial.relationship.2d(
-			adapter, x.names, pr.data, col, xlab, ylab, ...
+			adapter, x.names, pr.data, col, log, xlab, ylab, ...
 		)
 	}
 }
@@ -485,7 +485,7 @@ draw.partial.relationship <- function(
 #'	Draw 2D partial relationship graph.
 #-------------------------------------------------------------------------------
 draw.partial.relationship.2d <- function(
-	adapter, x.names, partial.relationship.data, col, xlab, ylab, ...
+	adapter, x.names, partial.relationship.data, col, log, xlab, ylab, ...
 ) {
 	# Prepare graphic parameters.
 	# グラフィックパラメーターを用意。	
@@ -495,7 +495,7 @@ draw.partial.relationship.2d <- function(
 	# Open new plot.
 	# 新しいプロットを開く。
 	numeric.names <- get.numeric.names(adapter, x.names)
-	open.new.plot(partial.relationship.data, numeric.names, xlab, ylab, ...)
+	open.new.plot(partial.relationship.data, numeric.names, log, xlab, ylab, ...)
 	# Split data.
 	# データを分割。
 	if (length(names(color.palette)) == 1) {
@@ -528,7 +528,7 @@ draw.partial.relationship.2d <- function(
 #'	Draw 3D partial relationship graph.
 #-------------------------------------------------------------------------------
 draw.partial.relationship.3d <- function(
-	adapter, x.names, partial.relationship.data, col, xlab, ylab, ...
+	adapter, x.names, partial.relationship.data, col, log, xlab, ylab, ...
 ) {
 	cat("3D plot is not implimented yet...\n")
 }
@@ -558,7 +558,7 @@ draw.partial.relationship.3d <- function(
 #'		label of y axis.
 #-------------------------------------------------------------------------------
 draw.partial.residual <- function(
-	adapter, x.names, draw.relationships, col, xlab, ylab, ...
+	adapter, x.names, draw.relationships, col, log, xlab, ylab, ...
 ) {
 	# Prepare graphic parameters.
 	# グラフィックパラメーターを用意。
@@ -571,7 +571,7 @@ draw.partial.residual <- function(
 	numerics <- get.numeric.names(adapter$data, x.names)
 	if (!draw.relationships) {
 		plot(
-			adapter$data[[numerics]], part.resid, col = col,
+			adapter$data[[numerics]], part.resid, col = col, log = log,
 			xlab = xlab, ylab = ylab, ...
 		)
 	} else {
@@ -622,6 +622,9 @@ draw.partial.residual <- function(
 #'	@param col
 #'		a function or named vector representing color of the graph object.
 #'		For the detail, see pal option of \code{\link{color.ramp}} function.
+#'
+#'	@param log
+#'		same as log argument of \code{\link[graphics]{plot.default}}.
 #'
 #'	@param xlab
 #'		label of x axis.
@@ -685,7 +688,7 @@ draw.partial.residual <- function(
 partial.plot <- function(
 	model, x.names, data = NULL, 
 	draw.residuals = TRUE, draw.relationships = TRUE, resolution = 100,
-	col = gg.colors, xlab = NULL, ylab = NULL, ...
+	col = gg.colors, log = "", xlab = NULL, ylab = NULL, ...
 ) {
 	# Check errors.
 	# エラーチェック。
@@ -695,14 +698,14 @@ partial.plot <- function(
 	# 関係式グラフの描画。
 	if (draw.relationships) {
 		draw.partial.relationship(
-			model, x.names, adapter, resolution, col, xlab, ylab, ...
+			model, x.names, adapter, resolution, col, log, xlab, ylab, ...
 		)
 	}
 	# Plot partial residuals.
 	# 偏残差の描画。
 	if (draw.residuals) {
 		draw.partial.residual(
-			adapter, x.names, draw.relationships, col, xlab, ylab, ...
+			adapter, x.names, draw.relationships, col, log, xlab, ylab, ...
 		)
 	}
 	# Prepare information for legend.
