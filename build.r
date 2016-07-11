@@ -18,8 +18,18 @@ get.this.file.dir <- function() {
 setwd(get.this.file.dir())
 
 roxygenize(clean = TRUE)
-build()
-build(binary = TRUE, args = "--preclean")
+build(path = "../repos/src/contrib")
+if (version$os == "mingw32") {
+	build(
+		binary = TRUE, args = "--preclean",
+		path = "../repos/bin/windows/contrib/3.3/"
+	)
+} else {
+	build(
+		binary = TRUE, args = "--preclean",
+		path = "../repos/bin/macosx/mavericks/contrib/3.3/"
+	)
+}
 install()
 
 
