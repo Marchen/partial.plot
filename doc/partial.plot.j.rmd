@@ -1,0 +1,338 @@
+---
+partial.plot: an R package to visualize partial relationship
+---
+# partial.plot: an R package to visualize partial relationships
+
+このパッケージは多変量分析の結果を見やすく作図するためのパッケージです。
+
+--------------------------------------------------------------------------------
+
+## <a id = "index">目次</a>
+
+* [はじめに](#introduction)
+* [インストールとアップデート](#installation)
+* [クイックスタート（プロ用）](#quickstart)
+* [基本的なつかいかた](#basic_usage)
+	* [データの準備とモデルの作成](#preparation)
+	* [モデルの予測結果の作図](#partial_plot)
+	* [凡例の追加](#legend)
+* [グラフの見た目の変更](#advanced_settings)
+	* [作図する要素の変更](#remove_objects)
+	* [色の変更](#change_colors)
+	* [その他の設定](#other_settings)
+* [対応モデル](#supported_models)
+* [既知の問題](#known_issues)
+* [おまけ](#value_add)
+	* [color.ramp](#color_ramp)
+	* [gg.colors](#gg_colors)
+
+
+--------------------------------------------------------------------------------
+
+## <a id = "introduction">はじめに</a>
+
+とりあえず、このパッケージはまだまだ開発中です。
+バグは残っているでしょうし、足りない機能もたくさんあると思います。
+一応注意はしていますが、もしかすると、研究をめちゃめちゃするような間違いがあるかもしれません。
+今使えている機能が将来のバージョンで削除されることもあるかもしれませんし、使い方が変わるかもしれません。
+と、いうことで、ご利用の際には注意してお使い下さい。
+もしバグを見つけたり、こういう機能が欲しい、と思うことがあったりしたら、
+ぜひぜひお知らせ下さい。
+
+そのほかのことはそのうち書きます。たぶん。
+
+
+--------------------------------------------------------------------------------
+
+## <a id = "installation">インストールとアップデート</a>
+
+まずはインストール。
+ということで、以下のコマンドをRにコピー＆ペーストすれば
+必要なパッケージ一式をインストールできるはずです。
+
+```{R, message = FALSE, warning = FALSE, eval = FALSE}
+install.packages("testthat")
+install.packages("lsmeans")
+install.packages(
+	c("model.adapter", "partial.plot"),
+	repos = "http://hostgk3.biology.tohoku.ac.jp/marchen/R/repos"
+)
+```
+
+パッケージをアップデートするには、以下のコマンドを実行します。
+
+```{R, message = FALSE, warning = FALSE, eval = FALSE}
+update.packages(
+	repos = "http://hostgk3.biology.tohoku.ac.jp/marchen/R/repos"
+)
+```
+
+
+--------------------------------------------------------------------------------
+
+## <a id = "quickstart">クイックスタート（プロ用）</a>
+
+まー、プロの人は見ればわかるでしょう。
+
+```{R}
+# データの読み込み。
+data(iris)
+
+# 予測モデルの作成。
+model <- glm(
+	Petal.Length ~ (Sepal.Length + Petal.Width) * Species, data = iris
+)
+
+# ライブラリの読み込み。
+library(partial.plot)
+
+# 萼片の長さと花弁の長さとの関係を作図。
+info <- partial.plot(model, c("Sepal.Length", "Species"), pch = 16)
+
+# 凡例を追加。
+partial.plot.legend("topleft", legend.info = info)
+
+```
+
+
+--------------------------------------------------------------------------------
+
+## <a id = "basic_usage">基本的なつかいかた</a>
+
+### <a id = "preparation">データの準備とモデルの作成</a>
+
+今回はテスト用のデータにお約束のFisherのIrisデータを使います。
+このデータは３種のアヤメ（setosa, versicolor, virginica）の
+萼片の長さ（Sepal.Length）、萼片の幅（Sepal.Width）、
+花弁の長さ（Petal.Length）、花弁の幅（Petal.Width）のデータが含まれています。
+
+```{R}
+# データの読み込み。
+data(iris)
+
+# データの構造を見てみる。
+str(iris)
+```
+
+このデータを用いて、花弁の長さを予測するモデルを作ることにします。
+とりあえずモデルにはお約束の一般化線形混合モデル（GLM）を使い、
+説明変数には萼片の長さ、花弁の幅、種を用いることにします。
+また、モデルに種と萼片の長さ、種と花弁の幅の交互作用を組み込んで、
+萼片の長さと花弁の長さ、花弁の幅と花弁の長さとの関係が種によって変わる、
+ということを仮定します。
+
+```{R}
+# 予測モデルの作成。
+model <- glm(
+	Petal.Length ~ (Sepal.Length + Petal.Width) * Species, data = iris
+)
+
+# 結果を確認します。
+summary(model)
+```
+
+
+### <a id = "partial_plot">モデルの予測結果の作図</a>
+
+できあがったモデルを使ってモデルの予測結果を作図してみます。
+基本的な使い方は以下の通りです。
+以下の例ではモデルによって予測された萼片の長さと花弁の長さとの関係を作図しています。
+
+```{R}
+# ライブラリの読み込み。
+library(partial.plot)
+
+# 萼片の長さと花弁の長さとの関係を作図。
+partial.plot(model, c("Sepal.Length", "Species"), pch = 16)
+```
+
+と、いうことで、`partial.plot`関数の説明です。
+`partial.plot`はまず一番目の引数にGLMの結果を入力します。
+この場合はGLMの結果のオブジェクト`model`を使っています。
+
+２番目の引数には結果を可視化する説明変数名を指定します。
+この場合、萼片の長さを表す`"Sepal.Length"`と種を表す`"Species"`を指定しています。
+因子型の変数は複数指定することができます。
+この２つの引数は必ず指定する必要があります。
+
+また、今回はグラフを見やすくするため、`pch = 16`を追加で指定し、
+グラフのシンボルを変えています。
+
+もし、花弁の幅と花弁の長さとの関係を作図したい場合、以下のように引数を指定します。
+
+```{R}
+# 花弁の幅と花弁の長さとの関係を作図する。
+partial.plot(model, c("Petal.Width", "Species"), pch = 16)
+```
+
+
+### <a id = "legend">凡例の追加</a>
+
+partial.plot関数は凡例に関する情報を返り値として返します。
+例えば、
+
+```{R, eval = FALSE}
+# 萼片の長さと花弁の長さとの関係を作図。
+info <- partial.plot(model, c("Sepal.Length", "Species"), pch = 16)
+```
+
+というプログラムを書くと、凡例に関する情報が`info`変数に代入されます。
+これを以下の例のように`partial.plot.legend()`関数に渡すと、
+モデルによって予測された関係を作図したときの情報を使って凡例を書くことができます。
+
+```{R}
+# 凡例を追加。
+info <- partial.plot(model, c("Sepal.Length", "Species"), pch = 16)
+partial.plot.legend("topleft", legend.info = info)
+```
+
+`partial.plot.legend`関数の使い方は`legend`関数とほとんど同じで、
+入力した引数は全て`legend`関数にそのまま用いられます。
+ただし、`legend.info`という引数に`partial.plot`の結果を代入すると、
+その作図に使った情報を渡すことができます。
+必ず`legend.info = partial.plotの結果`というように引数を指定して下さい。
+
+
+--------------------------------------------------------------------------------
+
+## <a id = "advanced_settings">グラフの見た目の変更</a>
+
+いくつかの設定を変えることで、グラフの見た目を変えることができます。
+
+
+### <a id = "remove_objects">作図する要素の変更</a>
+
+`draw.residuals`引数を`FALSE`にすると、残差のシンボルを描画しないことができます。
+```{R}
+partial.plot(
+	model, c("Sepal.Length", "Species"), draw.residuals = FALSE
+)
+```
+
+また、`draw.relationships`引数を`FALSE`にすると、
+モデルによって予測された関係を描画しないことができます。
+```{R}
+partial.plot(
+	model, c("Sepal.Length", "Species"), draw.relationships = FALSE,
+	pch = 16
+)
+```
+
+
+### <a id = "change_colors">色の変更</a>
+
+rainbow()関数やheat.colors()関数など、一番目の引数に色の数を渡すと
+色を返す関数を使ってグラフの色を変えることができます。
+?rainbowで出てくるヘルプに載っている関数は基本的に使えます。
+
+```{R}
+# グラフの色を変える。
+info <- partial.plot(
+	model, c("Sepal.Length", "Species"), pch = 16, col = rainbow
+)
+# 凡例の色も自動調節される。
+partial.plot.legend("topleft", legend.info = info)
+```
+
+また、名前付きの色ベクトルを作ることで、個別に色を指定することもできます。
+以下の例のように、`c`関数を用いて`グループ名 = 色`という形式で、
+色ベクトルを作り、それを`col`引数に渡すことで各グループ（この場合は種）の
+色を指定することができます。
+
+```{R}
+# 色ベクトルを用意。
+col <- c(
+	setosa = "darkgreen", versicolor = "blue", virginica = "orange2"
+)
+# 作図
+info <- partial.plot(
+	model, c("Sepal.Length", "Species"), pch = 16, col = col
+)
+partial.plot.legend("topleft", legend.info = info)
+```
+
+
+### <a id = "other_settings">その他の設定</a>
+
+`partial.plot`関数は普通の`plot`関数と同じように、
+グラフィックパラメーターを変えて、グラフの見た目を変えることができます。
+上の例では`pch = 16`を指定してシンボルを●に変えましたが、
+他のグラフィックパラメーターも変えることができます。
+
+```{R}
+# 作図
+info <- partial.plot(
+	model, c("Sepal.Length", "Species"), pch = 16, cex = 1.5,
+	xlab = "Sepal length (mm)", ylab = "Petal Length"
+)
+partial.plot.legend("topleft", legend.info = info)
+```
+
+
+--------------------------------------------------------------------------------
+
+## <a id = "supported_models">対応しているモデル</a>
+
+今のところ、`lm()`、`glm()`、`lme()`、`MCMCglmm()`に対応しています（たぶん）。
+将来的には対応する予定です。
+各モデルへの対応は`model.adapter`パッケージに依存しているので、
+将来的には`randomForest()`など、`model.adapter`パッケージが対応する
+機械学習系のモデルにも対応する予定です。
+
+
+--------------------------------------------------------------------------------
+
+## <a id = "known_issues">既知の問題</a>
+
+今のところ、以下の問題があることがわかっています。
+
+* 作図時の説明変数に連続変数を１つしか入れられない。将来的には２つまで対応する予定。
+* 作図時に最低１つ以上の連続変数を入れる必要がある。将来的には因子型だけでの作図にも対応する予定。
+
+
+--------------------------------------------------------------------------------
+
+## <a id = "value_add">おまけ</a>
+
+作図に使っている以下の関数も何かの役立つかもしれません。
+
+### <a id = "color_ramp">color.ramp()</a>
+
+`color.ramp()`関数は因子型変数から色を表す文字列ベクトルを生成します。
+以下の例のように使います。
+
+```{R}
+library(partial.plot)
+plot(
+	Petal.Length ~ Sepal.Length, col = color.ramp(Species),
+	data = iris, pch = 16
+)
+```
+
+`partial.plot`と同じように色を変えることができます。
+
+```{R}
+plot(
+	Petal.Length ~ Sepal.Length, col = color.ramp(Species, rainbow),
+	data = iris, pch = 16
+)
+```
+
+```{R}
+col <- c(
+	setosa = "darkgreen", versicolor = "blue", virginica = "orange2"
+)
+plot(
+	Petal.Length ~ Sepal.Length, col = color.ramp(Species, col),
+	data = iris, pch = 16
+)
+```
+
+### <a id = "gg_colors">gg.colors()</a>
+
+ggplotと似たような色を生成します。
+
+```{R}
+barplot(1:10, col = gg.colors(10))
+```
+
