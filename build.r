@@ -17,7 +17,15 @@ get.this.file.dir <- function() {
 
 setwd(get.this.file.dir())
 
+
+#-------------------------------------------------------------------------------
+#	Build package
+#-------------------------------------------------------------------------------
+# Build documentation.
 roxygenize(clean = TRUE)
+build_vignettes()
+
+# Build package
 build(path = "../repos/src/contrib")
 if (version$os == "mingw32") {
 	build(
