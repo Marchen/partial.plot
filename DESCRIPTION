@@ -33,5 +33,7 @@ Suggests:
     rpart,
     mgcv,
     gam,
-    ranger
+    ranger,
+    rmarkdown
+VignetteBuilder: knitr
 RoxygenNote: 5.0.1

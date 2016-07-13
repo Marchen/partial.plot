@@ -246,3 +246,4 @@ ModelManifest.xml
 man/
 NAMESPACE
 .RHistory
+inst/doc/
