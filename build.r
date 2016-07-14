@@ -41,3 +41,17 @@ if (version$os == "mingw32") {
 install()
 
 
+#-------------------------------------------------------------------------------
+#	Deploy
+#-------------------------------------------------------------------------------
+path.repos <- file.path(get.this.file.dir(), "../repos/")
+
+tools::write_PACKAGES(
+	file.path(path.repos, "src/contrib"), type = "source"
+)
+tools::write_PACKAGES(
+	file.path(path.repos, "bin/windows/contrib/3.3/"), type = "win.binary"
+)
+tools::write_PACKAGES(
+	file.path(path.repos, "bin/macosx/mavericks/contrib/3.3/"), type = "mac.binary"
+)
