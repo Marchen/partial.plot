@@ -1,7 +1,6 @@
 Package: partial.plot
-Version: 0.0.2
-Title: partial.plot: partial dependence plot for statistical/machine learning
-    models.
+Version: 0.0.3
+Title: Partial dependence plot for statistical/machine learning models.
 Author: Michio Oguro <mogu@biology.tohoku.ac.jp>
 Maintainer: Michio Oguro <mogu@biology.tohoku.ac.jp>
 Description: This package provides standard way to plot partial dependence plot
