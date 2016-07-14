@@ -790,6 +790,7 @@ partial.plot.legend <- function(x, y = NULL, title = NULL, ..., legend.info) {
 	}
 	# Drawing.
 	# 描画　
+	args <- args[names(args) %in% names(as.list(args(legend)))]
 	do.call(legend, args)
 }
 
