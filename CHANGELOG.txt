@@ -1,5 +1,5 @@
 ﻿2016-07-xx: 0.0.2 -> 0.0.3
-- Added support for 'log' graphic parameter.
+- Added support for dispatching graphic parameters in ....
 
 2016-07-11: 0.0.1 -> 0.0.2
 - Now partial.plot.legend function also draws legend title.
