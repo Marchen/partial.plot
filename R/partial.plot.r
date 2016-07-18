@@ -157,6 +157,16 @@ check.params <- function(adapter, x.names) {
 #'
 #'	@return a numeric vector of partial residuals.
 #-------------------------------------------------------------------------------
+#	PL      = i + PW + SL + SP + PW:SP + SL:SP + r		# FULL MODEL
+#	PL      = i + PW      + SP + PW:SP         + r		# Want to see this
+#	PL      =        + SL              + SL:SP		    # Remove these effects
+#	predict = i + PW + SL + SP + PW:SP + SL:SP
+#
+#	Case of LSMEANS
+#	LSMEANS = i + PW + MM + SP + PW:SP + MM:SP
+#	LSMEANS = i + PW + MM + SP + PW:SP + MM:SP + r		# Want to see this
+#	
+#-------------------------------------------------------------------------------
 partial.residual <- function(adapter, x.names, link) {
 	# Prepare names of numeric variables.
 	# 数値型変数の変数名を用意。
@@ -647,15 +657,8 @@ draw.partial.residual <- function(
 #'		and others are passed to \code{plot} function.
 #'
 #'	@return
-#'		A list of following informations which can be used for drawing legend.
-#'		\describe{
-#'			\item{\code{col}}{
-#'				color palette made by \code{\link{color.ramp}} function.
-#'			}
-#'			\item{\code{draw.residuals}}{option used for this function.}
-#'			\item{\code{draw.relationships}}{option used for this function.}
-#'			\item{\code{...}}{other graphic parameters specified.}
-#'		}
+#'		An object of \code{\link{pp.legend}} containing informations which
+#'		will be used for drawing legend.
 #'
 #'	@export
 #'
@@ -721,79 +724,12 @@ partial.plot <- function(
 	}
 	# Prepare information for legend.
 	# レジェンド用の情報を準備。
-	legend.info <- list(
+	legend.info <- pp.legend(
 		col = set.group.color(adapter, x.names, col, TRUE),
 		title = paste0(get.factor.names(adapter, x.names), collapse ="."),
 		draw.residuals = draw.residuals, 
-		draw.relationships = draw.relationships, others = list(...)
+		draw.relationships = draw.relationships, ...
 	)
 	invisible(legend.info)
 }
-
-
-#-------------------------------------------------------------------------------
-#	partial.plotの結果を用いてレジェンドを描画する。
-#-------------------------------------------------------------------------------
-#'	Draw legend of partial plot.
-#'
-#'	@param x 
-#'		position of the legend. For the detail, see 
-#'		\code{\link[grahpic]{legend}} function.
-#'		
-#'	@param y
-#'		position of the legend. For the detail, see 
-#'		\code{\link[grahpic]{legend}} function.
-#'
-#'	@param legend.info
-#'		result of \code{\link{partial.plot}}.
-#'
-#'	@export
-#'
-#'	@examples
-#'
-#'	data(iris)
-#'	model <- lm(
-#'		Petal.Length ~ (Sepal.Length + Petal.Width) * Species, data = iris
-#'	)
-#'	info <- partial.plot(model, c("Sepal.Length", "Species"), pch = 16)
-#'	partial.plot.legend("topleft", legend.info = info)
-#-------------------------------------------------------------------------------
-partial.plot.legend <- function(x, y = NULL, title = NULL, ..., legend.info) {
-	# Prepare graphic parameters.
-	# グラフィックパラメーターを用意。
-	args <- c(list(...), legend.info$others)
-	args$legend <- names(legend.info$col)
-	args$col <- legend.info$col
-	args$title <- legend.info$title
-	args$x <- x
-	args$y <- y
-	if (!is.null(title)) {
-		args$title <- title
-	}
-	# Set line type based on the setting of partial.plot.
-	# 線の種類をpartial.plotの設定に基づいて決定。
-	if (legend.info$draw.relationship) {
-		if (is.null(args$lty)) {
-			args$lty <- "solid"
-		}
-	} else {
-		args$lty <- NULL
-	}
-	# Set plot character based on the setting of partial.plot.
-	# 点のシンボルをpartial.plotの設定に基づいて決定。
-	if (legend.info$draw.residuals) {
-		if (is.null(args$pch)) {
-			args$pch = 1
-		}
-	} else {
-		args$pch <- NULL
-	}
-	# Drawing.
-	# 描画　
-	args <- args[names(args) %in% names(as.list(args(legend)))]
-	do.call(legend, args)
-}
-
-
-
 
