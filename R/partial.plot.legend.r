@@ -24,7 +24,7 @@
 #'	info <- partial.plot(model, c("Sepal.Length", "Species"), pch = 16)
 #'	partial.plot.legend(info, "topleft")
 #-------------------------------------------------------------------------------
-partial.plot.legend <- function(object, x, ...) {
+pp.legend <- function(object, x, ...) {
 	if (!is(object, "pp.info")) {
 		stop("'object' should be an instance of 'pp.info' class")
 	}
