@@ -724,7 +724,7 @@ partial.plot <- function(
 	}
 	# Prepare information for legend.
 	# レジェンド用の情報を準備。
-	legend.info <- pp.legend(
+	legend.info <- pp.info(
 		col = set.group.color(adapter, x.names, col, TRUE),
 		title = paste0(get.factor.names(adapter, x.names), collapse ="."),
 		draw.residuals = draw.residuals, 
