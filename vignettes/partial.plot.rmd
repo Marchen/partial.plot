@@ -1,0 +1,369 @@
+---
+title: "Quick start guid for partial.plot."
+author: "Michio Oguro"
+date: "`r Sys.Date()`"
+output:
+    html_document:
+        fig_width: 8
+        fig_height: 7
+        fig_retina: 2
+        dpi: 300
+vignette: >
+    %\VignetteIndexEntry{Quick start guid for partial.plot.}
+    %\VignetteEngine{knitr::rmarkdown}
+    \usepackage[utf8]{inputenc}
+---
+
+This package provides tools for visualizing a result of multivariate analyses.
+
+[Japanese](partial.plot.j.html)
+
+--------------------------------------------------------------------------------
+
+## <a id = "index">Table of Contents</a>
+
+* [Introduction](#introduction)
+* [Installation and updating](#installation)
+* [Quick start (for professional users)](#quickstart)
+* [Quick start guid (for normal users)](#basic_usage)
+	* [Preparing dataset and an example model](#preparation)
+	* [Drawing prediction](#partial_plot)
+	* [Adding legend](#legend)
+* [Controlling elements of graph](#advanced_settings)
+	* [Removing elements](#remove_elements)
+	* [Changing colors](#change_colors)
+	* [Other settings](#other_settings)
+* [Supported models](#supported_models)
+* [Known issues](#known_issues)
+* [Other functions](#value_add)
+	* [color.ramp](#color_ramp)
+	* [gg.colors](#gg_colors)
+* [Change log](#version_history)
+
+--------------------------------------------------------------------------------
+
+## <a id = "introduction">Introduction</a>
+
+First of all, this package is still in development.
+There may be bugs and missing functionalities, and parhaps serious bag which 
+can affect result of your study. So, use this program by your own risk.
+If you find a bug or have request for some functionality, 
+please feel free to contact me.
+
+For other things, I will write...
+
+--------------------------------------------------------------------------------
+
+## <a id = "installation">Installing and updating</a>
+
+To install the package, just copy & paste following commands into the R console.
+
+```{R, message = FALSE, warning = FALSE, eval = FALSE}
+install.packages("testthat")
+install.packages("lsmeans")
+install.packages(
+	c("model.adapter", "partial.plot"),
+	repos = "http://hostgk3.biology.tohoku.ac.jp/marchen/R/repos"
+)
+```
+
+To update the packages use following command.
+
+```{R, message = FALSE, warning = FALSE, eval = FALSE}
+update.packages(
+	repos = "http://hostgk3.biology.tohoku.ac.jp/marchen/R/repos"
+)
+```
+
+
+--------------------------------------------------------------------------------
+
+## <a id = "quickstart">Quick start (for professional users)</a>
+
+Try this one!
+
+```{R, echo = FALSE, message = FALSE}
+library(partial.plot)
+```
+
+```{R}
+# Load dataset.
+data(iris)
+
+# Create a prediction model by GLM.
+model <- glm(
+	Petal.Length ~ (Sepal.Length + Petal.Width) * Species, data = iris
+)
+
+# Load the library.
+library(partial.plot)
+
+# Draw relationship between sepal length and petal length.
+info <- partial.plot(model, c("Sepal.Length", "Species"), pch = 16)
+
+# Add a legend.
+pp.legend(info, "topleft")
+
+```
+
+
+--------------------------------------------------------------------------------
+
+## <a id = "basic_usage">Quick start guild (for normal users)</a>
+
+### <a id = "preparation">Preparing dataset and an example model</a>
+
+In this time we use the Fisher's iris dataset.
+This dataset having petal length (Petal.Length), petal width (Petal.Width),
+sepal length (Sepal.Length) and sepal width (Sepal.Width) data of 3 species of 
+Iris (setosa, versicolor, and virginica).
+
+We can load the dataset and see structure of the data set by following code.
+
+```{R}
+# Load the dataset.
+data(iris)
+
+# See the structure of the dataset.
+str(iris)
+```
+
+In this guide, we will make a model to predict petal length by other variables.
+For the modeling, we are going to use generalized linear model (GLM).
+For explanatory variables of the model we will use sepal length, petal width
+and species.
+By including interaction terms between sepal length and species, and between
+petal width and species, we assume that relationships between sepal length and 
+petal length and between petal width and petal length differ between species.
+
+```{R}
+# Make prediction model.
+model <- glm(
+	Petal.Length ~ (Sepal.Length + Petal.Width) * Species, data = iris
+)
+
+# Show summary of the model.
+summary(model)
+```
+
+
+### <a id = "partial_plot">Visualize prediction model</a>
+Now we are going to visualize result of the GLM analysis with `partial.plot()`.
+Basic usage of `partial.plot()` function is as follow.
+The example below visualize predicted relationship between sepal length and
+petal length of the three species.
+
+```{R}
+# Load library.
+library(partial.plot)
+
+# Visualize predicted relationship between sepal length and petal length.
+partial.plot(model, c("Sepal.Length", "Species"), pch = 16)
+```
+
+The first argument of the `partial.plot()` is model object returned by a 
+model function.
+In this case we used `model` object returned by `glm()`.
+
+The second argument is a character vector specifying names of explanatory 
+variables whose relationships to response variable are visualized.
+In the example, `"Sepal.Length"` and `"Species"` are specified.
+For this argument, multiple names of factors can be specified.
+Those two arguments must be specified.
+
+In addition to the above arguments, we put `pch = 16` to make the graph
+a bit pretty.
+
+If we want to visualize relationship between petal width and petal length,
+we can specify the arguments as follow.
+
+```{R}
+# Visualize predicted relationship between petal width and petal length.
+partial.plot(model, c("Petal.Width", "Species"), pch = 16)
+```
+
+
+### <a id = "legend">Adding legend</a>
+
+`partial.plot()` returns information can be used to produce its legend.
+For example, if we write following command, information about the plot 
+is stored in the `info` variable.
+
+```{R, eval = FALSE}
+# Store settings of partial.plot into info.
+info <- partial.plot(model, c("Sepal.Length", "Species"), pch = 16)
+```
+
+By passing `info` to `pp.legend()` function, we can draw a legend using 
+settings used for `partial.plot()`.
+
+
+```{R}
+# Add legend.
+info <- partial.plot(model, c("Sepal.Length", "Species"), pch = 16)
+pp.legend(info, "topleft")
+```
+
+The usage of `pp.legend` function is almost similar to the `legend` function.
+The first argument is result of `partial.plot`, and other arguments are passed
+to `legend` function. 
+
+
+--------------------------------------------------------------------------------
+
+## <a id = "advanced_settings">Controlling elements of graph</a>
+
+We can control some parameters of `partial.plot` to change appearance of the
+graph.
+
+
+### <a id = "remove_elements">Removing elements</a>
+
+We can suppress drawing symbols representing residuals by setting `FALSE` 
+to `draw.residuals` argument.
+
+```{R}
+partial.plot(
+	model, c("Sepal.Length", "Species"), draw.residuals = FALSE
+)
+```
+
+Also, we can suppress drawing predicted partial relationship by specifying 
+`FALSE` to `draw.relationships` argument.
+```{R}
+partial.plot(
+	model, c("Sepal.Length", "Species"), draw.relationships = FALSE,
+	pch = 16
+)
+```
+
+
+### <a id = "change_colors">Changing colors</a>
+
+We can change colors of the graph by several ways.
+First way to change colors of the graph is passing `rainbow()` or
+`heat.colors()` functions for `col` argument of `partial.plot()`.
+We can use functions that described in help page of `rainbow()` function
+(type `?rainbow` to see the list).
+
+```{R}
+# Change colors of the graph.
+info <- partial.plot(
+	model, c("Sepal.Length", "Species"), pch = 16, col = rainbow
+)
+# Colors in the legend is automatically adjusted.
+pp.legend(info, "topleft")
+```
+
+Second way to change colors is prepare named character vector denoting colors
+for each factor levels and specify it for `col` argument.
+
+```{R}
+# Prepare a named color vector.
+col <- c(
+	setosa = "darkgreen", versicolor = "blue", virginica = "orange2"
+)
+# Specify the vector for col argument.
+info <- partial.plot(
+	model, c("Sepal.Length", "Species"), pch = 16, col = col
+)
+pp.legend(info, "topleft")
+```
+
+
+### <a id = "other_settings">Other settings</a>
+
+We can change other graphic parameters like `plot` function.
+We changed `pch` to set symbol of the in the example above.
+But we also use other graphic parameters.
+
+```{R}
+# Set other graphic parameters
+info <- partial.plot(
+	model, c("Sepal.Length", "Species"), pch = 16, cex = 1.5,
+	xlab = "Sepal length (mm)", ylab = "Petal Length"
+)
+pp.legend(info, "topleft")
+```
+
+
+--------------------------------------------------------------------------------
+
+## <a id = "supported_models">Supported models</a>
+
+At this moment, (maybe) `lm()`, `glm()`, `lme()`, and `MCMCglmm()` are 
+supported.
+Support for the models are provided by the `model.adapter` package.
+Therefore machine learning models such as `randomForest` will be supported
+in near future.
+
+
+--------------------------------------------------------------------------------
+
+## <a id = "known_issues">Known issues</a>
+
+* Drawing for only one continuous variable is supported. 
+Two explanatory variables will be supported in future.
+* At least one continuous variable should be specified.
+Plotting only by factors will be supported in future.
+
+
+--------------------------------------------------------------------------------
+
+## <a id = "value_add">Other functions</a>
+
+`partial.plot` package contains some functions which may be useful.
+
+### <a id = "color_ramp">color.ramp()</a>
+
+`color.ramp` function creates color vector from factors.
+
+```{R}
+library(partial.plot)
+plot(
+	Petal.Length ~ Sepal.Length, col = color.ramp(Species),
+	data = iris, pch = 16
+)
+```
+
+By similar way to control colors of `partial.plot`, we can change colors
+produced by `color.ramp`.
+
+```{R}
+plot(
+	Petal.Length ~ Sepal.Length, col = color.ramp(Species, rainbow),
+	data = iris, pch = 16
+)
+```
+
+```{R}
+col <- c(
+	setosa = "darkgreen", versicolor = "blue", virginica = "orange2"
+)
+plot(
+	Petal.Length ~ Sepal.Length, col = color.ramp(Species, col),
+	data = iris, pch = 16
+)
+```
+
+### <a id = "gg_colors">gg.colors()</a>
+
+`gg.colors` creates gg.plot like colors.
+
+```{R}
+barplot(1:10, col = gg.colors(10))
+```
+
+
+--------------------------------------------------------------------------------
+
+## <a id = "version_history">Version history</a>
+* 2016.07.xx: 0.0.4
+	* Renamed partial.plot.legen() function to pp.legend().
+	* Changed order of arguments of pp.legend() function.
+* 2016.07.14: 0.0.3
+	* partial.plot() now supports 'log' graphic parameter.
+* 2016.07.11: 0.0.2
+	* partial.plot.legend() function now draws title of the legend.
+* 2016.06.27: 0.0.1
+	* Initial release.

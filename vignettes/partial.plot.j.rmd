@@ -4,9 +4,11 @@ author: "Michio Oguro"
 date: "`r Sys.Date()`"
 output:
     html_document:
-        fig_width: 24
-        fig_height: 20
-        fig_retina: 3
+        fig_width: 8
+        fig_height: 7
+        fig_retina: 2
+        dpi: 300
+		dev.args = list(dpi = 300)
 vignette: >
     %\VignetteIndexEntry{Quick start guid for partial.plot (Japanese).}
     %\VignetteEngine{knitr::rmarkdown}
@@ -16,6 +18,8 @@ vignette: >
 # partial.plot: an R package to visualize partial relationships
 
 このパッケージは多変量分析の結果を見やすく作図するためのパッケージです。
+
+[English](partial.plot.html)
 
 --------------------------------------------------------------------------------
 
@@ -355,8 +359,12 @@ barplot(1:10, col = gg.colors(10))
 --------------------------------------------------------------------------------
 
 ## <a id = "version_history">更新履歴</a>
-* 2016.07.xx: 0.0.2 -> 0.0.3
+* 2016.07.xx: 0.0.4
+	* partial.plot.legend()関数をpp.legend()関数にリネーム。
+	* pp.legend()関数の引数の順番を変更。
+* 2016.07.14: 0.0.3
 	* partial.plot()関数がグラフィックパラメーター'log'をサポートするようにした。
-* 2016.07.11: 0.0.1 -> 0.0.2
+* 2016.07.11: 0.0.2
 	* partial.plot.legend()関数がレジェンドのタイトルを描画するように修正。
-
+* 2016.06.27: 0.0.1
+	* 開発版リリース。
