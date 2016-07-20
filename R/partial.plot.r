@@ -532,8 +532,8 @@ draw.partial.relationship.2d <- function(
 		d <- partial.relationship.data[[i]]
 		args <- list(x = d[[numeric.names]], y = d$fit, col = color.palette[i])
 		lines.par <- c("lty", "lwd", "lend", "ljoin", "lmitre")
-		dots <- list(...)[lines.par]
-		do.call(lines, c(args, dots))
+		dots <- list(...)
+		do.call(lines, c(args, dots[names(dots) %in% lines.par]))
 	}
 }
 

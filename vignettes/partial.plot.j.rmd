@@ -106,7 +106,7 @@ library(partial.plot)
 info <- partial.plot(model, c("Sepal.Length", "Species"), pch = 16)
 
 # 凡例を追加。
-partial.plot.legend("topleft", legend.info = info)
+pp.legend(info, "topleft")
 
 ```
 
@@ -193,16 +193,16 @@ info <- partial.plot(model, c("Sepal.Length", "Species"), pch = 16)
 ```
 
 というプログラムを書くと、凡例に関する情報が`info`変数に代入されます。
-これを以下の例のように`partial.plot.legend()`関数に渡すと、
+これを以下の例のように`pp.legend()`関数に渡すと、
 モデルによって予測された関係を作図したときの情報を使って凡例を書くことができます。
 
 ```{R}
 # 凡例を追加。
 info <- partial.plot(model, c("Sepal.Length", "Species"), pch = 16)
-partial.plot.legend("topleft", legend.info = info)
+pp.legend(info, "topleft")
 ```
 
-`partial.plot.legend`関数の使い方は`legend`関数とほとんど同じで、
+`pp.legend`関数の使い方は`legend`関数とほとんど同じで、
 入力した引数は全て`legend`関数にそのまま用いられます。
 ただし、`legend.info`という引数に`partial.plot`の結果を代入すると、
 その作図に使った情報を渡すことができます。
@@ -247,7 +247,7 @@ info <- partial.plot(
 	model, c("Sepal.Length", "Species"), pch = 16, col = rainbow
 )
 # 凡例の色も自動調節される。
-partial.plot.legend("topleft", legend.info = info)
+pp.legend(info, "topleft")
 ```
 
 また、名前付きの色ベクトルを作ることで、個別に色を指定することもできます。
@@ -264,7 +264,7 @@ col <- c(
 info <- partial.plot(
 	model, c("Sepal.Length", "Species"), pch = 16, col = col
 )
-partial.plot.legend("topleft", legend.info = info)
+pp.legend(info, "topleft")
 ```
 
 
@@ -281,7 +281,7 @@ info <- partial.plot(
 	model, c("Sepal.Length", "Species"), pch = 16, cex = 1.5,
 	xlab = "Sepal length (mm)", ylab = "Petal Length"
 )
-partial.plot.legend("topleft", legend.info = info)
+pp.legend(info, "topleft")
 ```
 
 
