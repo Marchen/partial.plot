@@ -1,5 +1,6 @@
 require(roxygen2)
 require(devtools)
+require(rmarkdown)
 
 
 get.this.file.dir <- function() {
@@ -19,26 +20,35 @@ setwd(get.this.file.dir())
 
 
 #-------------------------------------------------------------------------------
+#	Build documentation.
+#-------------------------------------------------------------------------------
+roxygenize(clean = TRUE)
+
+#clean_vignettes()
+#build_vignettes()
+
+render("vignettes/partial.plot.j.rmd", encoding = "utf-8")
+render("vignettes/partial.plot.rmd", encoding = "utf-8")
+
+
+#-------------------------------------------------------------------------------
 #	Build package
 #-------------------------------------------------------------------------------
-# Build documentation.
-roxygenize(clean = TRUE)
-build_vignettes()
-
-# Build package
+# Build source package
 build(path = "../repos/src/contrib")
+
+# Build binary package
 if (version$os == "mingw32") {
-	build(
-		binary = TRUE, args = "--preclean",
-		path = "../repos/bin/windows/contrib/3.3/"
-	)
+	bin.path <- "../repos/bin/windows/contrib/%s/"
 } else {
-	build(
-		binary = TRUE, args = "--preclean",
-		path = "../repos/bin/macosx/mavericks/contrib/3.3/"
-	)
+	bin.path = "../repos/bin/macosx/mavericks/contrib/%s/"
 }
-install()
+r.ver <- paste(version$major, strsplit(version$minor, "\\.")[[1]][1], sep = ".")
+bin.path <- sprintf(bin.path, r.ver)
+if (!dir.exists(bin.path)) {
+	dir.create(bin.path)
+}
+build(binary = TRUE, args = "--preclean", path = bin.path)
 
 
 #-------------------------------------------------------------------------------
@@ -55,3 +65,12 @@ tools::write_PACKAGES(
 tools::write_PACKAGES(
 	file.path(path.repos, "bin/macosx/mavericks/contrib/3.3/"), type = "mac.binary"
 )
+
+
+#-------------------------------------------------------------------------------
+#	Install
+#-------------------------------------------------------------------------------
+install()
+
+
+
