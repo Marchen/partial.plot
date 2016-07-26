@@ -1,4 +1,4 @@
-﻿2016-07-xx: 0.0.3 -> 0.0.4
+﻿2016-07-23: 0.0.3 -> 0.0.4
 - Changed order of arguments of partial.plot.legend() function.
 
 2016-07-14: 0.0.2 -> 0.0.3
