@@ -305,7 +305,8 @@ color.ramp.data.frame <- function(
 #'	barplot(1:4, col = c(col1, col2, col3, col4))
 #-------------------------------------------------------------------------------
 trans.color <- function(colors, alpha = 0.3, mix = "white", ratio = 0.7) {
-	# Error checks / エラーチェック。
+	# Error checks
+	# エラーチェック。
 	if (length(mix) != 1) {
 		stop("Length of 'mix' should be 1.")
 	}
@@ -315,7 +316,8 @@ trans.color <- function(colors, alpha = 0.3, mix = "white", ratio = 0.7) {
 	if (all(alpha < 0 | alpha > 1)) {
 		stop("'alpha' should be between 0 and 1.")
 	}
-	# Convert colors / 色を変換。
+	# Convert colors
+	# 色を変換。
 	col1 <- col2rgb(colors) * ratio
 	col2 <- col2rgb(mix) * (1 - ratio)
 	col <- apply(col2, 2, "+", col1)

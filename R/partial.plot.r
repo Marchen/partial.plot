@@ -119,7 +119,8 @@ check.params <- function(adapter, x.names) {
 	if (is.null(adapter$data)) {
 		stop("'model' object does not have original data. Please specify 'data' argument.")
 	}
-	# check x.names / x.namesのチェック。
+	# check x.names.
+	# x.namesのチェック。
 	if (!all(x.names %in% colnames(adapter$data))) {
 		error <- x.names[!x.names %in% colnames(adapter$data)]
 		stop(sprintf("\n Column '%s' is not found in data.", error))
