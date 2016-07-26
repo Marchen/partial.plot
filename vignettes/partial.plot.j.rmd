@@ -75,6 +75,19 @@ install.packages(
 )
 ```
 
+もし、うまく行かない場合は以下のコマンドを試してください。
+
+```{R, message = FALSE, warning = FALSE, eval = FALSE}
+install.packages("testthat")
+install.packages("lsmeans")
+install.packages(
+	c("model.adapter", "partial.plot"),
+	repos = "http://hostgk3.biology.tohoku.ac.jp/marchen/R/repos",
+	type = "source"
+)
+```
+
+
 パッケージをアップデートするには、以下のコマンドを実行します。
 
 ```{R, message = FALSE, warning = FALSE, eval = FALSE}

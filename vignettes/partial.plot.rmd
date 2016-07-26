@@ -68,6 +68,18 @@ install.packages(
 )
 ```
 
+If the command above couldn't work, try this one.
+
+```{R, message = FALSE, warning = FALSE, eval = FALSE}
+install.packages("testthat")
+install.packages("lsmeans")
+install.packages(
+	c("model.adapter", "partial.plot"),
+	repos = "http://hostgk3.biology.tohoku.ac.jp/marchen/R/repos",
+	type = "source"
+)
+```
+
 To update the packages use following command.
 
 ```{R, message = FALSE, warning = FALSE, eval = FALSE}
