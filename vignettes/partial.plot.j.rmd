@@ -1,21 +1,21 @@
 ---
-title: "Quick start guid for partial.plot (Japanese)."
+title: "partial.plotクイックスタートガイド"
 author: "Michio Oguro"
 date: "`r Sys.Date()`"
 output:
     html_document:
-        fig_width: 8
-        fig_height: 7
+        fig_width: 6
+        fig_height: 6
         fig_retina: 2
         dpi: 300
-		dev.args = list(dpi = 300)
+        dev.args: list(dpi = 300)
 vignette: >
     %\VignetteIndexEntry{Quick start guid for partial.plot (Japanese).}
     %\VignetteEngine{knitr::rmarkdown}
     \usepackage[utf8]{inputenc}
 ---
 
-# partial.plot: an R package to visualize partial relationships
+
 
 このパッケージは多変量分析の結果を見やすく作図するためのパッケージです。
 
