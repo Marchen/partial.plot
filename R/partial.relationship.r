@@ -46,15 +46,19 @@ partial.relationship.lsmeans <- function(
 	# Remove predictions with out-ranged explanatory variable for each group.
 	# 各グループの説明変数の範囲を外れた予測値を削除。
 	if (length(factors) != 0) {
-		lsm <- split.and.filter.result(lsm, adapter$data, x.names)
+		lsm <- filter.result(lsm, adapter$data, x.names)
 	}
 	return(lsm)
 }
 
 #-------------------------------------------------------------------------------
-#	lsmeansの結果を分割し、各グループごとにX軸の範囲外の予測を削除する。
+#	lsmeansの結果から、各グループごとにX軸の値が元のデータの範囲外に
+#	ある予測値を削除する。
 #-------------------------------------------------------------------------------
-#'	(Internal) Split result of lsmeans and remove out-ranged values.
+#'	(Internal) Remove out-ranged values from result of lsmeans.
+#'
+#'	This internal function removes predicted values those explanatory 
+#'	variable is out of range of original data used for modeling for each group.
 #'
 #'	@param prediction a result of summary.lsmeans.
 #'	@param data a data.frame of original data used for modeling.
@@ -62,7 +66,7 @@ partial.relationship.lsmeans <- function(
 #'
 #'	@return a data.frame containing predicted values.
 #-------------------------------------------------------------------------------
-split.and.filter.result <- function(prediction, data, x.names) {
+filter.result <- function(prediction, data, x.names) {
 	# Get list of unique factors.
 	# 因子の一覧を作成。
 	factors <- expand.grid(get.unique.factors(data, x.names))
