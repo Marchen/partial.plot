@@ -68,9 +68,9 @@ get.factor.names <- function(data, var.names) {
 #'
 #'	@return a character vector.
 #-------------------------------------------------------------------------------
-combine.columns <- function(data) {
+combine.columns <- function(data, sep = ".") {
 	data <- as.data.frame(sapply(data, as.character, simplify = FALSE))
-	result <- apply(data, 1, paste, collapse = ".")
+	result <- apply(data, 1, paste, collapse = sep)
 	return(result)
 }
 
