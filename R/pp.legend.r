@@ -25,8 +25,8 @@
 #'	partial.plot.legend(info, "topleft")
 #-------------------------------------------------------------------------------
 pp.legend <- function(object, x, ...) {
-	if (!is(object, "pp.info")) {
-		stop("'object' should be an instance of 'pp.info' class")
+	if (!is(object, "pp.settings")) {
+		stop("'object' should be an instance of 'pp.settings' class")
 	}
 	# Prepare arguments for build.legend.args().
 	# build.legend.args()の引数を用意。

@@ -6,38 +6,23 @@
 #'	This function calculates data for regression lines and intervals using
 #'	\code{\link[lsmeans]{lsmeans}} function.
 #'
-#'	@param model
-#'		a model object for which partial regression lines and its confidence 
-#'		intervals are calculated.
-#'
-#'	@param x.names 
-#'		a character vector containing names of explanatory variables
-#'		to focus on them.
-#'
-#'	@param data
-#'		a data.frame containing data used for prediction.
-#'		If data is missing, this function try to extract data.frame from
-#'		\code{model} object.
-#'
-#'	@param resolution
-#'		an integer specifing length of prediction to calculate predictions.
+#'	@param settings
+#'		an object of \code{\link{pp.settings}} object having settings of
+#'		partial.plot.
 #'
 #'	@return
 #'		a data.frame containing predictions.
 #-------------------------------------------------------------------------------
-partial.relationship.lsmeans <- function(
-	model, x.names, data = NULL, resolution = 100
-) {
+partial.relationship.lsmeans <- function(settings) {
 	# prepare combinations of x variables.
 	# 説明変数の組み合わせを用意。
-	adapter <- model.adapter(model, data = data)
-	numerics <- numeric.sequences(adapter$data, x.names, resolution)
-	factors <- get.unique.factors(adapter$data, x.names)
+	numerics <- numeric.sequences(settings)
+	factors <- get.unique.factors(settings)
 	# calculate prediction.
 	# 予測値を計算。
 	at <- c(numerics, factors)
-	rg <- ref.grid(model, at, data = adapter$data, type = "terms")
-	lsm <- summary(lsmeans(rg, c(x.names)))
+	rg <- ref.grid(settings$model, at, data = settings$data, type = "terms")
+	lsm <- summary(lsmeans(rg, settings$x.names))
 	colnames(lsm)[colnames(lsm) == "lsmean"] <- "fit"
 	colnames(lsm)[colnames(lsm) == "lower.CL"] <- "lower"
 	colnames(lsm)[colnames(lsm) == "upper.CL"] <- "upper"
@@ -46,10 +31,11 @@ partial.relationship.lsmeans <- function(
 	# Remove predictions with out-ranged explanatory variable for each group.
 	# 各グループの説明変数の範囲を外れた予測値を削除。
 	if (length(factors) != 0) {
-		lsm <- filter.result(lsm, adapter$data, x.names)
+		lsm <- filter.result(settings, lsm)
 	}
 	return(lsm)
 }
+
 
 #-------------------------------------------------------------------------------
 #	lsmeansの結果から、各グループごとにX軸の値が元のデータの範囲外に
@@ -60,23 +46,24 @@ partial.relationship.lsmeans <- function(
 #'	This internal function removes predicted values those explanatory 
 #'	variable is out of range of original data used for modeling for each group.
 #'
+#'	@param settings
+#'		an object of \code{\link{pp.settings}} object having settings of
+#'		partial.plot.
 #'	@param prediction a result of summary.lsmeans.
-#'	@param data a data.frame of original data used for modeling.
-#'	@param x.names a character vector of names of focal explanatory variables.
 #'
 #'	@return a data.frame containing predicted values.
 #-------------------------------------------------------------------------------
-filter.result <- function(prediction, data, x.names) {
+filter.result <- function(settings, prediction) {
 	# Get list of unique factors.
 	# 因子の一覧を作成。
-	factors <- expand.grid(get.unique.factors(data, x.names))
+	factors <- expand.grid(get.unique.factors(settings))
 	# Get names of numeric variables.
 	# 数値型変数の名前を取得。
-	numeric.names <- get.numeric.names(data, x.names)
+	numeric.names <- get.numeric.names(settings)
 	# Split data and prediction for each factor group.
 	# データを因子のグループごとに分割。
 	pred.split <- split(prediction, prediction[names(factors)])
-	data.split <- split(data, data[names(factors)])
+	data.split <- split(settings$data, settings$data[names(factors)])
 	# Filter out out-ranged numeric values.
 	# 範囲外の数値を削除。
 	result <- list()

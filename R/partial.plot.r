@@ -8,11 +8,9 @@
 #'	\code{get.numeric.names} returns names of numeric variables.
 #'	\code{get.facto.names} returns names of vactors.
 #'
-#'	@param data
-#		a data.frame in which types of variables in var.names is evaluated.
-#'
-#'	@param var.names
-#'		a character vector containing variable names to check their type.
+#'	@param settings
+#'		an object of \code{\link{pp.settings}} object having settings of
+#'		partial.plot.
 #'
 #'	@param fun 
 #'		a function like \code{\link[base]{is.numeric}} and 
@@ -23,11 +21,8 @@
 #'		\code{get.numeric.names} returns names of numeric variables.
 #'		\code{get.facto.names} returns names of vactors.
 #-------------------------------------------------------------------------------
-get.names <- function(data, var.names, fun) {
-	if (is(data, "model.adapter")) {
-		data <- data$data
-	}
-	result <- var.names[sapply(data[var.names], fun)]
+get.names <- function(settings, fun) {
+	result <- settings$x.names[sapply(settings$data[settings$x.names], fun)]
 	return(result)
 }
 
@@ -39,8 +34,8 @@ get.names <- function(data, var.names, fun) {
 #'
 #'	Extract names of numeric variables from \code{var.name}
 #-------------------------------------------------------------------------------
-get.numeric.names <- function(data, var.names) {
-	return(get.names(data, var.names, is.numeric))
+get.numeric.names <- function(settings) {
+	return(get.names(settings, is.numeric))
 }
 
 
@@ -51,8 +46,8 @@ get.numeric.names <- function(data, var.names) {
 #'
 #'	Extract names of factors from \code{var.name}
 #-------------------------------------------------------------------------------
-get.factor.names <- function(data, var.names) {
-	return(get.names(data, var.names, is.factor))
+get.factor.names <- function(settings) {
+	return(get.names(settings, is.factor))
 }
 
 
@@ -77,66 +72,23 @@ combine.columns <- function(data, sep = ".") {
 
 
 #-------------------------------------------------------------------------------
-#	因子の一意な組み合わせを作る。
+#	因子型の変数の一意な値を取得する。
 #-------------------------------------------------------------------------------
 #'	(Internal) Extract unique factors in a data.frame
 #'
-#'	@param data a data.frame containing factors.
-#'	@param factor.names 
-#'		a character vector of factor names to extract unique values of them.
-#'		Only factor names are used and names of non-factor variables 
-#'		are ignored.
+#'	@param settings
+#'		an object of \code{\link{pp.settings}} object having settings of
+#'		partial.plot.
 #'
 #'	@return a list having unique values of factors.
-#'	@export
 #-------------------------------------------------------------------------------
-get.unique.factors <- function(data, factor.names) {
-	factor.names <- get.factor.names(data, factor.names)
+get.unique.factors <- function(settings) {
+	factor.names <- get.factor.names(settings)
 	result <- list()
 	for (name in factor.names) {
-		result[[name]] <- unique(data[[name]])
+		result[[name]] <- unique(settings$data[[name]])
 	}
 	return(result)
-}
-
-
-#-------------------------------------------------------------------------------
-#	パラメーターの整合性を確認する。
-#-------------------------------------------------------------------------------
-#'	(Internal) Check consistensy of parameters.
-#'
-#'	@param adapter 
-#'		a \code{\link[model.adapter]{model.adapter}} object with 
-#'		model and data.
-#'
-#'	@param x.names
-#'		a character vector of names of explanatory variables.
-#'
-#'	@return NULL
-#-------------------------------------------------------------------------------
-check.params <- function(adapter, x.names) {
-	# check availability of data.
-	# dataが使えるかを確認。
-	if (is.null(adapter$data)) {
-		stop("'model' object does not have original data. Please specify 'data' argument.")
-	}
-	# check x.names.
-	# x.namesのチェック。
-	if (!all(x.names %in% colnames(adapter$data))) {
-		error <- x.names[!x.names %in% colnames(adapter$data)]
-		stop(sprintf("\n Column '%s' is not found in data.", error))
-	}
-	if (!all(x.names %in% adapter$x.names(type = "base"))) {
-		error <- x.names[!x.names %in% adapter$x.names(type = "base")]
-		stop(sprintf("\n '%s' is not found in explanatory variables.", error))
-	}
-	# Check number of continuous explanatory variables
-	# 連続値の説明変数の数チェック
-	var.types <- sapply(adapter$data[, x.names, drop = FALSE], class)
-	n.continuous <- sum(var.types == "numeric")
-	if (n.continuous > 2) {
-		stop("Plotting more than two continuous explanatory variables is not supported.")
-	}
 }
 
 
@@ -147,15 +99,9 @@ check.params <- function(adapter, x.names) {
 #'	Resultant values are adjusted to be congruent with result of 
 #'	\code{\link[lsmeans]{lsmeans}}.
 #'
-#'	@param adapter
-#'		a \code{\link[model.adapter]{model.adapter}} object with information of
-#'		the model.
-#'
-#'	@param x.names
-#'		name of focal explanatory variable.
-#'
-#'	@param link
-#'		link function to convert values of response variable.
+#'	@param settings
+#'		an object of \code{\link{pp.settings}} object having settings of
+#'		partial.plot.
 #'
 #'	@return a numeric vector of partial residuals.
 #-------------------------------------------------------------------------------
@@ -167,32 +113,37 @@ check.params <- function(adapter, x.names) {
 #	Case of LSMEANS
 #	LSMEANS = i + PW + MM + SP + PW:SP + MM:SP
 #	LSMEANS = i + PW + MM + SP + PW:SP + MM:SP + r		# Want to see this
-#	
 #-------------------------------------------------------------------------------
-partial.residual <- function(adapter, x.names, link) {
+partial.residual <- function(settings) {
 	# Prepare names of numeric variables.
 	# 数値型変数の変数名を用意。
-	focal.numerics <- get.numeric.names(adapter$data, x.names)
-	all.numerics <- get.numeric.names(
-		adapter$data, adapter$x.names(type = "base")
-	)
+	focal.numerics <- get.numeric.names(settings)
+	all.numerics <- settings$adapter$x.names(type = "base")
+	all.numerics <- all.numerics[
+		sapply(settings$data[all.numerics], is.numeric)
+	]
 	other.numerics <- all.numerics[!all.numerics %in% focal.numerics]
 	# Calculate prediction 1.
 	# 予測値１を計算。
-	data1 <- adapter$data
+	data1 <- settings$data
 	for (i in other.numerics) {
 		data1[[i]] <- data1[[i]] - mean(data1[[i]])
 	}
 	data1[focal.numerics] <- 0
-	pred1 <- adapter$predict(newdata = data1, type = "link")$fit[, "fit"]
+	pred1 <- settings$adapter$predict(newdata = data1, type = "link")
+	pred1 <- pred1$fit[, "fit"]
 	# Calculate prediction 2.
 	# 予測値２を計算。
-	data2 <- adapter$data
+	data2 <- settings$data
 	data2[all.numerics] <- 0
-	pred2 <- adapter$predict(newdata = data2, type = "link")$fit[, "fit"]
+	pred2 <- settings$adapter$predict(newdata = data2, type = "link")
+	pred2 <- pred2$fit[, "fit"]
 	# Calculate partial residual.
 	# 偏残差を計算。
-	resid <- link(adapter$data[[adapter$y.names()]]) - (pred1 - pred2)
+	resid <- (
+		settings$adapter$link(settings$data[[settings$adapter$y.names()]])
+		- (pred1 - pred2)
+	)
 	return(resid)
 }
 
@@ -206,26 +157,21 @@ partial.residual <- function(adapter, x.names, link) {
 #'	variable name. Ranges of the variables is obtained data.frame specified
 #'	in \code{data}.
 #'
-#'	@param data a data.frame with variables.
-#'
-#'	@param x.names
-#'		a character vector of names of variable for which sequences are made.
-#'		Note only names of numeric variables are used and names of other type
-#'		of variables are ignored.
-#'
-#'	@param resolution
-#'		a integer specifying length of sequence.
+#'	@param settings
+#'		an object of \code{\link{pp.settings}} object having settings of
+#'		partial.plot.
 #'
 #'	@return
 #'		a named list containing sequence of variables.
 #-------------------------------------------------------------------------------
-numeric.sequences <- function(data, x.names, resolution = 100) {
-	numeric.names <- get.numeric.names(data, x.names)
+numeric.sequences <- function(settings) {
+	numeric.names <- get.numeric.names(settings)
 	result <- list()
 	for (name in numeric.names) {
 		result[[name]] <- seq(
-			min(data[[name]], na.rm = TRUE), max(data[[name]], na.rm = TRUE),
-			length.out = resolution
+			min(settings$data[[name]], na.rm = TRUE),
+			max(settings$data[[name]], na.rm = TRUE), 
+			length.out = settings$resolution
 		)
 	}
 	return(result)
@@ -237,22 +183,17 @@ numeric.sequences <- function(data, x.names, resolution = 100) {
 #-------------------------------------------------------------------------------
 #'	(Internal) Open new plot.
 #'
+#'	@param settings
+#'		an object of \code{\link{pp.settings}} object having settings of
+#'		partial.plot.
 #'	@param partial.residual.data 
 #'		a named list of data.frame containing result of 
 #'		\code{\link{partial.relationship.lsmeans}} function.
-#'
-#'	@param x.name
-#'		name of focal continuous explanatory variable.
-#'
-#'	@param xlab
-#'		label of x axis.
-#'
-#'	@param ylab
-#'		label of y axis.
-#'
-#'	@param ... other parameters passed to plot function.
 #-------------------------------------------------------------------------------
-open.new.plot <- function(partial.residual.data, x.name, xlab, ylab, ...) {
+open.new.plot <- function(settings, partial.residual.data) {
+	x.name <- get.numeric.names(settings)
+	xlab <- set.xlab.2d(settings)
+	ylab <- set.ylab.2d(settings)
 	if (is.null(partial.residual.data$upper)) {
 		x <- partial.residual.data[[x.name]]
 		y <- partial.residual.data$fit
@@ -260,7 +201,9 @@ open.new.plot <- function(partial.residual.data, x.name, xlab, ylab, ...) {
 		x <- rep(partial.residual.data[[x.name]], 2)
 		y <- c(partial.residual.data$upper, partial.residual.data$lower)
 	}
-	plot(x, y, type = "n", xlab = xlab, ylab = ylab, ...)
+	args <- list(x, y, type = "n", xlab = xlab, ylab = ylab)
+	args <- c(args, settings$other.pars)
+	do.call(plot, args)
 }
 
 
@@ -269,17 +212,17 @@ open.new.plot <- function(partial.residual.data, x.name, xlab, ylab, ...) {
 #-------------------------------------------------------------------------------
 #'	(Internal) Set X label if original is NULL.
 #'
-#'	@param xlab original x label.
-#'	@param adapter a model.adapter object.
-#'	@param x.names a character vector of focal explanatory variables.
+#'	@param settings
+#'		an object of \code{\link{pp.settings}} object having settings of
+#'		partial.plot.
 #'
 #'	@return x label.
 #-------------------------------------------------------------------------------
-set.xlab.2d <- function(xlab, adapter, x.names) {
-	if (is.null(xlab)) {
-		xlab <- get.numeric.names(adapter, x.names)
+set.xlab.2d <- function(settings) {
+	if (length(settings$xlab) == 0) {
+		xlab <- get.numeric.names(settings)
 	}
-	return(xlab)
+	return(settings$xlab)
 }
 
 
@@ -288,16 +231,17 @@ set.xlab.2d <- function(xlab, adapter, x.names) {
 #-------------------------------------------------------------------------------
 #'	(Internal) Set Y label if original is NULL.
 #'
-#'	@param xlab original y label.
-#'	@param adapter a model.adapter object.
+#'	@param settings
+#'		an object of \code{\link{pp.settings}} object having settings of
+#'		partial.plot.
 #'
 #'	@return y label.
 #-------------------------------------------------------------------------------
-set.ylab.2d <- function(ylab, adapter) {
-	if (is.null(ylab)) {
-		ylab <- adapter$y.names()
+set.ylab.2d <- function(settings) {
+	if (length(settings$ylab) == 0) {
+		ylab <- settings$adapter$y.names()
 	}
-	return(ylab)
+	return(settings$ylab)
 }
 
 
@@ -306,9 +250,9 @@ set.ylab.2d <- function(ylab, adapter) {
 #-------------------------------------------------------------------------------
 #'	(Internal) Make color vector for groups.
 #'
-#'	@param adapter a model.adapter object.
-#'	@param x.names a character vector of focal explanatory variables.
-#'	@param col a function or character vector.
+#'	@param settings
+#'		an object of \code{\link{pp.settings}} object having settings of
+#'		partial.plot.
 #'	@param unique.pal
 #'		if TRUE, this returns color palette. If FALSE, this returns vector of
 #'		colors.
@@ -318,17 +262,17 @@ set.ylab.2d <- function(ylab, adapter) {
 #'		If x.names doesn't have factors, this returns color palette with length
 #'		1 which named as "all".
 #-------------------------------------------------------------------------------
-set.group.color <- function(adapter, x.names, col, unique.pal) {
-	factors <- get.factor.names(adapter$data, x.names)
+set.group.color <- function(settings, unique.pal) {
+	factors <- get.factor.names(settings)
 	if (!length(factors) == 0) {
 		result <- color.palette <- color.ramp(
-			adapter$data, factors, pal = col, unique.pal = unique.pal
+			settings$data, factors, pal = settings$col, unique.pal = unique.pal
 		)
 	} else {
-		col <- col[1]
+		col <- settings$col[1]
 		names(col) <- NULL
 		result <- color.ramp(
-			rep("all", nrow(adapter$data)), pal = col, unique.pal = unique.pal
+			rep("all", nrow(settings$data)), pal = col, unique.pal = unique.pal
 		)
 	}
 	return(result)
@@ -349,49 +293,22 @@ set.group.color <- function(adapter, x.names, col, unique.pal) {
 #'	\code{draw.partial.relationship.3d} graws three dimentional graph 
 #'	(image or contour).
 #'
-#'	@param model a model object.
-#'
-#'	@param x.names names of focal explanatory variables.
-#'
-#'	@param adapter 
-#'		a model.adapter object containing information of model object.
-#'
-#'	@param resolution 
-#'		an integer specifying number of steps for prediction.
-#'
-#'	@param col 
-#'		a function or named character vector passed to \code{pal} option of
-#'		\code{\link{color.ramp}} function.
-#'
-#'	@param xlab
-#'		label of x axis.
-#'
-#'	@param ylab
-#'		label of y axis.
-#'
+#'	@param settings
+#'		an object of \code{\link{pp.settings}} object having settings of
+#'		partial.plot.
 #'	@param partial.relationship.data
-#'		a data.frames made by \code{\link{partial.relationship.lsmeans}}.
-#'
-#'	@param ... other parameters passed to poltting functions.
+#'		a data.frame containing data of partial relationship
 #-------------------------------------------------------------------------------
-draw.partial.relationship <- function(
-	model, x.names, adapter, resolution, col, xlab, ylab, ...
-) {
-	# データ作成
-	pr.data <- partial.relationship.lsmeans(
-		model, x.names, adapter$data, resolution
-	)
+draw.partial.relationship <- function(settings) {
+	# Make partial relationship data.
+	pr.data <- partial.relationship.lsmeans(settings)
 	# Dispatch based on number of numeric variables.
 	# 数値型の説明変数の数に応じて使う関数を変える。
-	numeric.names <- get.numeric.names(adapter, x.names)
+	numeric.names <- get.numeric.names(settings)
 	if (length(numeric.names) == 2) {
-		draw.partial.relationship.3d(
-			adapter, x.names, pr.data, col, xlab, ylab, ...
-		)
+		draw.partial.relationship.3d(settings, pr.data)
 	} else {
-		draw.partial.relationship.2d(
-			adapter, x.names, pr.data, col, xlab, ylab, ...
-		)
+		draw.partial.relationship.2d(settings, pr.data)
 	}
 }
 
@@ -400,33 +317,29 @@ draw.partial.relationship <- function(
 #'	@describeIn draw.partial.relationship
 #'	Draw 2D partial relationship graph.
 #-------------------------------------------------------------------------------
-draw.partial.relationship.2d <- function(
-	adapter, x.names, partial.relationship.data, col, xlab, ylab, ...
-) {
-	# Prepare graphic parameters.
-	# グラフィックパラメーターを用意。	
-	color.palette <- set.group.color(adapter, x.names, col, TRUE)
-	xlab <- set.xlab.2d(xlab, adapter, x.names)
-	ylab <- set.ylab.2d(ylab, adapter)
+draw.partial.relationship.2d <- function(settings, partial.relationship.data) {
 	# Open new plot.
 	# 新しいプロットを開く。
-	numeric.names <- get.numeric.names(adapter, x.names)
-	open.new.plot(partial.relationship.data, numeric.names, xlab, ylab, ...)
+	open.new.plot(settings, partial.relationship.data)
+	# Prepare color palette.
+	# カラーパレットを用意。	
+	color.palette <- set.group.color(settings, TRUE)
 	# Split data.
 	# データを分割。
 	if (length(names(color.palette)) == 1) {
 		partial.relationship.data <- list(all = partial.relationship.data)
 	} else {
-		factors <- get.factor.names(adapter, x.names)
+		factors <- get.factor.names(settings)
 		partial.relationship.data <- split(
 			partial.relationship.data, partial.relationship.data[factors]
 		)
 	}
 	# Draw polygons.
 	# ポリゴンを描画
+	numeric.name <- get.numeric.names(settings)
 	for (i in names(color.palette)) {
 		d <- partial.relationship.data[[i]]
-		x <- c(d[[numeric.names]], rev(d[[numeric.names]]))
+		x <- c(d[[numeric.name]], rev(d[[numeric.name]]))
 		y <- c(d$lower, rev(d$upper))
 		polygon(x, y, border = NA, col = trans.color(color.palette[i]))
 	}
@@ -436,10 +349,10 @@ draw.partial.relationship.2d <- function(
 	# 使うため、do.callを呼ぶ。
 	for (i in names(color.palette)) {
 		d <- partial.relationship.data[[i]]
-		args <- list(x = d[[numeric.names]], y = d$fit, col = color.palette[i])
+		args <- list(x = d[[numeric.name]], y = d$fit, col = color.palette[i])
 		lines.par <- c("lty", "lwd", "lend", "ljoin", "lmitre")
-		dots <- list(...)
-		do.call(lines, c(args, dots[names(dots) %in% lines.par]))
+		args <- c(args, settings$other.pars[settings$other.pars %in% lines.par])
+		do.call(lines, args)
 	}
 }
 
@@ -448,9 +361,7 @@ draw.partial.relationship.2d <- function(
 #'	@describeIn draw.partial.relationship
 #'	Draw 3D partial relationship graph.
 #-------------------------------------------------------------------------------
-draw.partial.relationship.3d <- function(
-	adapter, x.names, partial.relationship.data, col, xlab, ylab, ...
-) {
+draw.partial.relationship.3d <- function(settings, partial.relationship.data) {
 	cat("3D plot is not implimented yet...\n")
 }
 
@@ -460,50 +371,35 @@ draw.partial.relationship.3d <- function(
 #-------------------------------------------------------------------------------
 #'	(Internal) Draw partial residual graph.
 #'
-#'	@param adapter a model.adapter object containing required information.
-#'
-#'	@param x.names 
-#'		a character vector having names of focal explanatory variables
-#'
-#'	@param draw.relationships
-#'		a logical indicating partial relationship graph was already drawn.
-#'
-#'	@param col
-#'		a function or named vector representing color of the graph object.
-#'		For the detail, see pal option of \code{\link{color.ramp}} function.
-#'
-#'	@param xlab
-#'		label of x axis.
-#'
-#'	@param ylab
-#'		label of y axis.
+#'	@param settings
+#'		an object of \code{\link{pp.settings}} object having settings of
+#'		partial.plot.
 #-------------------------------------------------------------------------------
-draw.partial.residual <- function(
-	adapter, x.names, draw.relationships, col, xlab, ylab, ...
-) {
+draw.partial.residual <- function(settings) {
 	# Prepare graphic parameters.
 	# グラフィックパラメーターを用意。
-	col <- set.group.color(adapter, x.names, col, FALSE)
-	xlab <- set.xlab.2d(xlab, adapter, x.names)
-	ylab <- set.ylab.2d(ylab, adapter)
+	col <- set.group.color(settings, FALSE)
+	xlab <- set.xlab.2d(settings)
+	ylab <- set.ylab.2d(settings)
 	# Calculate and draw partial residual
 	# 偏残差を計算して描画。
-	part.resid <- partial.residual(adapter, x.names, adapter$link)
-	numerics <- get.numeric.names(adapter$data, x.names)
-	if (!draw.relationships) {
-		plot(
-			adapter$data[[numerics]], part.resid, col = col,
-			xlab = xlab, ylab = ylab, ...
+	part.resid <- partial.residual(settings)
+	numerics <- get.numeric.names(settings)
+	if (!settings$draw.relationships) {
+		args <- list(
+			settings$data[[numerics]], part.resid, col = col,
+			xlab = xlab, ylab = ylab
 		)
+		args <- c(args, settings$other.pars)
+		do.call(plot, args)
 	} else {
 		# To handle graphic parameters in ..., use do.call, 
 		# not directly call points function.
 		# ...に入ったグラフィックパラメーターを制御するため、
 		# points関数を直接呼ばずにdo.callを使う。
-		args <- list(x = adapter$data[[numerics]], y = part.resid, col = col)
+		args <- list(x = settings$data[[numerics]], y = part.resid, col = col)
 		points.pars <- c("pch", "bg", "cex")
-		dots <- list(...)[points.pars]
-		do.call(points, c(args, dots))
+		do.call(points, c(args, settings$other.pars[points.pars]))
 	}
 }
 
@@ -607,35 +503,29 @@ draw.partial.residual <- function(
 #-------------------------------------------------------------------------------
 partial.plot <- function(
 	model, x.names, data = NULL, 
-	draw.residuals = TRUE, draw.relationships = TRUE, resolution = 100,
+	draw.residuals = TRUE, draw.relationships = TRUE, resolution = 100L,
 	col = gg.colors, xlab = NULL, ylab = NULL, ...
 ) {
-	# Check errors.
-	# エラーチェック。
-	adapter <- model.adapter(model, data = data)
-	check.params(adapter, x.names)
+	# Initialize setting object.
+	# 設定オブジェクトの初期化。
+	settings <- pp.settings(
+		model, x.names, data, draw.residuals, draw.relationships, resolution,
+		col, xlab, ylab, ...
+	)
 	# Draw partial relationship graph.
 	# 関係式グラフの描画。
 	if (draw.relationships) {
-		draw.partial.relationship(
-			model, x.names, adapter, resolution, col, xlab, ylab, ...
-		)
+		draw.partial.relationship(settings)
 	}
 	# Plot partial residuals.
 	# 偏残差の描画。
 	if (draw.residuals) {
-		draw.partial.residual(
-			adapter, x.names, draw.relationships, col, xlab, ylab, ...
-		)
+		draw.partial.residual(settings)
 	}
 	# Prepare information for legend.
 	# レジェンド用の情報を準備。
-	legend.info <- pp.info(
-		col = set.group.color(adapter, x.names, col, TRUE),
-		title = paste0(get.factor.names(adapter, x.names), collapse ="."),
-		draw.residuals = draw.residuals, 
-		draw.relationships = draw.relationships, ...
-	)
-	invisible(legend.info)
+	settings$col = set.group.color(settings, TRUE)
+	settings$title = paste0(get.factor.names(settings), collapse = ".")
+	invisible(settings)
 }
 
