@@ -57,7 +57,7 @@ pp.settings <- setRefClass(
 
 pp.settings$methods(
 	initialize = function(
-		model, x.names, data, draw.residuals = TRUE, draw.relationships = TRUE,
+		model, x.names, data = NULL, draw.residuals = TRUE, draw.relationships = TRUE,
 		resolution = 100L, col = gg.colors, 
 		xlab = character(), ylab = character(), title = "", ...
 	) {
@@ -88,7 +88,11 @@ pp.settings$methods(
 			\\item{...}{other graphic parameters.}
 		}
 		"
-		if (missing(model) | missing(x.names) | missing(data)) {
+		# If required arguments are not specified, exit function with doing
+		# nothing by assuming called from mechanisms of the referance class.
+		# 必須のパラメーターなしで呼び出されたらReference Classの機能で
+		# 呼び出されたことを仮定し、何もしないで終了する。
+		if (missing(model) | missing(x.names)) {
 			return()
 		}
 		initFields(
@@ -116,7 +120,7 @@ pp.settings$methods(
 		"
 		# check availability of data.
 		# dataが使えるかを確認。
-		if (is.null(adapter$data)) {
+		if (!adapter$has.data()) {
 			stop("'model' object does not have original data. Please specify 'data' argument.")
 		}
 		# check x.names.
