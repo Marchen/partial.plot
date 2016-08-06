@@ -96,14 +96,9 @@ pp.settings$methods(
 			model = model, x.names = x.names,
 			draw.residuals = draw.residuals, 
 			draw.relationships = draw.relationships, resolution = resolution,
-			col = col, title = title, other.pars = list(...)
+			col = col, xlab = xlab, ylab = ylab, title = title, 
+			other.pars = list(...)
 		)
-		if (!is.null(xlab)) {
-			initFields(xlab = xlab)
-		}
-		if (!is.null(ylab)) {
-			initFields(ylab = ylab)
-		}
 		initFields(data = adapter$data)
 		.self$check.params()
 	}
