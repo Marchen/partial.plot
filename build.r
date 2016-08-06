@@ -3,6 +3,9 @@ require(devtools)
 require(rmarkdown)
 
 
+#-------------------------------------------------------------------------------
+#	Change working directory to package directory
+#-------------------------------------------------------------------------------
 get.this.file.dir <- function() {
 	cmdArgs <- commandArgs(trailingOnly = FALSE)
 	needle <- "--file="
@@ -16,7 +19,13 @@ get.this.file.dir <- function() {
 	}
 }
 
-setwd(get.this.file.dir())
+old.wd <- setwd(get.this.file.dir())
+
+
+#-------------------------------------------------------------------------------
+#	Install package before guilding vignettes.
+#-------------------------------------------------------------------------------
+system("Rscript -e library(devtools);install()")
 
 
 #-------------------------------------------------------------------------------
@@ -25,7 +34,7 @@ setwd(get.this.file.dir())
 roxygenize(clean = TRUE)
 
 #clean_vignettes()
-#build_vignettes()
+build_vignettes()
 
 render("vignettes/partial.plot.j.rmd", encoding = "utf-8")
 render("vignettes/partial.plot.rmd", encoding = "utf-8")
@@ -68,9 +77,10 @@ tools::write_PACKAGES(
 
 
 #-------------------------------------------------------------------------------
-#	Install
+#	Restore working directory.
 #-------------------------------------------------------------------------------
-install()
+setwd(old.wd)
+rm(old.wd)
 
 
 
