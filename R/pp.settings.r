@@ -57,8 +57,9 @@ pp.settings <- setRefClass(
 
 pp.settings$methods(
 	initialize = function(
-		model, x.names, data, draw.residuals, draw.relationships, resolution,
-		col, xlab, ylab, title = "", ...
+		model, x.names, data, draw.residuals = TRUE, draw.relationships = TRUE,
+		resolution = 100L, col = gg.colors, 
+		xlab = character(), ylab = character(), title = "", ...
 	) {
 		"
 		Initialize pp.settings object.
@@ -86,6 +87,9 @@ pp.settings$methods(
 			\\item{title}{legend title.}
 		}
 		"
+		if (missing(model) | missing(x.names) | missing(data)) {
+			return()
+		}
 		initFields(
 			adapter = model.adapter(model, data = data),
 			model = model, x.names = x.names,
