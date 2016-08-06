@@ -65,6 +65,7 @@ get.factor.names <- function(data, var.names) {
 #'	vector. This function is not intended to be users.
 #'
 #'	@param data a data.frame.
+#'	@param sep a character literal used for separateor of factor group names.
 #'
 #'	@return a character vector.
 #-------------------------------------------------------------------------------
