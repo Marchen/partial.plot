@@ -85,6 +85,7 @@ pp.settings$methods(
 				a character specifying used for label of X/Y axis.
 			}
 			\\item{title}{legend title.}
+			\\item{...}{other graphic parameters.}
 		}
 		"
 		if (missing(model) | missing(x.names) | missing(data)) {
