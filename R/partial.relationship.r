@@ -1,4 +1,91 @@
 #-------------------------------------------------------------------------------
+#	説明変数と応答変数の関係式を描画する。
+#-------------------------------------------------------------------------------
+#'	(Internal) Draw partial relationship graph.
+#'
+#'	These functions draw partial relationship graph.
+#'	\code{draw.partial.relationship} dispatch data to 
+#'	\code{draw.partial.relationship.2d} and \code{draw.partial.relationship.3d}
+#'	functions based on the number of focal numeric explanatory variables.
+#'	\code{draw.partial.relationship.2d} draws two dimentional partial
+#'	relationship graph (points and lines) and 
+#'	\code{draw.partial.relationship.3d} graws three dimentional graph 
+#'	(image or contour).
+#'
+#'	@param settings
+#'		an object of \code{\link{pp.settings}} object having settings of
+#'		partial.plot.
+#'	@param partial.relationship.data
+#'		a data.frame containing data of partial relationship
+#-------------------------------------------------------------------------------
+draw.partial.relationship <- function(settings) {
+	# Make partial relationship data.
+	pr.data <- partial.relationship.lsmeans(settings)
+	# Dispatch based on number of numeric variables.
+	# 数値型の説明変数の数に応じて使う関数を変える。
+	numeric.names <- get.numeric.names(settings)
+	if (length(numeric.names) == 2) {
+		draw.partial.relationship.3d(settings, pr.data)
+	} else {
+		draw.partial.relationship.2d(settings, pr.data)
+	}
+}
+
+
+#-------------------------------------------------------------------------------
+#'	@describeIn draw.partial.relationship
+#'	Draw 2D partial relationship graph.
+#-------------------------------------------------------------------------------
+draw.partial.relationship.2d <- function(settings, partial.relationship.data) {
+	# Open new plot.
+	# 新しいプロットを開く。
+	open.new.plot(settings, partial.relationship.data)
+	# Prepare color palette.
+	# カラーパレットを用意。	
+	color.palette <- set.group.color(settings, TRUE)
+	# Split data.
+	# データを分割。
+	if (length(names(color.palette)) == 1) {
+		partial.relationship.data <- list(all = partial.relationship.data)
+	} else {
+		factors <- get.factor.names(settings)
+		partial.relationship.data <- split(
+			partial.relationship.data, partial.relationship.data[factors]
+		)
+	}
+	# Draw polygons.
+	# ポリゴンを描画
+	numeric.name <- get.numeric.names(settings)
+	for (i in names(color.palette)) {
+		d <- partial.relationship.data[[i]]
+		x <- c(d[[numeric.name]], rev(d[[numeric.name]]))
+		y <- c(d$lower, rev(d$upper))
+		polygon(x, y, border = NA, col = trans.color(color.palette[i]))
+	}
+	# Draw partial relationships.
+	# To handle valid graphic paramters in ... for lines, use do.call.
+	# 関係式を描画。...の中からlinesで使えるグラフィックパラメーターだけを
+	# 使うため、do.callを呼ぶ。
+	for (i in names(color.palette)) {
+		d <- partial.relationship.data[[i]]
+		args <- list(x = d[[numeric.name]], y = d$fit, col = color.palette[i])
+		lines.par <- c("lty", "lwd", "lend", "ljoin", "lmitre")
+		args <- c(args, settings$other.pars[settings$other.pars %in% lines.par])
+		do.call(lines, args)
+	}
+}
+
+
+#-------------------------------------------------------------------------------
+#'	@describeIn draw.partial.relationship
+#'	Draw 3D partial relationship graph.
+#-------------------------------------------------------------------------------
+draw.partial.relationship.3d <- function(settings, partial.relationship.data) {
+	cat("3D plot is not implimented yet...\n")
+}
+
+
+#-------------------------------------------------------------------------------
 #	lsmeansを使って予測値と信頼区間を計算する。
 #-------------------------------------------------------------------------------
 #'	(Internal) Calculate partial regression lines and intervals.
