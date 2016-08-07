@@ -50,7 +50,8 @@ draw.partial.relationship.2d <- function(settings, partial.relationship.data) {
 	} else {
 		factors <- get.factor.names(settings)
 		partial.relationship.data <- split(
-			partial.relationship.data, partial.relationship.data[factors]
+			partial.relationship.data, partial.relationship.data[factors],
+			sep = settings$sep
 		)
 	}
 	# Draw polygons.
