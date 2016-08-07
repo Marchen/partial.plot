@@ -504,7 +504,7 @@ draw.partial.residual <- function(settings) {
 partial.plot <- function(
 	model, x.names, data = NULL, 
 	draw.residuals = TRUE, draw.relationships = TRUE, resolution = 100L,
-	col = gg.colors, xlab = NULL, ylab = NULL, ...
+	col = gg.colors, xlab = character(), ylab = character(), ...
 ) {
 	# Initialize setting object.
 	# 設定オブジェクトの初期化。
