@@ -234,7 +234,7 @@ color.ramp.default <- function(x, pal = gg.colors, ..., unique.pal = FALSE){
 #'	@method color.ramp data.frame
 #-------------------------------------------------------------------------------
 color.ramp.data.frame <- function(
-	x, factor.names, pal = gg.colors, ..., unique.pal = FALSE
+	x, factor.names, pal = gg.colors, ..., sep = " - ", unique.pal = FALSE
 ) {
 	if (missing(factor.names) | length(factor.names) == 0) {
 		factor.names <- colnames(x)[
@@ -244,7 +244,7 @@ color.ramp.data.frame <- function(
 	if (!all(factor.names %in% colnames(x))) {
 		stop("Some factors specified in 'factor.names' are not present in 'x'")	
 	}
-	combinations <- combine.columns(x[factor.names])
+	combinations <- combine.columns(x[factor.names], sep)
 	col <- color.ramp.default(
 		combinations, pal = pal, ..., unique.pal = unique.pal
 	)

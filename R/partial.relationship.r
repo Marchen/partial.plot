@@ -62,13 +62,14 @@ filter.result <- function(settings, prediction) {
 	numeric.names <- get.numeric.names(settings)
 	# Split data and prediction for each factor group.
 	# データを因子のグループごとに分割。
-	pred.split <- split(prediction, prediction[names(factors)])
-	data.split <- split(settings$data, settings$data[names(factors)])
+	sep = settings$sep
+	pred.split <- split(prediction, prediction[names(factors)], sep = sep)
+	data.split <- split(settings$data, settings$data[names(factors)], sep = sep)
 	# Filter out out-ranged numeric values.
 	# 範囲外の数値を削除。
 	result <- list()
 	for (i in 1:nrow(factors)) {
-		split.name <- combine.columns(as.data.frame(factors[i,]))
+		split.name <- combine.columns(as.data.frame(factors[i,]), sep = sep)
 		current.pred <- pred.split[[split.name]]
 		current.data <- data.split[[split.name]]
 		for (numeric.name in numeric.names) {

@@ -371,7 +371,9 @@ barplot(1:10, col = gg.colors(10))
 --------------------------------------------------------------------------------
 
 ## <a id = "version_history">Version history</a>
-* 2016.07.xx: 0.0.4
+* 2016.08.xx: 0.0.5
+	* Added 'sep' option to partial.plot() which controls separator of factor levels.
+* 2016.07.23: 0.0.4
 	* Renamed partial.plot.legen() function to pp.legend().
 	* Changed order of arguments of pp.legend() function.
 * 2016.07.14: 0.0.3

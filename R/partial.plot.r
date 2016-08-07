@@ -60,11 +60,11 @@ get.factor.names <- function(settings) {
 #'	vector. This function is not intended to be users.
 #'
 #'	@param data a data.frame.
-#'	@param sep a character literal used for separateor of factor group names.
+#'	@param sep a character representing separator of grouping factor levels.
 #'
 #'	@return a character vector.
 #-------------------------------------------------------------------------------
-combine.columns <- function(data, sep = ".") {
+combine.columns <- function(data, sep) {
 	data <- as.data.frame(sapply(data, as.character, simplify = FALSE))
 	result <- apply(data, 1, paste, collapse = sep)
 	return(result)
@@ -266,7 +266,8 @@ set.group.color <- function(settings, unique.pal) {
 	factors <- get.factor.names(settings)
 	if (!length(factors) == 0) {
 		result <- color.palette <- color.ramp(
-			settings$data, factors, pal = settings$col, unique.pal = unique.pal
+			settings$data, factors, pal = settings$col, 
+			sep = settings$sep, unique.pal = unique.pal
 		)
 	} else {
 		col <- settings$col[1]
@@ -451,6 +452,9 @@ draw.partial.residual <- function(settings) {
 #'	@param ylab
 #'		label of y axis.
 #'
+#'	@param sep
+#'		a character used for separator of factor levels.
+#'
 #'	@param ... 
 #'		other graphic parameters passed to poltting functions.
 #'		Currently, \code{pch}, \code{bg} and \code{cex} are passed to 
@@ -504,13 +508,13 @@ draw.partial.residual <- function(settings) {
 partial.plot <- function(
 	model, x.names, data = NULL, 
 	draw.residuals = TRUE, draw.relationships = TRUE, resolution = 100L,
-	col = gg.colors, xlab = character(), ylab = character(), ...
+	col = gg.colors, xlab = character(), ylab = character(), sep = " - ", ...
 ) {
 	# Initialize setting object.
 	# 設定オブジェクトの初期化。
 	settings <- pp.settings(
 		model, x.names, data, draw.residuals, draw.relationships, resolution,
-		col, xlab, ylab, ...
+		col, xlab, ylab, sep, ...
 	)
 	# Draw partial relationship graph.
 	# 関係式グラフの描画。

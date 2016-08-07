@@ -31,6 +31,8 @@
 #'		a character specifying used for label of X axis.
 #'	@field ylab
 #'		a character specifying used for label of Y axis.
+#'	@field sep
+#'		a character representing separator of grouping factor levels.
 #'	@field other.pars
 #		a list containing other graphic parameters passed to partial.plot().
 #-------------------------------------------------------------------------------
@@ -47,6 +49,7 @@ pp.settings <- setRefClass(
 		col = "ANY",
 		xlab = "character",
 		ylab = "character",
+		sep = "character",
 		other.pars = "list"
 	)
 )
@@ -56,7 +59,7 @@ pp.settings$methods(
 	initialize = function(
 		model, x.names, data = NULL, draw.residuals = TRUE, draw.relationships = TRUE,
 		resolution = 100L, col = gg.colors, 
-		xlab = character(), ylab = character(), ...
+		xlab = character(), ylab = character(), sep = " - ", ...
 	) {
 		"
 		Initialize pp.settings object.
@@ -81,6 +84,9 @@ pp.settings$methods(
 			\\teim{xlab, ylab}{
 				a character specifying used for label of X/Y axis.
 			}
+			\\item{sep}{
+				a character representing separator of grouping factor levels.
+			}
 			\\item{...}{other graphic parameters.}
 		}
 		"
@@ -96,7 +102,7 @@ pp.settings$methods(
 			model = model, x.names = x.names,
 			draw.residuals = draw.residuals, 
 			draw.relationships = draw.relationships, resolution = resolution,
-			col = col, xlab = xlab, ylab = ylab,
+			col = col, xlab = xlab, ylab = ylab, sep = sep,
 			other.pars = list(...)
 		)
 		initFields(data = adapter$data)

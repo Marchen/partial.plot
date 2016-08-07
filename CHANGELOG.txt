@@ -1,8 +1,9 @@
 ﻿2016-08-xx: 0.0.5
-- 
+- Added 'sep' option to partial.plot() which controls separator of factor levels.
 
 2016-07-23: 0.0.4
 - Changed order of arguments of partial.plot.legend() function.
+- Renamed partial.plot.lgend() function to pp.legend() function.
 
 2016-07-14: 0.0.3
 - Added support for dispatching graphic parameters in ....
