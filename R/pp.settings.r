@@ -31,8 +31,6 @@
 #'		a character specifying used for label of X axis.
 #'	@field ylab
 #'		a character specifying used for label of Y axis.
-#'	@field title
-#'		a character representing title of the legend.
 #'	@field other.pars
 #		a list containing other graphic parameters passed to partial.plot().
 #-------------------------------------------------------------------------------
@@ -49,7 +47,6 @@ pp.settings <- setRefClass(
 		col = "ANY",
 		xlab = "character",
 		ylab = "character",
-		title = "character",
 		other.pars = "list"
 	)
 )
@@ -59,7 +56,7 @@ pp.settings$methods(
 	initialize = function(
 		model, x.names, data = NULL, draw.residuals = TRUE, draw.relationships = TRUE,
 		resolution = 100L, col = gg.colors, 
-		xlab = character(), ylab = character(), title = "", ...
+		xlab = character(), ylab = character(), ...
 	) {
 		"
 		Initialize pp.settings object.
@@ -84,7 +81,6 @@ pp.settings$methods(
 			\\teim{xlab, ylab}{
 				a character specifying used for label of X/Y axis.
 			}
-			\\item{title}{legend title.}
 			\\item{...}{other graphic parameters.}
 		}
 		"
@@ -100,7 +96,7 @@ pp.settings$methods(
 			model = model, x.names = x.names,
 			draw.residuals = draw.residuals, 
 			draw.relationships = draw.relationships, resolution = resolution,
-			col = col, xlab = xlab, ylab = ylab, title = title, 
+			col = col, xlab = xlab, ylab = ylab,
 			other.pars = list(...)
 		)
 		initFields(data = adapter$data)
