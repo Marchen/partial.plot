@@ -28,8 +28,10 @@ pp.legend <- function(object, x, ...) {
 	if (!is(object, "pp.settings")) {
 		stop("'object' should be an instance of 'pp.settings' class")
 	}
-	# Prepare arguments for prepare.args.for.legend().
-	# prepare.args.for.legend()の引数を用意。
+	# Prepare a list containing arguments specified in '...' named as if 
+	# they are arguments of legend().
+	# '...' に指定された引数をlegend()の引数であるかのように扱い、
+	# 名前付きリストに格納する。
 	call <- match.call()
 	call$object <- NULL
 	call <- match.call(legend, call)
@@ -50,6 +52,9 @@ pp.legend <- function(object, x, ...) {
 #-------------------------------------------------------------------------------
 #'	(Internal) Prepare arguments used for legend.
 #'
+#'	This function overwrite arguments of legend() that users did not specify
+#'	manually with default value.
+#'
 #'	@param settings
 #'		an object of \code{\link{pp.settings}} object having settings of
 #'		partial.plot.
@@ -62,17 +67,17 @@ pp.legend <- function(object, x, ...) {
 #'		function
 #-------------------------------------------------------------------------------
 prepare.args.for.legend = function(settings, legend.args) {
-	# Prepare arguments overriding arguments of legend.
-	# legend関数の引数を用意。
+	# Override arguments of legend() that users did not specify manually. 
+	# ユーザーが指定しなかったlegend()関数の引数を上書き。
 	col <- set.group.color(settings, TRUE)
-	args.to.override <- list(
+	args.to.overwrite <- list(
 		col = col, legend = names(col),
 		title = paste0(get.factor.names(settings), collapse = settings$sep)
 	)
-	args.to.override <- c(args.to.override, settings$other.pars)
-	for (i in names(args.to.override)) {
+	args.to.overwrite <- c(args.to.overwrite, settings$other.pars)
+	for (i in names(args.to.overwrite)) {
 		if (is.null(legend.args[[i]])) {
-			legend.args[[i]] <- args.to.override[[i]]
+			legend.args[[i]] <- args.to.overwrite[[i]]
 		}
 	}
 	# Set line type based on the setting of partial.plot.
