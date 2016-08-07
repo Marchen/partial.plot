@@ -1,8 +1,14 @@
-﻿2016-07-23: 0.0.3 -> 0.0.4
+﻿2016-08-xx: 0.0.5
+- 
+
+2016-07-23: 0.0.4
 - Changed order of arguments of partial.plot.legend() function.
 
-2016-07-14: 0.0.2 -> 0.0.3
+2016-07-14: 0.0.3
 - Added support for dispatching graphic parameters in ....
 
-2016-07-11: 0.0.1 -> 0.0.2
+2016-07-11: 0.0.2
 - Now partial.plot.legend function also draws legend title.
+
+2016-06-27: 0.0.1
+- Initial release.
