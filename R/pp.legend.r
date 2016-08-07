@@ -28,8 +28,8 @@ pp.legend <- function(object, x, ...) {
 	if (!is(object, "pp.settings")) {
 		stop("'object' should be an instance of 'pp.settings' class")
 	}
-	# Prepare arguments for build.legend.args().
-	# build.legend.args()の引数を用意。
+	# Prepare arguments for prepare.args.for.legend().
+	# prepare.args.for.legend()の引数を用意。
 	call <- match.call()
 	call$object <- NULL
 	call <- match.call(legend, call)
@@ -37,7 +37,7 @@ pp.legend <- function(object, x, ...) {
 	call[[1]] <- NULL
 	# Make arguments for legend().
 	# legend()の引数を作成。
-	legend.args <- build.legend.args(object, as.list(call))
+	legend.args <- prepare.args.for.legend(object, as.list(call))
 	legend.args <- legend.args[
 		names(legend.args) %in% names(as.list(args(legend)))
 	]
@@ -61,7 +61,7 @@ pp.legend <- function(object, x, ...) {
 #'		A list containing arguments used for \code{\link[grahpic]{legend}}
 #'		function
 #-------------------------------------------------------------------------------
-build.legend.args = function(settings, legend.args) {
+prepare.args.for.legend = function(settings, legend.args) {
 	# Prepare arguments overriding arguments of legend.
 	# legend関数の引数を用意。
 	col <- set.group.color(settings, TRUE)
