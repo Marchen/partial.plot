@@ -220,7 +220,7 @@ open.new.plot <- function(settings, partial.residual.data) {
 #-------------------------------------------------------------------------------
 set.xlab.2d <- function(settings) {
 	if (length(settings$xlab) == 0) {
-		xlab <- get.numeric.names(settings)
+		return(get.numeric.names(settings))
 	}
 	return(settings$xlab)
 }
@@ -239,7 +239,7 @@ set.xlab.2d <- function(settings) {
 #-------------------------------------------------------------------------------
 set.ylab.2d <- function(settings) {
 	if (length(settings$ylab) == 0) {
-		ylab <- settings$adapter$y.names()
+		return(settings$adapter$y.names())
 	}
 	return(settings$ylab)
 }
