@@ -522,10 +522,6 @@ partial.plot <- function(
 	if (draw.residuals) {
 		draw.partial.residual(settings)
 	}
-	# Prepare information for legend.
-	# レジェンド用の情報を準備。
-	settings$col = set.group.color(settings, TRUE)
-	settings$title = paste0(get.factor.names(settings), collapse = ".")
 	invisible(settings)
 }
 
