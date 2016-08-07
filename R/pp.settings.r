@@ -146,48 +146,5 @@ pp.settings$methods(
 )
 
 
-pp.settings$methods(
-	build.legend.args = function(x, ...) {
-		"
-		Prepare arguments for \\code{\\link[graphic]{legend}} function.
-		\\describe{
-			\\item{x}{x argument of \\code{\\link[graphic]{legend}} function.}
-			\\item{...}{
-				other arguments passed to \\code{\\link[graphic]{legend}} 
-				function.
-			}
-		}
-		"
-		# Prepare arguments for legend function.
-		# legend関数の引数を用意。
-		legend.args <- list(x = x, ...)
-		replace.args <- list(col = col, title = title, legend = names(col))
-		replace.args <- c(replace.args, other.pars)
-		for (i in names(replace.args)) {
-			if (is.null(legend.args[[i]])) {
-				legend.args[[i]] <- replace.args[[i]]
-			}
-		}
-		# Set line type based on the setting of partial.plot.
-		# 線の種類をpartial.plotの設定に基づいて決定。
-		if (draw.relationships) {
-			if (is.null(legend.args$lty)) {
-				legend.args$lty <- "solid"
-			}
-		} else {
-			legend.args <- NULL
-		}
-		# Set plot character based on the setting of partial.plot.
-		# 点のシンボルをpartial.plotの設定に基づいて決定。
-		if (draw.residuals) {
-			if (is.null(legend.args$pch)) {
-				legend.args$pch = 1
-			}
-		} else {
-			legend.args$pch <- NULL
-		}
-		return(legend.args)
-	}
-)
 
 
