@@ -33,6 +33,8 @@
 #'		a character specifying used for label of Y axis.
 #'	@field sep
 #'		a character representing separator of grouping factor levels.
+#'	@field n.cores
+#'		an integer specifing number of processes used for multiprocessing.
 #'	@field other.pars
 #		a list containing other graphic parameters passed to partial.plot().
 #-------------------------------------------------------------------------------
@@ -50,16 +52,18 @@ pp.settings <- setRefClass(
 		xlab = "character",
 		ylab = "character",
 		sep = "character",
-		other.pars = "list"
+		other.pars = "list",
+		n.cores = "ANY"
 	)
 )
 
 
 pp.settings$methods(
 	initialize = function(
-		model, x.names, data = NULL, draw.residuals = TRUE, draw.relationships = TRUE,
-		resolution = 100L, col = gg.colors,
-		xlab = character(), ylab = character(), sep = " - ", ...
+		model, x.names, data = NULL, draw.residuals = TRUE,
+		draw.relationships = TRUE, resolution = 100L, col = gg.colors,
+		xlab = character(), ylab = character(), sep = " - ", n.cores = NULL,
+		...
 	) {
 		"
 		Initialize pp.settings object.
@@ -87,6 +91,12 @@ pp.settings$methods(
 			\\item{sep}{
 				a character representing separator of grouping factor levels.
 			}
+			\\item{n.cores}{
+				an integer representing number of processes used for
+				calculation. If NULL is specified, maximum number of logical
+				processors are used. This value is ignored when the models
+				compatible with lsmeans are specified.
+			}
 			\\item{...}{other graphic parameters.}
 		}
 		"
@@ -102,11 +112,12 @@ pp.settings$methods(
 			model = model, x.names = x.names,
 			draw.residuals = draw.residuals,
 			draw.relationships = draw.relationships, resolution = resolution,
-			col = col, xlab = xlab, ylab = ylab, sep = sep,
+			col = col, xlab = xlab, ylab = ylab, sep = sep, n.cores = n.cores,
 			other.pars = list(...)
 		)
 		initFields(data = adapter$data)
 		.self$check.params()
+		.self$init.multiprocessing()
 	}
 )
 
@@ -148,5 +159,24 @@ pp.settings$methods(
 )
 
 
-
+#-------------------------------------------------------------------------------
+#	並列計算の設定を初期化する。
+#-------------------------------------------------------------------------------
+pp.settings$methods(
+	init.multiprocessing = function() {
+		"
+		Initialize multiprocessing.
+		"
+		if (is.null(.self$n.cores)) {
+			# If n.cores is NULL, use all logical processors.
+			require(parallel)
+			.self$n.cores <- detectCores()
+		} else {
+			# If n.cores is not integer, raise error.
+			if (.self$n.cores %% 1 != 0) {
+				stop("'n.cores' should be integer or NULL")
+			}
+		}
+	}
+)
 

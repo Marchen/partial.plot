@@ -367,6 +367,12 @@ draw.partial.residual <- function(settings) {
 #'	@param sep
 #'		a character used for separator of factor levels.
 #'
+#'	@param n.cores
+#'		an integer representing number of processes used for calculation.
+#'		If NULL is specified, maximum number of logical processors are used.
+#'		This value is ignored when the models compatible with lsmeans are
+#'		specified.
+#'
 #'	@param ...
 #'		other graphic parameters passed to poltting functions.
 #'		Currently, \code{pch}, \code{bg} and \code{cex} are passed to
@@ -420,13 +426,14 @@ draw.partial.residual <- function(settings) {
 partial.plot <- function(
 	model, x.names, data = NULL,
 	draw.residuals = TRUE, draw.relationships = TRUE, resolution = 100L,
-	col = gg.colors, xlab = character(), ylab = character(), sep = " - ", ...
+	col = gg.colors, xlab = character(), ylab = character(), sep = " - ",
+	n.cores = NULL, ...
 ) {
 	# Initialize setting object.
 	# 設定オブジェクトの初期化。
 	settings <- pp.settings(
 		model, x.names, data, draw.residuals, draw.relationships, resolution,
-		col, xlab, ylab, sep, ...
+		col, xlab, ylab, sep, n.cores, ...
 	)
 	# Draw partial relationship graph.
 	# 関係式グラフの描画。
