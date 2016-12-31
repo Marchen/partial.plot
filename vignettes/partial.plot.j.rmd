@@ -1,5 +1,5 @@
 ---
-title: "partial.plotクイックスタートガイド"
+title: "partial.plot クイックスタートガイド"
 author: "Michio Oguro"
 date: "`r Sys.Date()`"
 output:
@@ -228,6 +228,51 @@ pp.legend(info, "topleft")
 
 --------------------------------------------------------------------------------
 
+## <a id = "basic_usage2">もう少し複雑なモデルの可視化</a>
+
+partial.plot()を使って、もう少し複雑なグラフを書くこともできます。
+今度はRに含まれているCO2データセットを使います。
+このデータセットはケベックとミシシッピからとってきた植物を使って低温処理実験を行い、その後、様々なCO<sub>2</sub>濃度でCO<sub>2</sub>吸収速度を測定したデータが入っています。
+
+`conc`が測定したCO2吸収速度、`uptake`がCO2吸収速度、`Treatment`が低温処理のありなし（あり：chilled、なし：nonchilled）、Typeが植物の由来（QuebecとMississippi）を表しています。
+
+```{R}
+# CO2データを読み込む
+data(CO2)
+
+# データフレームに変換
+class(CO2) <- "data.frame"
+
+# データの傾向を見てみる。
+plot(
+	uptake ~ conc, data = CO2, col = color.ramp(CO2$Type),
+	pch = color.ramp(CO2$Treatment, c(chilled = 16, nonchilled = 17)),
+	ylim = c(0, 50)
+)
+legend(
+	"bottomright",
+	legend = c(
+		"Mississippi - Chilled", "Mississippi - Non-Chilled",
+		"Quebec - Chilled", "Quebec - Non-Chilled"
+	),
+	col = rep(color.ramp(CO2$Type, unique.pal = TRUE), each = 2),
+	pch = c(16, 17, 16, 17)
+)
+
+```
+
+上の図を見るとなんとなく、CO<sub>2</sub>濃度とCO<sub>2</sub>吸収の関係は線形ではなさそうです。
+そして、
+
+
+```{R}
+model <- glm(uptake ~ (conc + I(conc^2))  +(Type * Treatment), data = CO2)
+info <- partial.plot(model, c("conc", "Treatment", "Type"), data = CO2,sep=" -- ")
+pp.legend(info, "topright")
+```
+
+--------------------------------------------------------------------------------
+
 ## <a id = "advanced_settings">グラフの見た目の変更</a>
 
 いくつかの設定を変えることで、グラフの見た目を変えることができます。
@@ -236,6 +281,12 @@ pp.legend(info, "topleft")
 ### <a id = "remove_objects">作図する要素の変更</a>
 
 `draw.residuals`引数を`FALSE`にすると、残差のシンボルを描画しないことができます。
+```{R, message = FALSE, echo = FALSE}
+# 予測モデルの作成。
+model <- glm(
+	Petal.Length ~ (Sepal.Length + Petal.Width) * Species, data = iris
+)
+```
 ```{R}
 partial.plot(
 	model, c("Sepal.Length", "Species"), draw.residuals = FALSE
@@ -283,6 +334,10 @@ info <- partial.plot(
 )
 pp.legend(info, "topleft")
 ```
+
+### <a id = "sep">ラベル区切り文字の変更</a>
+
+
 
 
 ### <a id = "other_settings">その他の設定</a>
@@ -372,7 +427,7 @@ barplot(1:10, col = gg.colors(10))
 --------------------------------------------------------------------------------
 
 ## <a id = "version_history">更新履歴</a>
-* 2016.08.xx: 0.0.5
+* 2016.12.31: 0.0.5
 	* グループ変数の区切り文字をコントロールするsepオプションをpartial.plot()関数に追加。
 * 2016.07.23: 0.0.4
 	* partial.plot.legend()関数をpp.legend()関数にリネーム。
