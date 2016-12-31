@@ -270,10 +270,9 @@ set.group.color <- function(settings, unique.pal) {
 			sep = settings$sep, unique.pal = unique.pal
 		)
 	} else {
-		col <- settings$col[1]
-		names(col) <- NULL
 		result <- color.ramp(
-			rep("all", nrow(settings$data)), pal = col, unique.pal = unique.pal
+			rep("all", nrow(settings$data)), pal = settings$col,
+			unique.pal = unique.pal
 		)
 	}
 	return(result)
