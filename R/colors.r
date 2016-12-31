@@ -44,7 +44,7 @@ make.palette <- function(pal, x, ...) {
 #'	Default S3 method, intended to be used for character vector.
 #'	@method make.palette default
 #-------------------------------------------------------------------------------
-make.palette.default <- function(pal, x, ...) { 
+make.palette.default <- function(pal, x, ...) {
 	# If x is NULL, return not named vector of color palette
 	if (is.null(x)) {
 		if (length(pal) == 1) {
@@ -100,14 +100,14 @@ make.palette.function <- function(pal, x, ...) {
 #	plotのラベルに色をつけられるように色のベクトルを返す。
 #
 #	Args:
-#		x: 
+#		x:
 #			データ（今のところ、因子型と文字列型はうまく行くはず）。
 #			将来的には数値型に対応したい。
 #		pal:
 #			カラーパレットを生成する関数。
 #			もしくはカラーパレットを表す文字列ベクトル。
 #			文字列ベクトルの場合、xの種類と長さが一致する必要あり。
-#		...: 
+#		...:
 #			色生成関数に渡される引数。
 #		unique.pal:
 #			これがTRUEなら色一覧を、FALSEならxと同じ長さの色のベクトルを返す。
@@ -115,7 +115,7 @@ make.palette.function <- function(pal, x, ...) {
 #'	Make a color vector based on data.
 #'
 #'	@param x
-#'		a vector of character or factor. 
+#'		a vector of character or factor.
 #'		Based on this vector, color vector is generated.
 #'
 #'	@param factor.names
@@ -128,12 +128,12 @@ make.palette.function <- function(pal, x, ...) {
 #'		If a function is specified for \code{pal}, \code{color.ramp} assumes
 #'		that the function accepts number of params for the first argument
 #'		 (\code{n}) and produces a charactor vector representing colors.
-#'		e.g. \code{\link{gg.colors}}, \code{\link[grDevices]{rainbow}}, 
-#'		\code{\link[grDevices]{terrain.colors}}, and 
+#'		e.g. \code{\link{gg.colors}}, \code{\link[grDevices]{rainbow}},
+#'		\code{\link[grDevices]{terrain.colors}}, and
 #'		\code{\link[grDevices]{topo.colors}} can be used.
 #'		If a character vector of length 1 is specified for \code{pal},
 #'		\code{color.ramp} produces color vector with the single color.
-#'		If a character vector of length equal to the number of unique values 
+#'		If a character vector of length equal to the number of unique values
 #'		of x is specified, this function assigns each color for each value of
 #'		\code{x}.
 #'
@@ -142,9 +142,9 @@ make.palette.function <- function(pal, x, ...) {
 #'
 #'	@return
 #'		If \code{unique.pal} is TRUE, unique named character vector of colors.
-#'		For this case, this function returns non-named color vector of 
-#'		length 1 if \code{x} is NULL, 
-#'		If \code{unique.pal} is FALSE, character vector representing colors 
+#'		For this case, this function returns non-named color vector of
+#'		length 1 if \code{x} is NULL,
+#'		If \code{unique.pal} is FALSE, character vector representing colors
 #'		with length equal to the length of \code{x}. For this case, the
 #'		character vector has "palette" attribute which contains named vector
 #'		of colors used for the result.
@@ -164,25 +164,25 @@ make.palette.function <- function(pal, x, ...) {
 #'	# Add a legend
 #'	col <- color.ramp(iris$Species, unique.pal = TRUE)
 #'	legend("topleft", legend = names(col), col = col, pch = 16, cex = 1)
-#'	
-#'	
+#'
+#'
 #'	#---------------------------------------------------------------------------
 #'	# Example 2: using different color function.
 #'	#---------------------------------------------------------------------------
 #'	plot(
-#'		Sepal.Length ~ Petal.Length, data = iris, pch = 16, 
+#'		Sepal.Length ~ Petal.Length, data = iris, pch = 16,
 #'		col = color.ramp(Species, pal = rainbow)
 #'	)
 #'	col <- color.ramp(iris$Species, pal = rainbow, unique.pal = TRUE)
 #'	legend("topleft", legend = names(col), col = col, pch = 16, cex = 1)
 #'
-#'	
+#'
 #'	#---------------------------------------------------------------------------
 #'	# Examle 3: using named color palette.
 #'	#---------------------------------------------------------------------------
 #'	pal = c(setosa = "blue", versicolor = "red", virginica = "black")
 #'	plot(
-#'		Sepal.Length ~ Petal.Length, data = iris, pch = 16, 
+#'		Sepal.Length ~ Petal.Length, data = iris, pch = 16,
 #'		col = color.ramp(Species, pal = pal)
 #'	)
 #'	col <- color.ramp(iris$Species, pal = pal, unique.pal = TRUE)
@@ -242,7 +242,7 @@ color.ramp.data.frame <- function(
 		]
 	}
 	if (!all(factor.names %in% colnames(x))) {
-		stop("Some factors specified in 'factor.names' are not present in 'x'")	
+		stop("Some factors specified in 'factor.names' are not present in 'x'")
 	}
 	combinations <- combine.columns(x[factor.names], sep)
 	col <- color.ramp.default(
@@ -264,7 +264,7 @@ color.ramp.data.frame <- function(
 #'
 #'	@param colors a character vector representing base colors.
 #'	@param alpha a numeric value between 0 to 1 representing transparency.
-#'	@param mix 
+#'	@param mix
 #'		a character literal of color represent a color. The base colors
 #'		are mixed with this color.
 #'	@param ratio

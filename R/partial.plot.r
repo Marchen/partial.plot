@@ -12,12 +12,12 @@
 #'		an object of \code{\link{pp.settings}} object having settings of
 #'		partial.plot.
 #'
-#'	@param fun 
-#'		a function like \code{\link[base]{is.numeric}} and 
+#'	@param fun
+#'		a function like \code{\link[base]{is.numeric}} and
 #'		\code{\link[base]{is.factor}}.
 #'
-#'	@return 
-#'		character vector containing variable names. 
+#'	@return
+#'		character vector containing variable names.
 #'		\code{get.numeric.names} returns names of numeric variables.
 #'		\code{get.facto.names} returns names of vactors.
 #-------------------------------------------------------------------------------
@@ -96,7 +96,7 @@ get.unique.factors <- function(settings) {
 #'	(Internal) Calculate partial residual.
 #'
 #'	This function calculates partial residual for specfied model.
-#'	Resultant values are adjusted to be congruent with result of 
+#'	Resultant values are adjusted to be congruent with result of
 #'	\code{\link[lsmeans]{lsmeans}}.
 #'
 #'	@param settings
@@ -170,7 +170,7 @@ numeric.sequences <- function(settings) {
 	for (name in numeric.names) {
 		result[[name]] <- seq(
 			min(settings$data[[name]], na.rm = TRUE),
-			max(settings$data[[name]], na.rm = TRUE), 
+			max(settings$data[[name]], na.rm = TRUE),
 			length.out = settings$resolution
 		)
 	}
@@ -186,8 +186,8 @@ numeric.sequences <- function(settings) {
 #'	@param settings
 #'		an object of \code{\link{pp.settings}} object having settings of
 #'		partial.plot.
-#'	@param partial.residual.data 
-#'		a named list of data.frame containing result of 
+#'	@param partial.residual.data
+#'		a named list of data.frame containing result of
 #'		\code{\link{partial.relationship.lsmeans}} function.
 #-------------------------------------------------------------------------------
 open.new.plot <- function(settings, partial.residual.data) {
@@ -266,7 +266,7 @@ set.group.color <- function(settings, unique.pal) {
 	factors <- get.factor.names(settings)
 	if (!length(factors) == 0) {
 		result <- color.palette <- color.ramp(
-			settings$data, factors, pal = settings$col, 
+			settings$data, factors, pal = settings$col,
 			sep = settings$sep, unique.pal = unique.pal
 		)
 	} else {
@@ -306,7 +306,7 @@ draw.partial.residual <- function(settings) {
 		args <- c(args, settings$other.pars)
 		do.call(plot, args)
 	} else {
-		# To handle graphic parameters in ..., use do.call, 
+		# To handle graphic parameters in ..., use do.call,
 		# not directly call points function.
 		# ...に入ったグラフィックパラメーターを制御するため、
 		# points関数を直接呼ばずにdo.callを使う。
@@ -322,18 +322,18 @@ draw.partial.residual <- function(settings) {
 #-------------------------------------------------------------------------------
 #'	Partial relationship graph.
 #'
-#'	Draw partial relationship graph between focal explanatory variables and 
+#'	Draw partial relationship graph between focal explanatory variables and
 #'	response variable with controlling effects of other explanatory variables.
 #'
 #'	@param model
 #'		a model object by which relationship between focal explanatory variables
 #'		and response variables is determined. Basically, statistical models and
-#'		machine learning models supported by 
+#'		machine learning models supported by
 #'		\code{\link[model.adapter]{model.adapter}} class are supported.
 #'
 #'	@param x.names
 #'		a character vector specifying name of focal explanatory variables.
-#'		Combination of one or two numeric factors and any number of 
+#'		Combination of one or two numeric factors and any number of
 #'		factors is supported. Currently, at least one numeric variable should
 #'		be specified. This problem may be fixed in future.
 #'
@@ -347,11 +347,11 @@ draw.partial.residual <- function(settings) {
 #'
 #'	@param draw.relationships
 #'		a logical. If TRUE, partial relationships between focal explanatory
-#'		variables and response variable are drawn. 
+#'		variables and response variable are drawn.
 #'
 #'	@param resolution
 #'		an integer specifying resolution of lines, polygons, wireframes,
-#'		and images of numeric variables. 
+#'		and images of numeric variables.
 #'		Larger number indicate higher resolution.
 #'
 #'	@param col
@@ -367,10 +367,10 @@ draw.partial.residual <- function(settings) {
 #'	@param sep
 #'		a character used for separator of factor levels.
 #'
-#'	@param ... 
+#'	@param ...
 #'		other graphic parameters passed to poltting functions.
-#'		Currently, \code{pch}, \code{bg} and \code{cex} are passed to 
-#'		\code{points} function, \code{lty}, \code{lwd}, \code{lend}, 
+#'		Currently, \code{pch}, \code{bg} and \code{cex} are passed to
+#'		\code{points} function, \code{lty}, \code{lwd}, \code{lend},
 #'		\code{ljoin} and \code{lmitre} are passed to \code{lines} function,
 #'		and others are passed to \code{plot} function.
 #'
@@ -383,14 +383,14 @@ draw.partial.residual <- function(settings) {
 #'	@details
 #'		For models supported by \code{\link[lsmeans]{lsmeans}}, this function
 #'		calculate partial dependence using \code{lsmeans} and adjusted partial
-#'		residual to match result of \code{lsmeans}. 
-#'		For models having complicated interactions such as machine learning 
-#'		models, partial dependence is calculated by similar way as 
+#'		residual to match result of \code{lsmeans}.
+#'		For models having complicated interactions such as machine learning
+#'		models, partial dependence is calculated by similar way as
 #'		\code{\link[randomForest]{partialPlot}} function.
 #'
 #'	@examples
 #'	#---------------------------------------------------------------------------
-#'	# Example 1: normal partial.plot with partial relationship graph with 
+#'	# Example 1: normal partial.plot with partial relationship graph with
 #'	# points representing partial residuals.
 #'	#---------------------------------------------------------------------------
 #'	data(iris)
@@ -413,12 +413,12 @@ draw.partial.residual <- function(settings) {
 #'	# Example 3: no partial relationship.
 #'	#---------------------------------------------------------------------------
 #'	partial.plot(
-#'		model, c("Sepal.Length", "Species"), pch = 16, 
+#'		model, c("Sepal.Length", "Species"), pch = 16,
 #'		draw.relationships = FALSE
 #'	)
 #-------------------------------------------------------------------------------
 partial.plot <- function(
-	model, x.names, data = NULL, 
+	model, x.names, data = NULL,
 	draw.residuals = TRUE, draw.relationships = TRUE, resolution = 100L,
 	col = gg.colors, xlab = character(), ylab = character(), sep = " - ", ...
 ) {

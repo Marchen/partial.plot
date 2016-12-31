@@ -5,12 +5,12 @@
 #'
 #'	@param object
 #'		\code{\link{pp.info}} object resulted by\code{\link{partial.plot}}.
-#'	@param x 
-#'		position of the legend. For the detail, see 
+#'	@param x
+#'		position of the legend. For the detail, see
 #'		\code{\link[grahpic]{legend}} function.
-#'		
+#'
 #'	@param ...
-#'		other graphic parameters passed to \code{\link[grahpic]{legend}} 
+#'		other graphic parameters passed to \code{\link[grahpic]{legend}}
 #'		function.
 #'
 #'	@export
@@ -28,7 +28,7 @@ pp.legend <- function(object, x, ...) {
 	if (!is(object, "pp.settings")) {
 		stop("'object' should be an instance of 'pp.settings' class")
 	}
-	# Prepare a list containing arguments specified in '...' named as if 
+	# Prepare a list containing arguments specified in '...' named as if
 	# they are arguments of legend().
 	# '...' に指定された引数をlegend()の引数であるかのように扱い、
 	# 名前付きリストに格納する。
@@ -67,7 +67,7 @@ pp.legend <- function(object, x, ...) {
 #'		function
 #-------------------------------------------------------------------------------
 prepare.args.for.legend = function(settings, legend.args) {
-	# Override arguments of legend() that users did not specify manually. 
+	# Override arguments of legend() that users did not specify manually.
 	# ユーザーが指定しなかったlegend()関数の引数を上書き。
 	col <- set.group.color(settings, TRUE)
 	args.to.overwrite <- list(

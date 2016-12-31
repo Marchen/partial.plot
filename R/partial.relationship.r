@@ -4,12 +4,12 @@
 #'	(Internal) Draw partial relationship graph.
 #'
 #'	These functions draw partial relationship graph.
-#'	\code{draw.partial.relationship} dispatch data to 
+#'	\code{draw.partial.relationship} dispatch data to
 #'	\code{draw.partial.relationship.2d} and \code{draw.partial.relationship.3d}
 #'	functions based on the number of focal numeric explanatory variables.
 #'	\code{draw.partial.relationship.2d} draws two dimentional partial
-#'	relationship graph (points and lines) and 
-#'	\code{draw.partial.relationship.3d} graws three dimentional graph 
+#'	relationship graph (points and lines) and
+#'	\code{draw.partial.relationship.3d} graws three dimentional graph
 #'	(image or contour).
 #'
 #'	@param settings
@@ -41,7 +41,7 @@ draw.partial.relationship.2d <- function(settings, partial.relationship.data) {
 	# 新しいプロットを開く。
 	open.new.plot(settings, partial.relationship.data)
 	# Prepare color palette.
-	# カラーパレットを用意。	
+	# カラーパレットを用意。
 	color.palette <- set.group.color(settings, TRUE)
 	# Split data.
 	# データを分割。
@@ -131,7 +131,7 @@ partial.relationship.lsmeans <- function(settings) {
 #-------------------------------------------------------------------------------
 #'	(Internal) Remove out-ranged values from result of lsmeans.
 #'
-#'	This internal function removes predicted values those explanatory 
+#'	This internal function removes predicted values those explanatory
 #'	variable is out of range of original data used for modeling for each group.
 #'
 #'	@param settings

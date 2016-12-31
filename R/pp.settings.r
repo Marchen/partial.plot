@@ -11,7 +11,7 @@
 #'	@field model
 #'		a supported model object used for plotting.
 #'	@field x.names
-#'		a character vector representing names of explanatory variables used 
+#'		a character vector representing names of explanatory variables used
 #'		for plotting.
 #'	@field data
 #'		a data.frame containing data used for plotting.
@@ -22,9 +22,9 @@
 #'		or not.
 #'	@field resolution
 #'		an integer specifying resolution of lines, polygons, wireframes,
-#'		and images of numeric variables. 
+#'		and images of numeric variables.
 #'	@param col
-#'		a function or named character vector representing color of the graph 
+#'		a function or named character vector representing color of the graph
 #'		object.
 #'		For the detail, see pal option of \code{\link{color.ramp}} function.
 #'	@field xlab
@@ -58,7 +58,7 @@ pp.settings <- setRefClass(
 pp.settings$methods(
 	initialize = function(
 		model, x.names, data = NULL, draw.residuals = TRUE, draw.relationships = TRUE,
-		resolution = 100L, col = gg.colors, 
+		resolution = 100L, col = gg.colors,
 		xlab = character(), ylab = character(), sep = " - ", ...
 	) {
 		"
@@ -81,7 +81,7 @@ pp.settings$methods(
 				wireframes, and images of numeric variables.
 			}
 			\\item{col}{color vector.}
-			\\teim{xlab, ylab}{
+			\\item{xlab, ylab}{
 				a character specifying used for label of X/Y axis.
 			}
 			\\item{sep}{
@@ -100,7 +100,7 @@ pp.settings$methods(
 		initFields(
 			adapter = model.adapter(model, data = data),
 			model = model, x.names = x.names,
-			draw.residuals = draw.residuals, 
+			draw.residuals = draw.residuals,
 			draw.relationships = draw.relationships, resolution = resolution,
 			col = col, xlab = xlab, ylab = ylab, sep = sep,
 			other.pars = list(...)
