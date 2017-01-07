@@ -1,7 +1,7 @@
-#-------------------------------------------------------------------------------
+#------------------------------------------------------------------------------
 #	指定されたデータフレームを確認して、指定した変数名から指定された型の
 #	変数名だけを取得する。
-#-------------------------------------------------------------------------------
+#------------------------------------------------------------------------------
 #'	(Internal) Get variable names of specified type.
 #'
 #'	\code{get.names} select variable names meeting a condition.
@@ -20,40 +20,40 @@
 #'		character vector containing variable names.
 #'		\code{get.numeric.names} returns names of numeric variables.
 #'		\code{get.facto.names} returns names of vactors.
-#-------------------------------------------------------------------------------
+#------------------------------------------------------------------------------
 get.names <- function(settings, fun) {
 	result <- settings$x.names[sapply(settings$data[settings$x.names], fun)]
 	return(result)
 }
 
 
-#-------------------------------------------------------------------------------
+#------------------------------------------------------------------------------
 #	数値型の変数名を取得する。
-#-------------------------------------------------------------------------------
+#------------------------------------------------------------------------------
 #'	@describeIn get.names
 #'
 #'	Extract names of numeric variables from \code{var.name}
-#-------------------------------------------------------------------------------
+#------------------------------------------------------------------------------
 get.numeric.names <- function(settings) {
 	return(get.names(settings, is.numeric))
 }
 
 
-#-------------------------------------------------------------------------------
+#------------------------------------------------------------------------------
 #	因子型の変数名を取得する。
-#-------------------------------------------------------------------------------
+#------------------------------------------------------------------------------
 #'	@describeIn get.names
 #'
 #'	Extract names of factors from \code{var.name}
-#-------------------------------------------------------------------------------
+#------------------------------------------------------------------------------
 get.factor.names <- function(settings) {
 	return(get.names(settings, is.factor))
 }
 
 
-#-------------------------------------------------------------------------------
+#------------------------------------------------------------------------------
 #	データフレームの全ての列を結合して、文字列ベクトルを作る。
-#-------------------------------------------------------------------------------
+#------------------------------------------------------------------------------
 #'	(Internal) Combine columns into a character vector
 #'
 #'	This function combines all columns in a data.frame to make a character
@@ -63,7 +63,7 @@ get.factor.names <- function(settings) {
 #'	@param sep a character representing separator of grouping factor levels.
 #'
 #'	@return a character vector.
-#-------------------------------------------------------------------------------
+#------------------------------------------------------------------------------
 combine.columns <- function(data, sep) {
 	data <- as.data.frame(sapply(data, as.character, simplify = FALSE))
 	result <- apply(data, 1, paste, collapse = sep)
@@ -71,9 +71,9 @@ combine.columns <- function(data, sep) {
 }
 
 
-#-------------------------------------------------------------------------------
+#------------------------------------------------------------------------------
 #	因子型の変数の一意な値を取得する。
-#-------------------------------------------------------------------------------
+#------------------------------------------------------------------------------
 #'	(Internal) Extract unique factors in a data.frame
 #'
 #'	@param settings
@@ -81,7 +81,7 @@ combine.columns <- function(data, sep) {
 #'		partial.plot.
 #'
 #'	@return a list having unique values of factors.
-#-------------------------------------------------------------------------------
+#------------------------------------------------------------------------------
 get.unique.factors <- function(settings) {
 	factor.names <- get.factor.names(settings)
 	result <- list()
@@ -92,7 +92,7 @@ get.unique.factors <- function(settings) {
 }
 
 
-#-------------------------------------------------------------------------------
+#------------------------------------------------------------------------------
 #'	(Internal) Calculate partial residual.
 #'
 #'	This function calculates partial residual for specfied model.
@@ -104,7 +104,7 @@ get.unique.factors <- function(settings) {
 #'		partial.plot.
 #'
 #'	@return a numeric vector of partial residuals.
-#-------------------------------------------------------------------------------
+#------------------------------------------------------------------------------
 #	PL      = i + PW + SL + SP + PW:SP + SL:SP + r		# FULL MODEL
 #	PL      = i + PW      + SP + PW:SP         + r		# Want to see this
 #	PL      =        + SL              + SL:SP		    # Remove these effects
@@ -113,7 +113,7 @@ get.unique.factors <- function(settings) {
 #	Case of LSMEANS
 #	LSMEANS = i + PW + MM + SP + PW:SP + MM:SP
 #	LSMEANS = i + PW + MM + SP + PW:SP + MM:SP + r		# Want to see this
-#-------------------------------------------------------------------------------
+#------------------------------------------------------------------------------
 partial.residual <- function(settings) {
 	# Prepare names of numeric variables.
 	# 数値型変数の変数名を用意。
@@ -148,9 +148,9 @@ partial.residual <- function(settings) {
 }
 
 
-#-------------------------------------------------------------------------------
+#------------------------------------------------------------------------------
 #	数値型の説明変数に対して範囲を均等に区切ったベクトルを作る。
-#-------------------------------------------------------------------------------
+#------------------------------------------------------------------------------
 #'	(Internal) Make sequence of numeric variables.
 #'
 #'	This function creates sequence of numeric variables for each specified
@@ -163,7 +163,7 @@ partial.residual <- function(settings) {
 #'
 #'	@return
 #'		a named list containing sequence of variables.
-#-------------------------------------------------------------------------------
+#------------------------------------------------------------------------------
 numeric.sequences <- function(settings) {
 	numeric.names <- get.numeric.names(settings)
 	result <- list()
@@ -178,9 +178,9 @@ numeric.sequences <- function(settings) {
 }
 
 
-#-------------------------------------------------------------------------------
+#------------------------------------------------------------------------------
 #	新しいプロットを開く。
-#-------------------------------------------------------------------------------
+#------------------------------------------------------------------------------
 #'	(Internal) Open new plot.
 #'
 #'	@param settings
@@ -189,7 +189,7 @@ numeric.sequences <- function(settings) {
 #'	@param partial.residual.data
 #'		a named list of data.frame containing result of
 #'		\code{\link{partial.relationship.lsmeans}} function.
-#-------------------------------------------------------------------------------
+#------------------------------------------------------------------------------
 open.new.plot <- function(settings, partial.residual.data) {
 	x.name <- get.numeric.names(settings)
 	if (is.null(partial.residual.data$upper)) {
@@ -205,9 +205,9 @@ open.new.plot <- function(settings, partial.residual.data) {
 }
 
 
-#-------------------------------------------------------------------------------
+#------------------------------------------------------------------------------
 #	グループごとの色ベクトルを設定する。
-#-------------------------------------------------------------------------------
+#------------------------------------------------------------------------------
 #'	(Internal) Make color vector for groups.
 #'
 #'	@param settings
@@ -221,7 +221,7 @@ open.new.plot <- function(settings, partial.residual.data) {
 #'		A character vector same as \code{\link{color.ramp}} function returns.
 #'		If x.names doesn't have factors, this returns color palette with length
 #'		1 which named as "all".
-#-------------------------------------------------------------------------------
+#------------------------------------------------------------------------------
 set.group.color <- function(settings, unique.pal) {
 	factors <- get.factor.names(settings)
 	if (!length(factors) == 0) {
@@ -239,15 +239,15 @@ set.group.color <- function(settings, unique.pal) {
 }
 
 
-#-------------------------------------------------------------------------------
+#------------------------------------------------------------------------------
 #	偏残差の点を描画。
-#-------------------------------------------------------------------------------
+#------------------------------------------------------------------------------
 #'	(Internal) Draw partial residual graph.
 #'
 #'	@param settings
 #'		an object of \code{\link{pp.settings}} object having settings of
 #'		partial.plot.
-#-------------------------------------------------------------------------------
+#------------------------------------------------------------------------------
 draw.partial.residual <- function(settings) {
 	# Prepare graphic parameters.
 	# グラフィックパラメーターを用意。
@@ -275,9 +275,9 @@ draw.partial.residual <- function(settings) {
 }
 
 
-#-------------------------------------------------------------------------------
+#------------------------------------------------------------------------------
 #	偏残差・偏回帰プロットを描画。
-#-------------------------------------------------------------------------------
+#------------------------------------------------------------------------------
 #'	Partial relationship graph.
 #'
 #'	Draw partial relationship graph between focal explanatory variables and
@@ -345,8 +345,6 @@ draw.partial.residual <- function(settings) {
 #'		An object of \code{\link{pp.legend}} containing informations which
 #'		will be used for drawing legend.
 #'
-#'	@export
-#'
 #'	@details
 #'		For models supported by \code{\link[lsmeans]{lsmeans}}, this function
 #'		calculate partial dependence using \code{lsmeans} and adjusted partial
@@ -354,6 +352,9 @@ draw.partial.residual <- function(settings) {
 #'		For models having complicated interactions such as machine learning
 #'		models, partial dependence is calculated by similar way as
 #'		\code{\link[randomForest]{partialPlot}} function.
+#'
+#'		For the detailed explanation, see \code{vignette("partial.plot")}
+#'		(English) or \code{vignette("partial.plot.j")} (Japanese)
 #'
 #'	@examples
 #'	#---------------------------------------------------------------------------
@@ -383,7 +384,9 @@ draw.partial.residual <- function(settings) {
 #'		model, c("Sepal.Length", "Species"), pch = 16,
 #'		draw.relationships = FALSE
 #'	)
-#-------------------------------------------------------------------------------
+#'
+#'	@export
+#------------------------------------------------------------------------------
 partial.plot <- function(
 	model, x.names, data = NULL, function.3d = persp,
 	draw.residuals = TRUE, draw.relationships = TRUE, resolution = 10,
