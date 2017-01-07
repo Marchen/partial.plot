@@ -134,43 +134,82 @@ pp.settings$methods(
 )
 
 
-#-------------------------------------------------------------------------------
-#	パラメーターの整合性を確認する。
-#-------------------------------------------------------------------------------
+#------------------------------------------------------------------------------
+#	dataが使えるかを確認。
+#------------------------------------------------------------------------------
 pp.settings$methods(
-	check.params = function() {
+	check.data.access = function() {
 		"
-		Check cerrors in specified parameters and stop if any errors are found.
+		Check availability of data.
 		"
-		# check availability of data.
-		# dataが使えるかを確認。
 		if (!adapter$has.data()) {
 			stop("'model' object does not have original data. Please specify 'data' argument.")
 		}
-		# check x.names.
-		# x.namesのチェック。
+	}
+)
+
+
+#------------------------------------------------------------------------------
+#	x.namesの確認。
+#------------------------------------------------------------------------------
+pp.settings$methods(
+	check.x.names = function() {
+		"
+		Check appropriateness of x.names.
+		"
+		# Check variables in x.names are used in model and exist in data.
+		# x.namesで指定されたデータがモデルに使われていて、
+		# データにも存在するかをチェック
 		if (!all(x.names %in% colnames(adapter$data))) {
 			error <- x.names[!x.names %in% colnames(adapter$data)]
 			stop(sprintf("\n Column '%s' is not found in data.", error))
 		}
 		if (!all(x.names %in% adapter$x.names(type = "base"))) {
 			error <- x.names[!x.names %in% adapter$x.names(type = "base")]
-			stop(
-				sprintf("\n '%s' is not found in explanatory variables.", error)
-			)
+			template <- "\n '%s' is not found in explanatory variables."
+			stop(sprintf(template, error))
 		}
 		# Check number of continuous explanatory variables
 		# 連続値の説明変数の数チェック
 		var.types <- sapply(adapter$data[, x.names, drop = FALSE], class)
 		n.continuous <- sum(var.types == "numeric")
 		if (n.continuous > 2) {
-			stop("Plotting more than two continuous explanatory variables is not supported.")
+			message <- paste(
+				"Plotting more than two continuous explanatory variables",
+				"is not supported."
+			)
+			stop(message)
 		}
-		# Check resolution is integer.
-		# 解像度が整数かどうかをチェックする。
+	}
+)
+
+
+#------------------------------------------------------------------------------
+#	解像度が整数かどうかをチェックする。
+#------------------------------------------------------------------------------
+pp.settings$methods(
+	check.resolution = function() {
+		"
+		Check resolution is integer.
+		"
 		if (resolution %% 1 != 0) {
 			stop("'resolution' should be integer.")
 		}
+	}
+)
+
+
+#-------------------------------------------------------------------------------
+#	パラメーターの整合性を確認する。
+#-------------------------------------------------------------------------------
+pp.settings$methods(
+	check.params = function() {
+		"
+		Check errors in specified parameters and stop if any errors are found.
+		"
+		.self$check.data.access()
+		.self$check.x.names()
+		.self$check.resolution()
 	}
 )
 
