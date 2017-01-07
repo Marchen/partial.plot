@@ -72,7 +72,7 @@ prepare.args.for.legend = function(settings, legend.args) {
 	col <- set.group.color(settings, TRUE)
 	args.to.overwrite <- list(
 		col = col, legend = names(col),
-		title = paste0(get.factor.names(settings), collapse = settings$sep)
+		title = paste0(settings$x.names.factor, collapse = settings$sep)
 	)
 	args.to.overwrite <- c(args.to.overwrite, settings$other.pars)
 	for (i in names(args.to.overwrite)) {

@@ -8,41 +8,64 @@
 #'
 #'	@field adapter
 #'		an instance of model.adapter.
+#'
 #'	@field model
 #'		a supported model object used for plotting.
+#'
 #'	@field x.names
 #'		a character vector representing names of explanatory variables used
 #'		for plotting.
+#'
+#'	@field x.names.factor
+#'		a character vector representing names of factor explanatory variables
+#'		used for plotting.
+#'
+#'	@field x.names.numeric
+#'		a character vector representing names of numeric explanatory variables
+#'		used for plotting.
+#'
 #'	@field data
 #'		a data.frame containing data used for plotting.
+#'
 #'	@field function.3d
 #'		the function draws 3D graphs.
 #'		Possibly \code{\link[graphics]{persp}} and
 #'		\code{\link[graphics]{images}} can work.
+#'
 #'	@field draw.residuals
 #'		a logical representing that partial.plot drew residual points or not.
+#'
 #'	@field draw.relationships
 #'		a logical representing that partial.plot drew predicted relationships
 #'		or not.
+#'
 #'	@field resolution
 #'		an integer specifying resolution of lines, polygons, wireframes,
 #'		and images of numeric variables.
+#'
 #'	@param col
 #'		a function or named character vector representing color of the graph
 #'		object.
 #'		For the detail, see pal option of \code{\link{color.ramp}} function.
+#'
 #'	@field xlab
 #'		a character or expression specifying used for label of X axis.
+#'
 #'	@field ylab
 #'		a character or expression specifying used for label of Y axis.
+#'
 #'	@field zlab
 #'		a character or expression specifying used for label of Z axis.
+#'
 #'	@field sep
 #'		a character representing separator of grouping factor levels.
+#'
 #'	@field other.pars
 #		a list containing other graphic parameters passed to partial.plot().
+#'
 #'	@field n.cores
 #'		an integer specifing number of processes used for multiprocessing.
+#'
 #------------------------------------------------------------------------------
 pp.settings <- setRefClass(
 	"pp.settings",
@@ -50,6 +73,8 @@ pp.settings <- setRefClass(
 		adapter = "ANY",
 		model = "ANY",
 		x.names = "character",
+		x.names.factor = "character",
+		x.names.numeric = "character",
 		data = "data.frame",
 		function.3d = "function",
 		draw.residuals = "logical",
@@ -133,6 +158,7 @@ pp.settings$methods(
 		initFields(data = adapter$data)
 		.self$check.params()
 		.self$init.multiprocessing()
+		.self$init.x.names()
 		.self$init.labels()
 	}
 )
@@ -265,23 +291,32 @@ pp.settings$methods(
 #	xlab、ylab、zlabを設定する。
 #------------------------------------------------------------------------------
 pp.settings$methods(
+	init.x.names = function() {
+		.self$x.names.factor <- x.names[sapply(data[x.names], is.factor)]
+		.self$x.names.numeric <- x.names[sapply(data[x.names], is.numeric)]
+	}
+)
+
+
+#------------------------------------------------------------------------------
+#	xlab、ylab、zlabを設定する。
+#------------------------------------------------------------------------------
+pp.settings$methods(
 	init.labels = function() {
 		"
 		Set xlab, ylab and zlab for 2D & 3D plot.
 		"
-		numeric.vars <- get.numeric.names(.self)
-		n.numeric.vars <- length(numeric.vars)
 		if (is.null(xlab)) {
-			.self$xlab <- numeric.vars[1]
+			.self$xlab <- x.names.numeric[1]
 		}
 		if (is.null(ylab)) {
-			if (n.numeric.vars == 1) {
+			if (length(x.names.numeric) == 1) {
 				.self$ylab <- .self$adapter$y.names()
 			} else {
-				.self$ylab <- numeric.vars[2]
+				.self$ylab <- x.names.numeric[2]
 			}
 		}
-		if (is.null(zlab) & n.numeric.vars == 2) {
+		if (is.null(zlab) & length(x.names.numeric) == 2) {
 			.self$zlab <- .self$adapter$y.names()
 		}
 	}

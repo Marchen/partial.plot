@@ -177,9 +177,6 @@ partial.relationship$methods(
 		# Get list of unique factors.
 		# 因子の一覧を作成。
 		factors <- expand.grid(get.unique.factors(settings))
-		# Get names of numeric variables.
-		# 数値型変数の名前を取得。
-		numeric.names <- get.numeric.names(settings)
 		# Split data and prediction for each factor group.
 		# データを因子のグループごとに分割。
 		sep = settings$sep
@@ -196,7 +193,7 @@ partial.relationship$methods(
 			)
 			current.pred <- pred.split[[split.name]]
 			current.data <- data.split[[split.name]]
-			for (numeric.name in numeric.names) {
+			for (numeric.name in settings$x.names.numeric) {
 				var.range <- range(current.data[[numeric.name]])
 				filter <- current.pred[[numeric.name]] >= var.range[1]
 				filter <- filter & current.pred[[numeric.name]] <= var.range[2]
@@ -218,8 +215,7 @@ partial.relationship$methods(
 		"Draw partial relationship graph."
 		# Dispatch based on number of numeric variables.
 		# 数値型の説明変数の数に応じて使う関数を変える。
-		numeric.names <- get.numeric.names(settings)
-		if (length(numeric.names) == 2) {
+		if (length(settings$x.names.numeric) == 2) {
 			draw.3d()
 		} else {
 			draw.2d()
@@ -246,17 +242,17 @@ partial.relationship$methods(
 		if (length(names(color.palette)) == 1) {
 			pr.data<- list(all = .self$data)
 		} else {
-			factors <- get.factor.names(settings)
 			pr.data <- split(
-				.self$data, .self$data[factors], sep = settings$sep
+				.self$data, .self$data[settings$x.names.factor],
+				sep = settings$sep
 			)
 		}
 		# Draw polygons.
 		# ポリゴンを描画
-		numeric.name <- get.numeric.names(settings)
 		for (i in names(color.palette)) {
 			d <- pr.data[[i]]
-			x <- c(d[[numeric.name]], rev(d[[numeric.name]]))
+			x <- d[[settings$x.names.numeric]]
+			x <- c(x, rev(x))
 			y <- c(d$lower, rev(d$upper))
 			polygon(x, y, border = NA, col = trans.color(color.palette[i]))
 		}
@@ -266,7 +262,10 @@ partial.relationship$methods(
 		# 使うため、do.callを呼ぶ。
 		for (i in names(color.palette)) {
 			d <- pr.data[[i]]
-			args <- list(x = d[[numeric.name]], y = d$fit, col = color.palette[i])
+			args <- list(
+				x = d[[settings$x.names.numeric]],
+				y = d$fit, col = color.palette[i]
+			)
 			lines.par <- c("lty", "lwd", "lend", "ljoin", "lmitre")
 			args <- c(args, settings$other.pars[settings$other.pars %in% lines.par])
 			do.call(lines, args)

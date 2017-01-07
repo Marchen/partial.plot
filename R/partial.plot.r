@@ -1,57 +1,4 @@
 #------------------------------------------------------------------------------
-#	指定されたデータフレームを確認して、指定した変数名から指定された型の
-#	変数名だけを取得する。
-#------------------------------------------------------------------------------
-#'	(Internal) Get variable names of specified type.
-#'
-#'	\code{get.names} select variable names meeting a condition.
-#'	\code{get.numeric.names} returns names of numeric variables.
-#'	\code{get.facto.names} returns names of vactors.
-#'
-#'	@param settings
-#'		an object of \code{\link{pp.settings}} object having settings of
-#'		partial.plot.
-#'
-#'	@param fun
-#'		a function like \code{\link[base]{is.numeric}} and
-#'		\code{\link[base]{is.factor}}.
-#'
-#'	@return
-#'		character vector containing variable names.
-#'		\code{get.numeric.names} returns names of numeric variables.
-#'		\code{get.facto.names} returns names of vactors.
-#------------------------------------------------------------------------------
-get.names <- function(settings, fun) {
-	result <- settings$x.names[sapply(settings$data[settings$x.names], fun)]
-	return(result)
-}
-
-
-#------------------------------------------------------------------------------
-#	数値型の変数名を取得する。
-#------------------------------------------------------------------------------
-#'	@describeIn get.names
-#'
-#'	Extract names of numeric variables from \code{var.name}
-#------------------------------------------------------------------------------
-get.numeric.names <- function(settings) {
-	return(get.names(settings, is.numeric))
-}
-
-
-#------------------------------------------------------------------------------
-#	因子型の変数名を取得する。
-#------------------------------------------------------------------------------
-#'	@describeIn get.names
-#'
-#'	Extract names of factors from \code{var.name}
-#------------------------------------------------------------------------------
-get.factor.names <- function(settings) {
-	return(get.names(settings, is.factor))
-}
-
-
-#------------------------------------------------------------------------------
 #	データフレームの全ての列を結合して、文字列ベクトルを作る。
 #------------------------------------------------------------------------------
 #'	(Internal) Combine columns into a character vector
@@ -83,9 +30,8 @@ combine.columns <- function(data, sep) {
 #'	@return a list having unique values of factors.
 #------------------------------------------------------------------------------
 get.unique.factors <- function(settings) {
-	factor.names <- get.factor.names(settings)
 	result <- list()
-	for (name in factor.names) {
+	for (name in settings$x.names.factor) {
 		result[[name]] <- unique(settings$data[[name]])
 	}
 	return(result)
@@ -117,19 +63,18 @@ get.unique.factors <- function(settings) {
 partial.residual <- function(settings) {
 	# Prepare names of numeric variables.
 	# 数値型変数の変数名を用意。
-	focal.numerics <- get.numeric.names(settings)
 	all.numerics <- settings$adapter$x.names(type = "base")
 	all.numerics <- all.numerics[
 		sapply(settings$data[all.numerics], is.numeric)
 	]
-	other.numerics <- all.numerics[!all.numerics %in% focal.numerics]
+	other.numerics <- all.numerics[!all.numerics %in% settings$x.names.numeric]
 	# Calculate prediction 1.
 	# 予測値１を計算。
 	data1 <- settings$data
 	for (i in other.numerics) {
 		data1[[i]] <- data1[[i]] - mean(data1[[i]])
 	}
-	data1[focal.numerics] <- 0
+	data1[settings$x.names.numeric] <- 0
 	pred1 <- settings$adapter$predict(newdata = data1, type = "link")
 	pred1 <- pred1$fit[, "fit"]
 	# Calculate prediction 2.
@@ -165,9 +110,8 @@ partial.residual <- function(settings) {
 #'		a named list containing sequence of variables.
 #------------------------------------------------------------------------------
 numeric.sequences <- function(settings) {
-	numeric.names <- get.numeric.names(settings)
 	result <- list()
-	for (name in numeric.names) {
+	for (name in settings$x.names.numeric) {
 		result[[name]] <- seq(
 			min(settings$data[[name]], na.rm = TRUE),
 			max(settings$data[[name]], na.rm = TRUE),
@@ -191,12 +135,11 @@ numeric.sequences <- function(settings) {
 #'		\code{\link{partial.relationship.lsmeans}} function.
 #------------------------------------------------------------------------------
 open.new.plot <- function(settings, partial.residual.data) {
-	x.name <- get.numeric.names(settings)
 	if (is.null(partial.residual.data$upper)) {
-		x <- partial.residual.data[[x.name]]
+		x <- partial.residual.data[[settings$x.names.numeric]]
 		y <- partial.residual.data$fit
 	} else {
-		x <- rep(partial.residual.data[[x.name]], 2)
+		x <- rep(partial.residual.data[[settings$x.names.numeric]], 2)
 		y <- c(partial.residual.data$upper, partial.residual.data$lower)
 	}
 	args <- list(x, y, type = "n", xlab = settings$xlab, ylab = settings$ylab)
@@ -223,10 +166,9 @@ open.new.plot <- function(settings, partial.residual.data) {
 #'		1 which named as "all".
 #------------------------------------------------------------------------------
 set.group.color <- function(settings, unique.pal) {
-	factors <- get.factor.names(settings)
-	if (!length(factors) == 0) {
+	if (!length(settings$x.names.factor) == 0) {
 		result <- color.palette <- color.ramp(
-			settings$data, factors, pal = settings$col,
+			settings$data, settings$x.names.factor, pal = settings$col,
 			sep = settings$sep, unique.pal = unique.pal
 		)
 	} else {
@@ -255,10 +197,9 @@ draw.partial.residual <- function(settings) {
 	# Calculate and draw partial residual
 	# 偏残差を計算して描画。
 	part.resid <- partial.residual(settings)
-	numerics <- get.numeric.names(settings)
 	if (!settings$draw.relationships) {
 		args <- list(
-			settings$data[[numerics]], part.resid, col = col,
+			settings$data[[settings$x.names.numeric]], part.resid, col = col,
 			xlab = settings$xlab, ylab = settings$ylab
 		)
 		args <- c(args, settings$other.pars)
@@ -268,7 +209,10 @@ draw.partial.residual <- function(settings) {
 		# not directly call points function.
 		# ...に入ったグラフィックパラメーターを制御するため、
 		# points関数を直接呼ばずにdo.callを使う。
-		args <- list(x = settings$data[[numerics]], y = part.resid, col = col)
+		args <- list(
+			x = settings$data[[settings$x.names.numeric]],
+			y = part.resid, col = col
+		)
 		points.pars <- c("pch", "bg", "cex")
 		do.call(points, c(args, settings$other.pars[points.pars]))
 	}
@@ -407,15 +351,15 @@ partial.plot <- function(
 	}
 	# Plot partial residuals.
 	# 偏残差の描画。
-	numeric.names <- get.numeric.names(settings)
-	if (draw.residuals & length(numeric.names) == 1) {
+	if (draw.residuals & length(settings$x.names.numeric) == 1) {
 		draw.partial.residual(settings)
 	} else {
 		##### TODO ##### -> まともに設計する。
 		if (identical(settings$function.3d, image)) {
 			points(
-				settings$data[[numeric.names[1]]],
-				settings$data[[numeric.names[2]]], pch = 16, col = "white"
+				settings$data[[settings$x.names.numeric[1]]],
+				settings$data[[settings$x.names.numeric[2]]],
+				pch = 16, col = "white"
 			)
 		}
 	}
