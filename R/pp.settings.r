@@ -15,6 +15,10 @@
 #'		for plotting.
 #'	@field data
 #'		a data.frame containing data used for plotting.
+#'	@field function.3d
+#'		the function draws 3D graphs.
+#'		Possibly \code{\link[graphics]{persp}} and
+#'		\code{\link[graphics]{images}} can work.
 #'	@field draw.residuals
 #'		a logical representing that partial.plot drew residual points or not.
 #'	@field draw.relationships
@@ -45,6 +49,7 @@ pp.settings <- setRefClass(
 		model = "ANY",
 		x.names = "character",
 		data = "data.frame",
+		function.3d = "function",
 		draw.residuals = "logical",
 		draw.relationships = "logical",
 		resolution = "integer",
@@ -63,10 +68,10 @@ pp.settings <- setRefClass(
 #-------------------------------------------------------------------------------
 pp.settings$methods(
 	initialize = function(
-		model, x.names, data = NULL, draw.residuals = TRUE,
-		draw.relationships = TRUE, resolution = 100L, col = gg.colors,
-		xlab = character(), ylab = character(), sep = " - ", n.cores = NULL,
-		...
+		model, x.names, data = NULL, function.3d = persp,
+		draw.residuals = TRUE, draw.relationships = TRUE, resolution = 100L,
+		col = gg.colors, xlab = character(), ylab = character(), sep = " - ",
+		n.cores = NULL, ...
 	) {
 		"
 		Initialize pp.settings object.
@@ -77,6 +82,10 @@ pp.settings$methods(
 				used for plotting.
 			}
 			\\item{data}{a data.frame containing data used for plotting.}
+			\\item{function.3d}{
+				the function used for drawing 3D relationship graphs.
+				Possibly, persp and image can work.
+			}
 			\\item{draw.residuals}{
 				whether the partial.plot drewn residual points or not.
 			}
@@ -112,7 +121,7 @@ pp.settings$methods(
 		}
 		initFields(
 			adapter = model.adapter(model, data = data),
-			model = model, x.names = x.names,
+			function.3d = function.3d, model = model, x.names = x.names,
 			draw.residuals = draw.residuals,
 			draw.relationships = draw.relationships, resolution = resolution,
 			col = col, xlab = xlab, ylab = ylab, sep = sep, n.cores = n.cores,

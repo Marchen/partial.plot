@@ -424,26 +424,36 @@ draw.partial.residual <- function(settings) {
 #'	)
 #-------------------------------------------------------------------------------
 partial.plot <- function(
-	model, x.names, data = NULL,
-	draw.residuals = TRUE, draw.relationships = TRUE, resolution = 100L,
+	model, x.names, data = NULL, function.3d = persp,
+	draw.residuals = TRUE, draw.relationships = TRUE, resolution = 10L,
 	col = gg.colors, xlab = character(), ylab = character(), sep = " - ",
 	n.cores = NULL, ...
 ) {
 	# Initialize setting object.
 	# 設定オブジェクトの初期化。
 	settings <- pp.settings(
-		model, x.names, data, draw.residuals, draw.relationships, resolution,
-		col, xlab, ylab, sep, n.cores, ...
+		model, x.names, data, function.3d, draw.residuals, draw.relationships,
+		resolution, col, xlab, ylab, sep, n.cores, ...
 	)
 	# Draw partial relationship graph.
 	# 関係式グラフの描画。
 	if (draw.relationships) {
-		draw.partial.relationship(settings)
+		pr.data <- partial.relationship(settings)
+		pr.data$draw()
 	}
 	# Plot partial residuals.
 	# 偏残差の描画。
-	if (draw.residuals) {
+	numeric.names <- get.numeric.names(settings)
+	if (draw.residuals & length(numeric.names) == 1) {
 		draw.partial.residual(settings)
+	} else {
+		##### TODO ##### -> まともに設計する。
+		if (identical(settings$function.3d, image)) {
+			points(
+				settings$data[[numeric.names[1]]],
+				settings$data[[numeric.names[2]]], pch = 16, col = "white"
+			)
+		}
 	}
 	invisible(settings)
 }
