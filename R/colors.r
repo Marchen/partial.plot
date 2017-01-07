@@ -148,7 +148,6 @@ make.palette.function <- function(pal, x, ...) {
 #'		with length equal to the length of \code{x}. For this case, the
 #'		character vector has "palette" attribute which contains named vector
 #'		of colors used for the result.
-
 #'
 #'	@export
 #'

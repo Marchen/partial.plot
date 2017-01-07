@@ -284,7 +284,7 @@ partial.relationship$methods(
 		Draw 3D partial relationship graph.
 		"
 		cat("3D plot is experimental yet... :-)\n")
-		prd.matrix <- matrix(.self$data$fit, nrow = settings$resolution)
+		z.matrix <- matrix(.self$data$fit, nrow = settings$resolution)
 		if (identical(settings$function.3d, persp)) {
 			zlab <- settings$adapter$y.names()
 			col <- NULL
@@ -293,7 +293,7 @@ partial.relationship$methods(
 			col <- viridis(settings$resolution)
 		}
 		settings$function.3d(
-			prd.matrix,
+			z.matrix,
 			x = unique(.self$data[[settings$x.names[1]]]),
 			y = unique(.self$data[[settings$x.names[2]]]),
 			xlab = settings$x.names[1], ylab = settings$x.names[2],
