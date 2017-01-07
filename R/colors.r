@@ -227,6 +227,40 @@ color.ramp.default <- function(x, pal = gg.colors, ..., unique.pal = FALSE){
 
 
 #------------------------------------------------------------------------------
+#'	@describeIn color.ramp
+#'	method for numeric.
+#'	@param n.class
+#'		number of colors. If NULL, n.class become number of unique values
+#'		in x.
+#'	@param method method of grouping. Currently, only "quantile! is supported.
+#'	@export
+#------------------------------------------------------------------------------
+color.ramp.numeric <- function(
+	x, pal = gg.colors, n.class = NULL, method = "quantile", ...,
+	unique.pal = FALSE
+) {
+	# If pal is not a function, make color making function.
+	if (!is.function(pal)) {
+		pal <- colorRamp(pal)
+	}
+	# If n.class is null, n.class become number of unique values in x.
+	if (is.null(n.class)) {
+		n.class <- length(unique(x))
+	}
+	# Assign color.
+	quantiles <- quantile(x, probs = seq(0, 1, 1 / n.class), na.rm = TRUE)
+	groups <- cut(x, breaks = quantiles, include.lowest = TRUE)
+	palette <- make.palette(pal, groups)
+	if (unique.pal) {
+		return(palette)
+	}
+	col <- palette[as.numeric(groups)]
+	attr(col, "palette") <- palette
+	return(col)
+}
+
+
+#------------------------------------------------------------------------------
 #	透明色を作る。
 #	Args:
 #		colors: 基本になる色。
