@@ -59,6 +59,8 @@ if (!dir.exists(bin.path)) {
 }
 build(binary = TRUE, args = "--preclean", path = bin.path)
 
+install()
+
 
 #-------------------------------------------------------------------------------
 #	Deploy
@@ -69,10 +71,12 @@ tools::write_PACKAGES(
 	file.path(path.repos, "src/contrib"), type = "source"
 )
 tools::write_PACKAGES(
-	file.path(path.repos, "bin/windows/contrib/3.3/"), type = "win.binary"
+	file.path(path.repos, sprintf("bin/windows/contrib/%s/", r.ver)),
+	type = "win.binary"
 )
 tools::write_PACKAGES(
-	file.path(path.repos, "bin/macosx/mavericks/contrib/3.3/"), type = "mac.binary"
+	file.path(path.repos, sprintf("bin/windows/contrib/%s/", r.ver)),
+	type = "mac.binary"
 )
 
 
