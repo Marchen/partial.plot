@@ -32,9 +32,9 @@
 #'		object.
 #'		For the detail, see pal option of \code{\link{color.ramp}} function.
 #'	@field xlab
-#'		a character specifying used for label of X axis.
+#'		a character or expression specifying used for label of X axis.
 #'	@field ylab
-#'		a character specifying used for label of Y axis.
+#'		a character or expression specifying used for label of Y axis.
 #'	@field sep
 #'		a character representing separator of grouping factor levels.
 #'	@field other.pars
@@ -54,8 +54,8 @@ pp.settings <- setRefClass(
 		draw.relationships = "logical",
 		resolution = "ANY",
 		col = "ANY",
-		xlab = "character",
-		ylab = "character",
+		xlab = "ANY",
+		ylab = "ANY",
 		sep = "character",
 		other.pars = "list",
 		n.cores = "ANY"
@@ -69,9 +69,9 @@ pp.settings <- setRefClass(
 pp.settings$methods(
 	initialize = function(
 		model, x.names, data = NULL, function.3d = persp,
-		draw.residuals = TRUE, draw.relationships = TRUE, resolution = 100L,
-		col = gg.colors, xlab = character(), ylab = character(), sep = " - ",
-		n.cores = NULL, ...
+		draw.residuals = TRUE, draw.relationships = TRUE, resolution = 10L,
+		col = gg.colors, xlab = NULL, ylab = NULL, sep = " - ", n.cores = NULL,
+		...
 	) {
 		"
 		Initialize pp.settings object.
@@ -130,6 +130,7 @@ pp.settings$methods(
 		initFields(data = adapter$data)
 		.self$check.params()
 		.self$init.multiprocessing()
+		.self$init.labels()
 	}
 )
 
@@ -155,7 +156,7 @@ pp.settings$methods(
 pp.settings$methods(
 	check.x.names = function() {
 		"
-		Check appropriateness of x.names.
+		Check correctness of x.names.
 		"
 		# Check variables in x.names are used in model and exist in data.
 		# x.namesで指定されたデータがモデルに使われていて、
@@ -199,6 +200,24 @@ pp.settings$methods(
 )
 
 
+#------------------------------------------------------------------------------
+#	xlabとylabの設定が正しいかをチェックする。
+#------------------------------------------------------------------------------
+pp.settings$methods(
+	check.labels = function() {
+		"
+		Test correctness of xlab and ylab.
+		"
+		if (!is.null(xlab) & !is.character(xlab) & !is.expression(xlab)) {
+			stop("'xlab' should be NULL/character/expression.")
+		}
+		if (!is.null(ylab) & !is.character(ylab) & !is.expression(ylab)) {
+			stop("'ylab' should be NULL/character/expression.")
+		}
+	}
+)
+
+
 #-------------------------------------------------------------------------------
 #	パラメーターの整合性を確認する。
 #-------------------------------------------------------------------------------
@@ -210,6 +229,7 @@ pp.settings$methods(
 		.self$check.data.access()
 		.self$check.x.names()
 		.self$check.resolution()
+		.self$check.labels()
 	}
 )
 
@@ -236,6 +256,25 @@ pp.settings$methods(
 
 
 #-------------------------------------------------------------------------------
+#	xlabとylabを設定する。
+#-------------------------------------------------------------------------------
+pp.settings$methods(
+	init.labels = function() {
+		"
+		Set xlab and ylab for 2D plot.
+		"
+		n.numeric.vars <-length(get.numeric.names(.self))
+		if (is.null(xlab) & n.numeric.vars == 1) {
+			.self$xlab <- get.numeric.names(.self)
+		}
+		if (is.null(ylab) & n.numeric.vars == 1) {
+			.self$ylab <- .self$adapter$y.names()
+		}
+	}
+)
+
+
+#-------------------------------------------------------------------------------
 #	コア数の設定に合わせてlapply()かclusterApply()を実行する。
 #-------------------------------------------------------------------------------
 pp.settings$methods(
@@ -253,4 +292,6 @@ pp.settings$methods(
 		}
 	}
 )
+
+
 

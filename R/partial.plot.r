@@ -192,8 +192,6 @@ numeric.sequences <- function(settings) {
 #-------------------------------------------------------------------------------
 open.new.plot <- function(settings, partial.residual.data) {
 	x.name <- get.numeric.names(settings)
-	xlab <- set.xlab.2d(settings)
-	ylab <- set.ylab.2d(settings)
 	if (is.null(partial.residual.data$upper)) {
 		x <- partial.residual.data[[x.name]]
 		y <- partial.residual.data$fit
@@ -201,47 +199,9 @@ open.new.plot <- function(settings, partial.residual.data) {
 		x <- rep(partial.residual.data[[x.name]], 2)
 		y <- c(partial.residual.data$upper, partial.residual.data$lower)
 	}
-	args <- list(x, y, type = "n", xlab = xlab, ylab = ylab)
+	args <- list(x, y, type = "n", xlab = settings$xlab, ylab = settings$ylab)
 	args <- c(args, settings$other.pars)
 	do.call(plot, args)
-}
-
-
-#-------------------------------------------------------------------------------
-#	X軸ラベルを設定する。
-#-------------------------------------------------------------------------------
-#'	(Internal) Set X label if original is NULL.
-#'
-#'	@param settings
-#'		an object of \code{\link{pp.settings}} object having settings of
-#'		partial.plot.
-#'
-#'	@return x label.
-#-------------------------------------------------------------------------------
-set.xlab.2d <- function(settings) {
-	if (length(settings$xlab) == 0) {
-		return(get.numeric.names(settings))
-	}
-	return(settings$xlab)
-}
-
-
-#-------------------------------------------------------------------------------
-#	Y軸ラベルを設定する。
-#-------------------------------------------------------------------------------
-#'	(Internal) Set Y label if original is NULL.
-#'
-#'	@param settings
-#'		an object of \code{\link{pp.settings}} object having settings of
-#'		partial.plot.
-#'
-#'	@return y label.
-#-------------------------------------------------------------------------------
-set.ylab.2d <- function(settings) {
-	if (length(settings$ylab) == 0) {
-		return(settings$adapter$y.names())
-	}
-	return(settings$ylab)
 }
 
 
@@ -292,8 +252,6 @@ draw.partial.residual <- function(settings) {
 	# Prepare graphic parameters.
 	# グラフィックパラメーターを用意。
 	col <- set.group.color(settings, FALSE)
-	xlab <- set.xlab.2d(settings)
-	ylab <- set.ylab.2d(settings)
 	# Calculate and draw partial residual
 	# 偏残差を計算して描画。
 	part.resid <- partial.residual(settings)
@@ -301,7 +259,7 @@ draw.partial.residual <- function(settings) {
 	if (!settings$draw.relationships) {
 		args <- list(
 			settings$data[[numerics]], part.resid, col = col,
-			xlab = xlab, ylab = ylab
+			xlab = settings$xlab, ylab = settings$ylab
 		)
 		args <- c(args, settings$other.pars)
 		do.call(plot, args)
@@ -426,8 +384,7 @@ draw.partial.residual <- function(settings) {
 partial.plot <- function(
 	model, x.names, data = NULL, function.3d = persp,
 	draw.residuals = TRUE, draw.relationships = TRUE, resolution = 10,
-	col = gg.colors, xlab = character(), ylab = character(), sep = " - ",
-	n.cores = NULL, ...
+	col = gg.colors, xlab = NULL, ylab = NULL, sep = " - ", n.cores = NULL, ...
 ) {
 	# Initialize setting object.
 	# 設定オブジェクトの初期化。
