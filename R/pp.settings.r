@@ -52,7 +52,7 @@ pp.settings <- setRefClass(
 		function.3d = "function",
 		draw.residuals = "logical",
 		draw.relationships = "logical",
-		resolution = "integer",
+		resolution = "ANY",
 		col = "ANY",
 		xlab = "character",
 		ylab = "character",
@@ -165,6 +165,11 @@ pp.settings$methods(
 		n.continuous <- sum(var.types == "numeric")
 		if (n.continuous > 2) {
 			stop("Plotting more than two continuous explanatory variables is not supported.")
+		}
+		# Check resolution is integer.
+		# 解像度が整数かどうかをチェックする。
+		if (resolution %% 1 != 0) {
+			stop("'resolution' should be integer.")
 		}
 	}
 )

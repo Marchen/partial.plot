@@ -425,7 +425,7 @@ draw.partial.residual <- function(settings) {
 #-------------------------------------------------------------------------------
 partial.plot <- function(
 	model, x.names, data = NULL, function.3d = persp,
-	draw.residuals = TRUE, draw.relationships = TRUE, resolution = 10L,
+	draw.residuals = TRUE, draw.relationships = TRUE, resolution = 10,
 	col = gg.colors, xlab = character(), ylab = character(), sep = " - ",
 	n.cores = NULL, ...
 ) {
