@@ -35,6 +35,8 @@
 #'		a character or expression specifying used for label of X axis.
 #'	@field ylab
 #'		a character or expression specifying used for label of Y axis.
+#'	@field zlab
+#'		a character or expression specifying used for label of Z axis.
 #'	@field sep
 #'		a character representing separator of grouping factor levels.
 #'	@field other.pars
@@ -56,6 +58,7 @@ pp.settings <- setRefClass(
 		col = "ANY",
 		xlab = "ANY",
 		ylab = "ANY",
+		zlab = "ANY",
 		sep = "character",
 		other.pars = "list",
 		n.cores = "ANY"
@@ -70,8 +73,8 @@ pp.settings$methods(
 	initialize = function(
 		model, x.names, data = NULL, function.3d = persp,
 		draw.residuals = TRUE, draw.relationships = TRUE, resolution = 10L,
-		col = gg.colors, xlab = NULL, ylab = NULL, sep = " - ", n.cores = NULL,
-		...
+		col = gg.colors, xlab = NULL, ylab = NULL, zlab = NULL, sep = " - ",
+		n.cores = NULL, ...
 	) {
 		"
 		Initialize pp.settings object.
@@ -97,8 +100,8 @@ pp.settings$methods(
 				wireframes, and images of numeric variables.
 			}
 			\\item{col}{color vector.}
-			\\item{xlab, ylab}{
-				a character specifying used for label of X/Y axis.
+			\\item{xlab, ylab, zlab}{
+				a character specifying used for label of X/Y/Z axis.
 			}
 			\\item{sep}{
 				a character representing separator of grouping factor levels.
@@ -124,8 +127,8 @@ pp.settings$methods(
 			function.3d = function.3d, model = model, x.names = x.names,
 			draw.residuals = draw.residuals,
 			draw.relationships = draw.relationships, resolution = resolution,
-			col = col, xlab = xlab, ylab = ylab, sep = sep, n.cores = n.cores,
-			other.pars = list(...)
+			col = col, xlab = xlab, ylab = ylab, zlab = zlab, sep = sep,
+			n.cores = n.cores, other.pars = list(...)
 		)
 		initFields(data = adapter$data)
 		.self$check.params()
@@ -214,6 +217,9 @@ pp.settings$methods(
 		if (!is.null(ylab) & !is.character(ylab) & !is.expression(ylab)) {
 			stop("'ylab' should be NULL/character/expression.")
 		}
+		if (!is.null(zlab) & !is.character(zlab) & !is.expression(zlab)) {
+			stop("'zlab' should be NULL/character/expression.")
+		}
 	}
 )
 
@@ -256,19 +262,27 @@ pp.settings$methods(
 
 
 #-------------------------------------------------------------------------------
-#	xlabとylabを設定する。
+#	xlab、ylab、zlabを設定する。
 #-------------------------------------------------------------------------------
 pp.settings$methods(
 	init.labels = function() {
 		"
-		Set xlab and ylab for 2D plot.
+		Set xlab, ylab and zlab for 2D & 3D plot.
 		"
-		n.numeric.vars <-length(get.numeric.names(.self))
-		if (is.null(xlab) & n.numeric.vars == 1) {
-			.self$xlab <- get.numeric.names(.self)
+		numeric.vars <- get.numeric.names(.self)
+		n.numeric.vars <- length(numeric.vars)
+		if (is.null(xlab)) {
+			.self$xlab <- numeric.vars[1]
 		}
-		if (is.null(ylab) & n.numeric.vars == 1) {
-			.self$ylab <- .self$adapter$y.names()
+		if (is.null(ylab)) {
+			if (n.numeric.vars == 1) {
+				.self$ylab <- .self$adapter$y.names()
+			} else {
+				.self$ylab <- numeric.vars[2]
+			}
+		}
+		if (is.null(zlab) & n.numeric.vars == 2) {
+			.self$zlab <- .self$adapter$y.names()
 		}
 	}
 )

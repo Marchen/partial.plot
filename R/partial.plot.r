@@ -317,10 +317,13 @@ draw.partial.residual <- function(settings) {
 #'		For the detail, see pal option of \code{\link{color.ramp}} function.
 #'
 #'	@param xlab
-#'		label of x axis.
+#'		label of X axis.
 #'
 #'	@param ylab
-#'		label of y axis.
+#'		label of Y axis.
+#'
+#'	@param zlab
+#'		label of Z axis.
 #'
 #'	@param sep
 #'		a character used for separator of factor levels.
@@ -384,13 +387,14 @@ draw.partial.residual <- function(settings) {
 partial.plot <- function(
 	model, x.names, data = NULL, function.3d = persp,
 	draw.residuals = TRUE, draw.relationships = TRUE, resolution = 10,
-	col = gg.colors, xlab = NULL, ylab = NULL, sep = " - ", n.cores = NULL, ...
+	col = gg.colors, xlab = NULL, ylab = NULL, zlab = NULL, sep = " - ",
+	n.cores = NULL, ...
 ) {
 	# Initialize setting object.
 	# 設定オブジェクトの初期化。
 	settings <- pp.settings(
 		model, x.names, data, function.3d, draw.residuals, draw.relationships,
-		resolution, col, xlab, ylab, sep, n.cores, ...
+		resolution, col, xlab, ylab, zlab, sep, n.cores, ...
 	)
 	# Draw partial relationship graph.
 	# 関係式グラフの描画。
