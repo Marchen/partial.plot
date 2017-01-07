@@ -149,39 +149,6 @@ open.new.plot <- function(settings, partial.residual.data) {
 
 
 #------------------------------------------------------------------------------
-#	グループごとの色ベクトルを設定する。
-#------------------------------------------------------------------------------
-#'	(Internal) Make color vector for groups.
-#'
-#'	@param settings
-#'		an object of \code{\link{pp.settings}} object having settings of
-#'		partial.plot.
-#'	@param unique.pal
-#'		if TRUE, this returns color palette. If FALSE, this returns vector of
-#'		colors.
-#'
-#'	@return
-#'		A character vector same as \code{\link{color.ramp}} function returns.
-#'		If x.names doesn't have factors, this returns color palette with length
-#'		1 which named as "all".
-#------------------------------------------------------------------------------
-set.group.color <- function(settings, unique.pal) {
-	if (!length(settings$x.names.factor) == 0) {
-		result <- color.palette <- color.ramp(
-			settings$data, settings$x.names.factor, pal = settings$col,
-			sep = settings$sep, unique.pal = unique.pal
-		)
-	} else {
-		result <- color.ramp(
-			rep("all", nrow(settings$data)), pal = settings$col,
-			unique.pal = unique.pal
-		)
-	}
-	return(result)
-}
-
-
-#------------------------------------------------------------------------------
 #	偏残差の点を描画。
 #------------------------------------------------------------------------------
 #'	(Internal) Draw partial residual graph.
@@ -191,15 +158,13 @@ set.group.color <- function(settings, unique.pal) {
 #'		partial.plot.
 #------------------------------------------------------------------------------
 draw.partial.residual <- function(settings) {
-	# Prepare graphic parameters.
-	# グラフィックパラメーターを用意。
-	col <- set.group.color(settings, FALSE)
 	# Calculate and draw partial residual
 	# 偏残差を計算して描画。
 	part.resid <- partial.residual(settings)
 	if (!settings$draw.relationships) {
 		args <- list(
-			settings$data[[settings$x.names.numeric]], part.resid, col = col,
+			settings$data[[settings$x.names.numeric]], part.resid,
+			col = settings$obs.colors,
 			xlab = settings$xlab, ylab = settings$ylab
 		)
 		args <- c(args, settings$other.pars)
@@ -211,7 +176,7 @@ draw.partial.residual <- function(settings) {
 		# points関数を直接呼ばずにdo.callを使う。
 		args <- list(
 			x = settings$data[[settings$x.names.numeric]],
-			y = part.resid, col = col
+			y = part.resid, col = settings$obs.colors
 		)
 		points.pars <- c("pch", "bg", "cex")
 		do.call(points, c(args, settings$other.pars[points.pars]))

@@ -15,6 +15,7 @@ LSMEANS_COMPATIBLE_MODELS <- c(
 #'		data.frame to keep calculated partial relationship data.
 #'	@field settings
 #'		class settings.
+#'	@include pp.settings.r
 #------------------------------------------------------------------------------
 partial.relationship <- setRefClass(
 	"partial.relationship",
@@ -234,12 +235,9 @@ partial.relationship$methods(
 		# Open new plot.
 		# 新しいプロットを開く。
 		open.new.plot(settings, .self$data)
-		# Prepare color palette.
-		# カラーパレットを用意。
-		color.palette <- set.group.color(settings, TRUE)
 		# Split data.
 		# データを分割。
-		if (length(names(color.palette)) == 1) {
+		if (length(settings$group.colors) == 1) {
 			pr.data<- list(all = .self$data)
 		} else {
 			pr.data <- split(
@@ -249,22 +247,24 @@ partial.relationship$methods(
 		}
 		# Draw polygons.
 		# ポリゴンを描画
-		for (i in names(color.palette)) {
+		for (i in names(settings$group.colors)) {
 			d <- pr.data[[i]]
 			x <- d[[settings$x.names.numeric]]
 			x <- c(x, rev(x))
 			y <- c(d$lower, rev(d$upper))
-			polygon(x, y, border = NA, col = trans.color(color.palette[i]))
+			polygon(
+				x, y, border = NA, col = trans.color(settings$group.colors[i])
+			)
 		}
 		# Draw partial relationships.
 		# To handle valid graphic paramters in ... for lines, use do.call.
 		# 関係式を描画。...の中からlinesで使えるグラフィックパラメーターだけを
 		# 使うため、do.callを呼ぶ。
-		for (i in names(color.palette)) {
+		for (i in names(settings$group.colors)) {
 			d <- pr.data[[i]]
 			args <- list(
 				x = d[[settings$x.names.numeric]],
-				y = d$fit, col = color.palette[i]
+				y = d$fit, col = settings$group.colors[i]
 			)
 			lines.par <- c("lty", "lwd", "lend", "ljoin", "lmitre")
 			args <- c(args, settings$other.pars[settings$other.pars %in% lines.par])

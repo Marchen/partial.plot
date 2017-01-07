@@ -48,6 +48,12 @@
 #'		object.
 #'		For the detail, see pal option of \code{\link{color.ramp}} function.
 #'
+#'	@param group.colors
+#'		colors for each group.
+#'
+#'	@param obs.colors
+#'		colors for each observation.
+#'
 #'	@field xlab
 #'		a character or expression specifying used for label of X axis.
 #'
@@ -81,6 +87,8 @@ pp.settings <- setRefClass(
 		draw.relationships = "logical",
 		resolution = "ANY",
 		col = "ANY",
+		group.colors = "ANY",
+		obs.colors = "ANY",
 		xlab = "ANY",
 		ylab = "ANY",
 		zlab = "ANY",
@@ -160,6 +168,7 @@ pp.settings$methods(
 		.self$init.multiprocessing()
 		.self$init.x.names()
 		.self$init.labels()
+		.self$init.colors()
 	}
 )
 
@@ -324,6 +333,21 @@ pp.settings$methods(
 
 
 #------------------------------------------------------------------------------
+#	色ベクトルを初期化する。
+#------------------------------------------------------------------------------
+pp.settings$methods(
+	init.colors = function() {
+		"
+		Initialize colors.
+		"
+		brewer = pp.colors(.self)
+		.self$group.colors <- brewer$colors.for.groups()
+		.self$obs.colors <- brewer$colors.for.observations()
+	}
+)
+
+
+#------------------------------------------------------------------------------
 #	コア数の設定に合わせてlapply()かclusterApply()を実行する。
 #------------------------------------------------------------------------------
 pp.settings$methods(
@@ -343,4 +367,20 @@ pp.settings$methods(
 )
 
 
+pp.settings$methods(
+	export.graphic.args = function(
+		function.args = list(), potential.par.names = NULL
+	) {
+		pars <- list(xlab = settings$xlab, ylab = settings$ylab)
+		pars <- c(pars, setting$other.pars)
+		pars <- pars[potential.par.names]
+		# Copy pars if it's not in function.args.
+		for (i in names(pars)) {
+			if (i %in% names(function.args)) {
+				function.args[[i]] <- pars[[i]]
+			}
+		}
+		return(function.args)
+	}
+)
 

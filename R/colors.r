@@ -227,34 +227,6 @@ color.ramp.default <- function(x, pal = gg.colors, ..., unique.pal = FALSE){
 
 
 #------------------------------------------------------------------------------
-#'	@describeIn color.ramp
-#'	method for data.frame.
-#'	@param factor.names
-#'		a character vector specifying the names of columuns to be used to
-#'		making groups.
-#'	@export
-#'	@method color.ramp data.frame
-#------------------------------------------------------------------------------
-color.ramp.data.frame <- function(
-	x, factor.names, pal = gg.colors, ..., sep = " - ", unique.pal = FALSE
-) {
-	if (missing(factor.names) | length(factor.names) == 0) {
-		factor.names <- colnames(x)[
-			sapply(x, is.factor) | sapply(x, is.character)
-		]
-	}
-	if (!all(factor.names %in% colnames(x))) {
-		stop("Some factors specified in 'factor.names' are not present in 'x'")
-	}
-	combinations <- combine.columns(x[factor.names], sep)
-	col <- color.ramp.default(
-		combinations, pal = pal, ..., unique.pal = unique.pal
-	)
-	return(col)
-}
-
-
-#------------------------------------------------------------------------------
 #	透明色を作る。
 #	Args:
 #		colors: 基本になる色。
