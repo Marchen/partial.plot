@@ -13,6 +13,7 @@ Depends:
     stats,
     methods,
     lsmeans,
+	parallel,
     model.adapter
 Imports:
     base,

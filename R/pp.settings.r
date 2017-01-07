@@ -33,10 +33,10 @@
 #'		a character specifying used for label of Y axis.
 #'	@field sep
 #'		a character representing separator of grouping factor levels.
-#'	@field n.cores
-#'		an integer specifing number of processes used for multiprocessing.
 #'	@field other.pars
 #		a list containing other graphic parameters passed to partial.plot().
+#'	@field n.cores
+#'		an integer specifing number of processes used for multiprocessing.
 #-------------------------------------------------------------------------------
 pp.settings <- setRefClass(
 	"pp.settings",
@@ -171,13 +171,32 @@ pp.settings$methods(
 		"
 		if (is.null(.self$n.cores)) {
 			# If n.cores is NULL, use all logical processors.
-			require(parallel)
 			.self$n.cores <- detectCores()
 		} else {
 			# If n.cores is not integer, raise error.
 			if (.self$n.cores %% 1 != 0) {
 				stop("'n.cores' should be integer or NULL")
 			}
+		}
+	}
+)
+
+
+#-------------------------------------------------------------------------------
+#	コア数の設定に合わせてlapply()かclusterApply()を実行する。
+#-------------------------------------------------------------------------------
+pp.settings$methods(
+	cluster.apply = function(X, FUN, ...) {
+		"
+		Interface for lapply() or clusterApply()
+		"
+		if (.self$n.cores == 1) {
+			return(lapply(X, FUN, ...))
+		} else {
+			cl <- makeCluster(.self$n.cores)
+			on.exit(stopCluster(cl))
+			clusterEvalQ(cl, library(model.adapter))
+			return(clusterApply(cl, x = X, fun = FUN, ...))
 		}
 	}
 )
