@@ -238,32 +238,6 @@ partial.relationship$methods(
 
 
 #------------------------------------------------------------------------------
-#	二次元偏依存性の信頼（などの）区間を描画する。
-#------------------------------------------------------------------------------
-partial.relationship$methods(
-	draw.interval.2d = function(data.split) {
-		"
-		(Internal) Draw intervals of partial.relationship in 2D graph.
-		\\describe{
-			\\item{data.split}{
-				splitted partial relationship data for each group.
-			}
-		}
-		"
-		for (i in names(settings$group.colors)) {
-			current.data <- data.split[[i]]
-			x <- current.data[[settings$x.names.numeric]]
-			x <- c(x, rev(x))
-			y <- c(current.data$lower, rev(current.data$upper))
-			polygon(
-				x, y, border = NA, col = trans.color(settings$group.colors[i])
-			)
-		}
-	}
-)
-
-
-#------------------------------------------------------------------------------
 #	二次元偏依存性の線を描画する。
 #------------------------------------------------------------------------------
 partial.relationship$methods(
@@ -284,6 +258,35 @@ partial.relationship$methods(
 			)
 			args <- settings$set.function.args(args, lines)
 			do.call(lines, args)
+		}
+	}
+)
+
+
+#------------------------------------------------------------------------------
+#	二次元偏依存性の信頼（などの）区間を描画する。
+#------------------------------------------------------------------------------
+partial.relationship$methods(
+	draw.interval.2d = function(data.split) {
+		"
+		(Internal) Draw intervals of partial.relationship in 2D graph.
+		\\describe{
+			\\item{data.split}{
+				splitted partial relationship data for each group.
+			}
+		}
+		"
+		if (settings$draw.intervals) {
+			for (i in names(settings$group.colors)) {
+				current.data <- data.split[[i]]
+				x <- current.data[[settings$x.names.numeric]]
+				x <- c(x, rev(x))
+				y <- c(current.data$lower, rev(current.data$upper))
+				polygon(
+					x, y, border = NA,
+					col = trans.color(settings$group.colors[i])
+				)
+			}
 		}
 	}
 )
