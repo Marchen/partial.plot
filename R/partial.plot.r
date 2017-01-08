@@ -241,8 +241,9 @@ partial.plot <- function(
 	}
 	# Plot partial residuals.
 	# 偏残差の描画。
-	if (draw.residuals & length(settings$x.names.numeric) == 1) {
-		draw.partial.residual(settings)
+	if (draw.residuals & settings$plot.type == "2D") {
+		residuals <- partial.residual(settings)
+		residuals$draw()
 	} else {
 		##### TODO ##### -> まともに設計する。
 		if (identical(settings$function.3d, image)) {

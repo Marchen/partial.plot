@@ -225,7 +225,7 @@ partial.relationship$methods(
 		"
 		# Dispatch based on number of numeric variables.
 		# 数値型の説明変数の数に応じて使う関数を変える。
-		if (length(settings$x.names.numeric) == 2) {
+		if (settings$plot.type == "3D") {
 			draw.3d()
 		} else {
 			draw.2d()

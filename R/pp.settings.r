@@ -73,6 +73,10 @@ if (require(rgl)) {
 #'		a character vector representing names of explanatory variables used
 #'		for plotting.
 #'
+#'	@field plot.type
+#'		a character literal to indicate plot type. Possible values are
+#'		"2D" and "3D".
+#'
 #'	@field x.names.factor
 #'		a character vector representing names of factor explanatory variables
 #'		used for plotting.
@@ -151,6 +155,7 @@ pp.settings <- setRefClass(
 		x.names = "character",
 		x.names.factor = "character",
 		x.names.numeric = "character",
+		plot.type = "character",
 		factor.levels = "list",
 		numeric.sequences = "list",
 		data = "data.frame",
@@ -244,6 +249,7 @@ pp.settings$methods(
 		.self$check.params()
 		.self$init.multiprocessing()
 		.self$init.x.names()
+		.self$init.plot.type()
 		.self$init.labels()
 		.self$init.colors()
 		.self$init.intervals()
@@ -410,6 +416,23 @@ pp.settings$methods(
 
 
 #------------------------------------------------------------------------------
+#	プロットの種類（2D/3D）を設定する。
+#------------------------------------------------------------------------------
+pp.settings$methods(
+	init.plot.type = function() {
+		"
+		Determine plot type (2D/3D).
+		"
+		if (length(.self$x.names.numeric) == 2) {
+			.self$plot.type <- "3D"
+		} else {
+			.self$plot.type <- "2D"
+		}
+	}
+)
+
+
+#------------------------------------------------------------------------------
 #	xlab、ylab、zlabを設定する。
 #------------------------------------------------------------------------------
 pp.settings$methods(
@@ -421,13 +444,13 @@ pp.settings$methods(
 			.self$xlab <- x.names.numeric[1]
 		}
 		if (is.null(ylab)) {
-			if (length(x.names.numeric) == 1) {
+			if (.self$plot.type == "2D") {
 				.self$ylab <- .self$adapter$y.names()
 			} else {
 				.self$ylab <- x.names.numeric[2]
 			}
 		}
-		if (is.null(zlab) & length(x.names.numeric) == 2) {
+		if (is.null(zlab) & .self$plot.type == "3D") {
 			.self$zlab <- .self$adapter$y.names()
 		}
 	}
@@ -481,7 +504,7 @@ pp.settings$methods(
 		Initialize resolution
 		"
 		if (is.null(.self$resolution)) {
-			if (length(.self$x.names.numeric) == 2) {
+			if (.self$plot.type == "3D") {
 				.self$resolution <- 10
 			} else {
 				.self$resolution <- 100
