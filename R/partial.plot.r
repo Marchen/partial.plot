@@ -232,13 +232,15 @@ draw.partial.residual <- function(settings) {
 #'		For the models not supported by lsmeans, this can be a value of
 #'		lower and upper quantile, e.g., \code{values = 0.95} indicates
 #'		lower quantile is 0.05 and uppter quantile is 0.95.
-#'		In this case, values can be a vector of length two specifying
-#'		both lower and upper quantiles.
+#'		A numeric vector of length two specifying
+#'		both lower and upper quantiles also can be specified.
 #'
 #'	@param resolution
 #'		an integer specifying resolution of lines, polygons, wireframes,
 #'		and images of numeric variables.
-#'		Larger number indicate higher resolution.
+#'		Larger number indicate higher resolution. Note that this parameter
+#'		can affect computation time so that higher resolution require
+#'		more times to draw the graph.
 #'
 #'	@param col
 #'		a function or named vector representing color of the graph object.
@@ -320,7 +322,8 @@ draw.partial.residual <- function(settings) {
 #'		residual to match result of \code{lsmeans}.
 #'		For models having complicated interactions such as machine learning
 #'		models, partial dependence is calculated by similar way as
-#'		\code{\link[randomForest]{partialPlot}} function.
+#'		\code{\link[randomForest]{partialPlot}} function in randomForest
+#'		package.
 #'
 #'		For the detailed explanation, see \code{vignette("partial.plot")}
 #'		(English) or \code{vignette("partial.plot.j")} (Japanese)
