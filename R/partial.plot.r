@@ -178,8 +178,8 @@ draw.partial.residual <- function(settings) {
 			x = settings$data[[settings$x.names.numeric]],
 			y = part.resid, col = settings$obs.colors
 		)
-		points.pars <- c("pch", "bg", "cex")
-		do.call(points, c(args, settings$other.pars[points.pars]))
+		args <- set.function.args(args, points)
+		do.call(points, args)
 	}
 }
 

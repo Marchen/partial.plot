@@ -386,9 +386,17 @@ pp.settings$methods(
 		if (identical(fun, persp)) {
 			args <- names(as.list(args(graphics:::persp.default)))
 			args <- c(args, "cex.lab", "font.lab", "cex.axis", "font.axis")
+		} else if (identical(fun, image)) {
+			args <- names(as.list(args(image.default)))
+			args <- c(args, "asp", "axes", "bg")
 		} else if (identical(fun, lines)) {
 			args <- names(as.list(args(lines.default)))
 			args <- c(args, "lty", "lwd", "lend", "ljoin", "lmitre")
+		} else if (identical(fun, points)) {
+			args <- names(as.list(args(points.default)))
+			args <- c(args, "pch", "bg", "cex")
+		} else {
+			args <- names(as.list(args(fun)))
 		}
 		return (args)
 	}
