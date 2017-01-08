@@ -178,7 +178,7 @@ draw.partial.residual <- function(settings) {
 			x = settings$data[[settings$x.names.numeric]],
 			y = part.resid, col = settings$obs.colors
 		)
-		args <- set.function.args(args, points)
+		args <- settings$set.function.args(args, points)
 		do.call(points, args)
 	}
 }
