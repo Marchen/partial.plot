@@ -249,7 +249,7 @@ color.ramp.numeric <- function(
 	}
 	# Assign color.
 	quantiles <- quantile(x, probs = seq(0, 1, 1 / n.class), na.rm = TRUE)
-	groups <- cut(x, breaks = quantiles, include.lowest = TRUE)
+	groups <- cut(x, breaks = unique(quantiles), include.lowest = TRUE)
 	palette <- make.palette(pal, groups)
 	if (unique.pal) {
 		return(palette)
