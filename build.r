@@ -23,7 +23,7 @@ old.wd <- setwd(get.this.file.dir())
 
 
 #------------------------------------------------------------------------------
-#	Install package before guilding vignettes.
+#	Install package before building vignettes.
 #------------------------------------------------------------------------------
 system("Rscript -e library(devtools);install()")
 
