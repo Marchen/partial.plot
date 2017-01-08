@@ -391,10 +391,10 @@ pp.settings$methods(
 			args <- c(args, "asp", "axes", "bg")
 		} else if (identical(fun, lines)) {
 			args <- names(as.list(args(lines.default)))
-			args <- c(args, "lty", "lwd", "lend", "ljoin", "lmitre")
+			args <- c(args, "lty", "lwd", "lend", "ljoin", "lmitre", "col")
 		} else if (identical(fun, points)) {
 			args <- names(as.list(args(points.default)))
-			args <- c(args, "pch", "bg", "cex")
+			args <- c(args, "pch", "bg", "cex", "col")
 		} else {
 			args <- names(as.list(args(fun)))
 		}
