@@ -172,7 +172,7 @@ pp.settings$methods(
 	initialize = function(
 		model, x.names, data = NULL, function.3d = persp,
 		draw.residuals = TRUE, draw.relationships = TRUE,
-		draw.intervals = TRUE, interval.levels = 0.95, resolution = 10L,
+		draw.intervals = TRUE, interval.levels = 0.95, resolution = NULL,
 		col = gg.colors, xlab = NULL, ylab = NULL, zlab = NULL, sep = " - ",
 		n.cores = NULL, ...
 	) {
@@ -239,6 +239,7 @@ pp.settings$methods(
 		.self$init.labels()
 		.self$init.colors()
 		.self$init.intervals()
+		.self$init.resolution()
 	}
 )
 
@@ -316,8 +317,10 @@ pp.settings$methods(
 		"
 		Check resolution is integer.
 		"
-		if (resolution %% 1 != 0) {
-			stop("'resolution' should be integer.")
+		if (!is.null(.self$resolution)) {
+			if (.self$resolution %% 1 != 0) {
+				stop("'resolution' should be integer.")
+			}
 		}
 	}
 )
@@ -453,6 +456,25 @@ pp.settings$methods(
 				)
 			} else {
 				.self$interval.levels <- .self.interval.levels[1:2]
+			}
+		}
+	}
+)
+
+
+#------------------------------------------------------------------------------
+#	解像度を初期化する。
+#------------------------------------------------------------------------------
+pp.settings$methods(
+	init.resolution = function() {
+		"
+		Initialize resolution
+		"
+		if (is.null(.self$resolution)) {
+			if (length(.self$x.names.numeric) == 2) {
+				.self$resolution <- 10
+			} else {
+				.self$resolution <- 100
 			}
 		}
 	}

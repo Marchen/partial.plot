@@ -238,6 +238,7 @@ draw.partial.residual <- function(settings) {
 #'	@param resolution
 #'		an integer specifying resolution of lines, polygons, wireframes,
 #'		and images of numeric variables.
+#'		Default value is 100 for 2D plots and 10 for 3D plots.
 #'		Larger number indicate higher resolution. Note that this parameter
 #'		can affect computation time so that higher resolution require
 #'		more times to draw the graph.
@@ -362,7 +363,7 @@ draw.partial.residual <- function(settings) {
 partial.plot <- function(
 	model, x.names, data = NULL, function.3d = persp,
 	draw.residuals = TRUE, draw.relationships = TRUE, draw.intervals = TRUE,
-	interval.levels = 0.95, resolution = 10, col = gg.colors,
+	interval.levels = 0.95, resolution = NULL, col = gg.colors,
 	xlab = NULL, ylab = NULL, zlab = NULL, sep = " - ", n.cores = NULL, ...
 ) {
 	# Initialize setting object.
