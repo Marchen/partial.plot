@@ -74,35 +74,6 @@ partial.residual <- function(settings) {
 
 
 #------------------------------------------------------------------------------
-#	数値型の説明変数に対して範囲を均等に区切ったベクトルを作る。
-#------------------------------------------------------------------------------
-#'	(Internal) Make sequence of numeric variables.
-#'
-#'	This function creates sequence of numeric variables for each specified
-#'	variable name. Ranges of the variables is obtained data.frame specified
-#'	in \code{data}.
-#'
-#'	@param settings
-#'		an object of \code{\link{pp.settings}} object having settings of
-#'		partial.plot.
-#'
-#'	@return
-#'		a named list containing sequence of variables.
-#------------------------------------------------------------------------------
-numeric.sequences <- function(settings) {
-	result <- list()
-	for (name in settings$x.names.numeric) {
-		result[[name]] <- seq(
-			min(settings$data[[name]], na.rm = TRUE),
-			max(settings$data[[name]], na.rm = TRUE),
-			length.out = settings$resolution
-		)
-	}
-	return(result)
-}
-
-
-#------------------------------------------------------------------------------
 #	新しいプロットを開く。
 #------------------------------------------------------------------------------
 #'	(Internal) Open new plot.

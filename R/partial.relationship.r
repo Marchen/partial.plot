@@ -63,12 +63,9 @@ partial.relationship$methods(
 		This function calculates data for regression lines and intervals using
 		\\code{\\link[lsmeans]{lsmeans}} function and returns a data.frame.
 		"
-		# prepare combinations of x variables.
-		# 説明変数の組み合わせを用意。
-		numerics <- numeric.sequences(settings)
 		# calculate prediction.
 		# 予測値を計算。
-		at <- c(numerics, settings$factor.levels)
+		at <- c(settings$numeric.sequences, settings$factor.levels)
 		rg <- ref.grid(
 			settings$model, at, data = settings$data, type = "terms"
 		)
@@ -147,8 +144,9 @@ partial.relationship$methods(
 		"
 		# prepare combinations of x variables.
 		# 説明変数の組み合わせを用意。
-		numerics <- numeric.sequences(settings)
-		grid <- do.call(expand.grid, c(numerics, settings$factor.levels))
+		grid <- do.call(
+			expand.grid, c(settings$numeric.sequences, settings$factor.levels)
+		)
 		# Initialize cluster.
 		# クラスター初期化
 		cl <- makeCluster(settings$n.cores)

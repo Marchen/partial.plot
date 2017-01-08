@@ -84,6 +84,9 @@ if (require(rgl)) {
 #'	@field factor.levels
 #'		a list having levels of factors specified by x.names.
 #'
+#'	@field numeric.sequences
+#'		a list having sequences of numeric variables specified by x.names.
+#'
 #'	@field data
 #'		a data.frame containing data used for plotting.
 #'
@@ -149,6 +152,7 @@ pp.settings <- setRefClass(
 		x.names.factor = "character",
 		x.names.numeric = "character",
 		factor.levels = "list",
+		numeric.sequences = "list",
 		data = "data.frame",
 		function.3d = "function",
 		draw.residuals = "logical",
@@ -245,6 +249,7 @@ pp.settings$methods(
 		.self$init.intervals()
 		.self$init.resolution()
 		.self$init.factor.levels()
+		.self$init.numeric.sequences()
 	}
 )
 
@@ -499,6 +504,27 @@ pp.settings$methods(
 			result[[name]] <- unique(.self$data[[name]])
 		}
 		.self$factor.levels <- result
+	}
+)
+
+
+#------------------------------------------------------------------------------
+#	予測値計算対象の数値型の数列を初期化する。
+#------------------------------------------------------------------------------
+pp.settings$methods(
+	init.numeric.sequences = function() {
+		"
+		Initialize numeric sequences.
+		"
+		result <- list()
+		for (name in .self$x.names.numeric) {
+			result[[name]] <- seq(
+				min(.self$data[[name]], na.rm = TRUE),
+				max(.self$data[[name]], na.rm = TRUE),
+				length.out = .self$resolution
+			)
+		}
+		.self$numeric.sequences <- result
 	}
 )
 
