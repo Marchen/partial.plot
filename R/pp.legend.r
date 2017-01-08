@@ -3,8 +3,8 @@
 #------------------------------------------------------------------------------
 #'	Draw legend of partial plot.
 #'
-#'	@param object
-#'		\code{\link{pp.info}} object resulted by\code{\link{partial.plot}}.
+#'	@param settings
+#'		\code{\link{pp.settings}} object resulted by\code{\link{partial.plot}}.
 #'	@param x
 #'		position of the legend. For the detail, see
 #'		\code{\link[grahpic]{legend}} function.
@@ -24,8 +24,8 @@
 #'	info <- partial.plot(model, c("Sepal.Length", "Species"), pch = 16)
 #'	partial.plot.legend(info, "topleft")
 #------------------------------------------------------------------------------
-pp.legend <- function(object, x, ...) {
-	if (!is(object, "pp.settings")) {
+pp.legend <- function(settings, x, ...) {
+	if (!is(settings, "pp.settings")) {
 		stop("'object' should be an instance of 'pp.settings' class")
 	}
 	# Prepare a list containing arguments specified in '...' named as if
@@ -33,16 +33,14 @@ pp.legend <- function(object, x, ...) {
 	# '...' に指定された引数をlegend()の引数であるかのように扱い、
 	# 名前付きリストに格納する。
 	call <- match.call()
-	call$object <- NULL
+	call$settings <- NULL
 	call <- match.call(legend, call)
 	call <- as.list(call)
 	call[[1]] <- NULL
 	# Make arguments for legend().
 	# legend()の引数を作成。
-	legend.args <- prepare.args.for.legend(object, as.list(call))
-	legend.args <- legend.args[
-		names(legend.args) %in% names(as.list(args(legend)))
-	]
+	legend.args <- prepare.args.for.legend(settings, as.list(call))
+	legend.args <- settings$set.function.args(legend.args, legend)
 	do.call(legend, legend.args)
 }
 
