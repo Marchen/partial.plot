@@ -33,11 +33,18 @@
 #'		\code{\link[graphics]{images}} can work.
 #'
 #'	@field draw.residuals
-#'		a logical representing that partial.plot drew residual points or not.
+#'		a logical representing that partial.plot drows residual points.
 #'
 #'	@field draw.relationships
-#'		a logical representing that partial.plot drew predicted relationships
-#'		or not.
+#'		a logical representing that partial.plot drows predicted relationships.
+#'
+#'	@field draw.relationships
+#'		a logical representing that partial.plot draws intervals of predicted
+#'		relationships.
+#'
+#'	@field interval.levels
+#'		numeric vector indicating confidence level or quantiles for
+#'		predicted relationships.
 #'
 #'	@field resolution
 #'		an integer specifying resolution of lines, polygons, wireframes,
@@ -85,6 +92,8 @@ pp.settings <- setRefClass(
 		function.3d = "function",
 		draw.residuals = "logical",
 		draw.relationships = "logical",
+		draw.intervals = "logical",
+		interval.levels = "numeric",
 		resolution = "ANY",
 		col = "ANY",
 		group.colors = "ANY",
@@ -105,7 +114,8 @@ pp.settings <- setRefClass(
 pp.settings$methods(
 	initialize = function(
 		model, x.names, data = NULL, function.3d = persp,
-		draw.residuals = TRUE, draw.relationships = TRUE, resolution = 10L,
+		draw.residuals = TRUE, draw.relationships = TRUE,
+		draw.intervals = TRUE, interval.levels = 0.95, resolution = 10L,
 		col = gg.colors, xlab = NULL, ylab = NULL, zlab = NULL, sep = " - ",
 		n.cores = NULL, ...
 	) {
@@ -159,7 +169,9 @@ pp.settings$methods(
 			adapter = model.adapter(model, data = data),
 			function.3d = function.3d, model = model, x.names = x.names,
 			draw.residuals = draw.residuals,
-			draw.relationships = draw.relationships, resolution = resolution,
+			draw.relationships = draw.relationships,
+			draw.intervals = draw.intervals, interval.levels = interval.levels,
+			resolution = resolution,
 			col = col, xlab = xlab, ylab = ylab, zlab = zlab, sep = sep,
 			n.cores = n.cores, other.pars = list(...)
 		)
@@ -224,6 +236,21 @@ pp.settings$methods(
 
 
 #------------------------------------------------------------------------------
+#	信頼区間、分位点が0と1の間かを確認する。
+#------------------------------------------------------------------------------
+pp.settings$methods(
+	check.intervals = function() {
+		"
+		Check interval of predicted relationships.
+		"
+		if (all(interval.levels < 0 | interval.levels > 1)) {
+			stop("'interval.levels' should be 0 <= interval.levels <= 1")
+		}
+	}
+)
+
+
+#------------------------------------------------------------------------------
 #	解像度が整数かどうかをチェックする。
 #------------------------------------------------------------------------------
 pp.settings$methods(
@@ -269,6 +296,7 @@ pp.settings$methods(
 		"
 		.self$check.data.access()
 		.self$check.x.names()
+		.self$check.intervals()
 		.self$check.resolution()
 		.self$check.labels()
 	}

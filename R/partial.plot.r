@@ -216,6 +216,24 @@ draw.partial.residual <- function(settings) {
 #'		a logical. If TRUE, partial relationships between focal explanatory
 #'		variables and response variable are drawn.
 #'
+#'	@param draw.intervals
+#'		a logical. If TRUE, interval of partial relationships are drawn.
+#'		Note that currently this intervals are confidential intervals if
+#'		\code{model} is supported by lsmeans and  are quantile of perdicted
+#'		values for the \code{model} not supported by lsmeans.
+#'
+#'	@param interval.levels
+#'		values between 0 <= levels <= 1 indicating level(s) of interval.
+#'
+#'		For the models supported by \code{\link[lsmeans]{lsmeans}},
+#'		this can be a value indicating confidence interval.
+#'
+#'		For the models not supported by lsmeans, this can be a value of
+#'		lower and upper quantile, e.g., \code{values = 0.95} indicates
+#'		lower quantile is 0.05 and uppter quantile is 0.95.
+#'		In this case, values can be a vector of length two specifying
+#'		both lower and upper quantiles.
+#'
 #'	@param resolution
 #'		an integer specifying resolution of lines, polygons, wireframes,
 #'		and images of numeric variables.
@@ -298,15 +316,16 @@ draw.partial.residual <- function(settings) {
 #------------------------------------------------------------------------------
 partial.plot <- function(
 	model, x.names, data = NULL, function.3d = persp,
-	draw.residuals = TRUE, draw.relationships = TRUE, resolution = 10,
-	col = gg.colors, xlab = NULL, ylab = NULL, zlab = NULL, sep = " - ",
-	n.cores = NULL, ...
+	draw.residuals = TRUE, draw.relationships = TRUE, draw.intervals = TRUE,
+	interval.levels = 0.95, resolution = 10, col = gg.colors,
+	xlab = NULL, ylab = NULL, zlab = NULL, sep = " - ", n.cores = NULL, ...
 ) {
 	# Initialize setting object.
 	# 設定オブジェクトの初期化。
 	settings <- pp.settings(
 		model, x.names, data, function.3d, draw.residuals, draw.relationships,
-		resolution, col, xlab, ylab, zlab, sep, n.cores, ...
+		draw.intervals, interval.levels, resolution, col, xlab, ylab, zlab,
+		sep, n.cores, ...
 	)
 	# Draw partial relationship graph.
 	# 関係式グラフの描画。
