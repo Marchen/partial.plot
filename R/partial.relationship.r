@@ -327,17 +327,20 @@ partial.relationship$methods(
 		cat("3D plot is experimental yet... :-)\n")
 		z.matrix <- matrix(.self$data$fit, nrow = settings$resolution)
 		if (identical(settings$function.3d, image)) {
-			col <- viridis(settings$resolution)
+			col <- color.ramp(z.matrix, settings$col, unique.pal = TRUE)
+		} else if (identical(settings$function.3d, persp)) {
+			col <- pp.colors(settings)$colors.for.persp(z.matrix)
 		} else {
-			col <- "black"
+			col <- color.ramp(z.matrix, settings$col)
 		}
-		settings$function.3d(
-			z.matrix,
+		args <- list(
+			z = z.matrix,
 			x = unique(.self$data[[settings$x.names[1]]]),
 			y = unique(.self$data[[settings$x.names[2]]]),
 			xlab = settings$xlab, ylab = settings$ylab, zlab = settings$zlab,
 			col = col
 		)
+		args <- settings$set.function.args(args)
+		do.call(settings$function.3d, args)
 	}
 )
-
