@@ -45,3 +45,16 @@ pp.colors$methods(
 	}
 )
 
+
+pp.colors$methods(
+	colors.for.persp = function(z.matrix) {
+		m <- matrix(nrow = nrow(z.matrix) - 1, ncol = ncol(z.matrix) - 1)
+		for (row in 1:(nrow(z.matrix) - 1)) {
+			for (col in 1:(nrow(z.matrix) - 1)) {
+				m[row, col] <- mean(z.matrix[row:(row + 1), col:(col + 1)])
+			}
+		}
+		color <- color.ramp(m, settings$col)
+		return(color)
+	}
+)
