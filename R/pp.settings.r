@@ -297,10 +297,13 @@ pp.settings$methods(
 
 
 #------------------------------------------------------------------------------
-#	xlab、ylab、zlabを設定する。
+#	因子型・数値型の説明変数名を準備する。
 #------------------------------------------------------------------------------
 pp.settings$methods(
 	init.x.names = function() {
+		"
+		Initialize names of factor and numeric explanatory variables.
+		"
 		.self$x.names.factor <- x.names[sapply(data[x.names], is.factor)]
 		.self$x.names.numeric <- x.names[sapply(data[x.names], is.numeric)]
 	}

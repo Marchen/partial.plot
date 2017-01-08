@@ -11,6 +11,8 @@ LSMEANS_COMPATIBLE_MODELS <- c(
 #------------------------------------------------------------------------------
 #'	Calculate and draw partial relationship.
 #'
+#'	To use this class initialize it and call draw() method.
+#'
 #'	@field data
 #'		data.frame to keep calculated partial relationship data.
 #'	@field settings
@@ -30,6 +32,10 @@ partial.relationship$methods(
 	initialize = function(settings) {
 		"
 		Initialize class and calculate partial.relationship data.
+
+		\\describe{
+			\\item{settings}{pp.settings object having function settings.}
+		}
 		"
 		# Safe-guard for internal processing of reference class.
 		if (missing(settings)) {
@@ -174,6 +180,10 @@ partial.relationship$methods(
 		This internal function removes predicted values those explanatory
 		variable is out of range of original data used for modeling for each
 		group and returns a resultant data.frame.
+
+		\\describe{
+			\\item{prediction}{result of lsmeans.}
+		}
 		"
 		# Get list of unique factors.
 		# 因子の一覧を作成。
@@ -213,7 +223,9 @@ partial.relationship$methods(
 #------------------------------------------------------------------------------
 partial.relationship$methods(
 	draw = function() {
-		"Draw partial relationship graph."
+		"
+		Draw partial relationship graph.
+		"
 		# Dispatch based on number of numeric variables.
 		# 数値型の説明変数の数に応じて使う関数を変える。
 		if (length(settings$x.names.numeric) == 2) {
