@@ -236,6 +236,59 @@ partial.relationship$methods(
 	}
 )
 
+
+#------------------------------------------------------------------------------
+#	二次元偏依存性の信頼（などの）区間を描画する。
+#------------------------------------------------------------------------------
+partial.relationship$methods(
+	draw.interval.2d = function(data.split) {
+		"
+		(Internal) Draw intervals of partial.relationship in 2D graph.
+		\\describe{
+			\\item{data.split}{
+				splitted partial relationship data for each group.
+			}
+		}
+		"
+		for (i in names(settings$group.colors)) {
+			current.data <- data.split[[i]]
+			x <- current.data[[settings$x.names.numeric]]
+			x <- c(x, rev(x))
+			y <- c(current.data$lower, rev(current.data$upper))
+			polygon(
+				x, y, border = NA, col = trans.color(settings$group.colors[i])
+			)
+		}
+	}
+)
+
+
+#------------------------------------------------------------------------------
+#	二次元偏依存性の線を描画する。
+#------------------------------------------------------------------------------
+partial.relationship$methods(
+	draw.relationship.2d = function(data.split) {
+		for (i in names(settings$group.colors)) {
+			"
+			(Internal) Draw partial relationship lines in 2D graph.
+			\\describe{
+				\\item{data.split}{
+					splitted partial relationship data for each group.
+				}
+			}
+			"
+			current.data <- data.split[[i]]
+			args <- list(
+				x = current.data[[settings$x.names.numeric]],
+				y = current.data$fit, col = settings$group.colors[i]
+			)
+			args <- settings$set.function.args(args, lines)
+			do.call(lines, args)
+		}
+	}
+)
+
+
 #------------------------------------------------------------------------------
 #	二次元偏依存性グラフを描画する。
 #------------------------------------------------------------------------------
@@ -245,12 +298,10 @@ partial.relationship$methods(
 		Draw 2D partial relationship graph.
 		"
 		# Open new plot.
-		# 新しいプロットを開く。
 		open.new.plot(settings, .self$data)
 		# Split data.
-		# データを分割。
 		if (length(settings$group.colors) == 1) {
-			pr.data<- list(all = .self$data)
+			pr.data <- list(all = .self$data)
 		} else {
 			pr.data <- split(
 				.self$data, .self$data[settings$x.names.factor],
@@ -258,30 +309,9 @@ partial.relationship$methods(
 			)
 		}
 		# Draw polygons.
-		# ポリゴンを描画
-		for (i in names(settings$group.colors)) {
-			d <- pr.data[[i]]
-			x <- d[[settings$x.names.numeric]]
-			x <- c(x, rev(x))
-			y <- c(d$lower, rev(d$upper))
-			polygon(
-				x, y, border = NA, col = trans.color(settings$group.colors[i])
-			)
-		}
+		.self$draw.interval.2d(pr.data)
 		# Draw partial relationships.
-		# To handle valid graphic paramters in ... for lines, use do.call.
-		# 関係式を描画。...の中からlinesで使えるグラフィックパラメーターだけを
-		# 使うため、do.callを呼ぶ。
-		for (i in names(settings$group.colors)) {
-			d <- pr.data[[i]]
-			args <- list(
-				x = d[[settings$x.names.numeric]],
-				y = d$fit, col = settings$group.colors[i]
-			)
-			lines.par <- c("lty", "lwd", "lend", "ljoin", "lmitre")
-			args <- c(args, settings$other.pars[settings$other.pars %in% lines.par])
-			do.call(lines, args)
-		}
+		.self$draw.relationship.2d(pr.data)
 	}
 )
 
