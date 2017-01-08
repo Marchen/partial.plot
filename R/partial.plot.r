@@ -264,10 +264,51 @@ draw.partial.residual <- function(settings) {
 #'
 #'	@param ...
 #'		other graphic parameters passed to poltting functions.
-#'		Currently, \code{pch}, \code{bg} and \code{cex} are passed to
-#'		\code{points} function, \code{lty}, \code{lwd}, \code{lend},
-#'		\code{ljoin} and \code{lmitre} are passed to \code{lines} function,
-#'		and others are passed to \code{plot} function.
+#'		Possible parameters for each element of the graph is:
+#'
+#'		\describe{
+#'			\item{Partial relatioship lines}{
+#'				\code{lty}, \code{lwd}, \code{lend},\code{ljoin},
+#'				\code{lmitre}, \code{col}, parameters supported by
+#'				\code{\link[graphics]{lines.default}}.
+#'			}
+#'			\item{Interval of partial relationship}{
+#'				none.
+#'			}
+#'			\item{Partial residual points}{
+#'				\code{pch}, \code{bg}, \code{cex}, \code{col}, parameters
+#'				supported by \code{\link[graphics]{points.default}}.
+#'				In the case not drawing interval of partial relationship,
+#'				all parameters are used.
+#'			}
+#'			\item{3D partial relationship by \code{\link[graphics]{persp}}}{
+#'				\code{cex.lab}, \code{font.lab}, \code{cex.axis},
+#'				\code{font.axis}, parameters supported by
+#'				\code{\link[graphics]{persp.default}}.
+#'			}
+#'			\item{3D partial relationship by \code{\link[graphics]{image}}}{
+#'				\code{asp}, \code{axes}, \code{bg}, paramters supported by
+#'				\code{link[graphics]{image.default}},
+#'			}
+#'			\item{3D partial relationship by \code{\link[grpahics]{contour}}}{
+#'				\code{xaxs}, \code{yaxs}, \code{lab}, \code{col.main},
+#'				\code{cex.sub}, \code{xpd}, \code{mgp}, \code{cex.axis},
+#'				\code{col.axis}, \code{font.axis}, \code{xaxp}, \code{yaxp},
+#'				\code{tck}, \code{tcl}, \code{las}, \code{fg}, \code{xaxt},
+#'				\code{yaxt}, \code{bty}, parameters supported by
+#'				\code{\link[graphics]{contour.default}},
+#'				\code{\link[graphics]{plot.window}},
+#'				\code{\link[graphics]{title}}, \code{\link[graphics]{Axis}},
+#'				\code{\link[graphics]{axis}} and \code{\link[graphics]{box}}
+#'				functions.
+#'			}
+#'			\item{3D partial relationship by \code{\link[rgl]{persp3d}}}{
+#'				\code{col}, parameters supported by
+#'				\code{\link[rgl]{persp3d.default}},
+#'				\code{\link[rgl]{surface3d}} and
+#'				\code{\link[rgl]{rgl.material}} functions.
+#'			}
+#'		}
 #'
 #'	@return
 #'		An object of \code{\link{pp.legend}} containing informations which

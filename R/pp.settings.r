@@ -1,4 +1,61 @@
 #------------------------------------------------------------------------------
+#	関数の引数名を作るための補助関数。
+#------------------------------------------------------------------------------
+#'	(Internal) Supporting function which retrieves names of arguments.
+#'
+#'	@param x list of functions from which names of arguments are retrieved.
+#'	@param ... other parameter names to keep.
+#'	@return a character vector of argument names.
+#------------------------------------------------------------------------------
+arg.names <- function(x, ...) {
+	args <- character()
+	for (i in x) {
+		args <- c(args, names(as.list(args(i))))
+	}
+	args <- c(args, ...)
+	args <- unique(args)
+	return(args)
+}
+
+
+#------------------------------------------------------------------------------
+#	関数の引き数名を用意してキャッシュする。
+#------------------------------------------------------------------------------
+#	Cache parameter names of graphic functions.
+#------------------------------------------------------------------------------
+ARG_NAMES <- list(
+	persp = arg.names(
+		list(graphics:::persp.default),
+		"cex.lab", "font.lab", "cex.axis", "font.axis"
+	),
+	image = arg.names(list(graphics::image.default), "asp", "axes", "bg"),
+	lines = arg.names(
+		list(graphics::lines.default),
+		"lty", "lwd", "lend", "ljoin", "lmitre", "col"
+	),
+	points = arg.names(
+		list(graphics::points.default), "pch", "bg", "cex", "col"
+	),
+	contour = arg.names(
+		list(
+			graphics::contour.default, graphics::plot.window,
+			graphics::title, graphics::Axis, graphics::axis,
+			graphics::box
+		),
+		"xaxs", "yaxs", "lab", "col.main", "cex.sub", "xpd", "mgp",
+		"cex.axis", "col.axis", "font.axis", "xaxp", "yaxp", "tck", "tcl",
+		"las", "fg", "xaxt", "yaxt", "bty"
+	)
+)
+
+if (require(rgl)) {
+	ARG_NAMES$persp3d <- arg.names(
+		list(rgl:::persp3d.default, rgl::surface3d, rgl::rgl.material), "col"
+	)
+}
+
+
+#------------------------------------------------------------------------------
 #	partial.plotの情報を保持するクラス。
 #------------------------------------------------------------------------------
 #'	(Internal) A reference class to keep settings/information of partial.plot.
@@ -436,20 +493,26 @@ pp.settings$methods(
 		}
 		"
 		if (identical(fun, persp)) {
-			args <- names(as.list(args(graphics:::persp.default)))
-			args <- c(args, "cex.lab", "font.lab", "cex.axis", "font.axis")
-		} else if (identical(fun, image)) {
-			args <- names(as.list(args(image.default)))
-			args <- c(args, "asp", "axes", "bg")
-		} else if (identical(fun, lines)) {
-			args <- names(as.list(args(lines.default)))
-			args <- c(args, "lty", "lwd", "lend", "ljoin", "lmitre", "col")
-		} else if (identical(fun, points)) {
-			args <- names(as.list(args(points.default)))
-			args <- c(args, "pch", "bg", "cex", "col")
-		} else {
-			args <- names(as.list(args(fun)))
+			return(ARG_NAMES$persp)
 		}
+		if (identical(fun, graphics::image)) {
+			return(ARG_NAMES$image)
+		}
+		if (identical(fun, graphics::lines)) {
+			return(ARG_NAMES$lines)
+		}
+		if (identical(fun, graphics::points)) {
+			return(ARG_NAMES$points)
+		}
+		if (identical(fun, graphics::contour)) {
+			return(ARG_NAMES$contour)
+		}
+		if (require(rgl)) {
+			if (identical(fun, rgl::persp3d)) {
+				return(ARG_NAMES$persp3d)
+			}
+		}
+		args <- names(as.list(args(fun)))
 		return (args)
 	}
 )
@@ -479,7 +542,9 @@ pp.settings$methods(
 				function.args[[i]] <- pars[[i]]
 			}
 		}
-		function.args <- function.args[.self$potential.arg.names(fun)]
+		function.args <- function.args[
+			names(function.args) %in% .self$potential.arg.names(fun)
+		]
 		return(function.args)
 	}
 )
