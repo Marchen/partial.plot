@@ -73,7 +73,9 @@ partial.relationship$methods(
 		rg <- ref.grid(
 			settings$model, at, data = settings$data, type = "terms"
 		)
-		lsm <- summary(lsmeans(rg, settings$x.names))
+		lsm <- summary(
+			lsmeans(rg, settings$x.names), level = settings$interval.levels
+		)
 		colnames(lsm)[colnames(lsm) == "lsmean"] <- "fit"
 		colnames(lsm)[colnames(lsm) == "lower.CL"] <- "lower"
 		colnames(lsm)[colnames(lsm) == "upper.CL"] <- "upper"
@@ -93,7 +95,9 @@ partial.relationship$methods(
 #	クラスターで予測値を計算するラッパー関数。
 #------------------------------------------------------------------------------
 partial.relationship$methods(
-	predict.stats = function(newdata, predict.fun, new.value.grid, index) {
+	predict.stats = function(
+		newdata, predict.fun, new.value.grid, index, levels
+	) {
 		"
 		Calculate prediction in cluster.
 
@@ -108,6 +112,7 @@ partial.relationship$methods(
 				row index of \\code{new.value.grid} where predicted values
 				are calculated.
 			}
+			\\item{\\code{levels}}{levels of quantiles.}
 		}
 		"
 		# Make data for prediction.
@@ -123,11 +128,7 @@ partial.relationship$methods(
 			#### typeをなんとかする。
 			newdata = newdata
 		)
-		#### TODO #####
-		#### Quantileのハードコードをなんとかする
-		quantiles <- quantile(
-			prediction$fit, probs = c(0.05, 0.95), na.rm = TRUE
-		)
+		quantiles <- quantile(prediction$fit, probs = levels, na.rm = TRUE)
 		result <- c(fit = median(prediction$fit), quantiles, replace.values)
 		names(result) <- c("fit", "lower", "upper", param.names)
 		result <- as.data.frame(as.list(result))
@@ -160,7 +161,7 @@ partial.relationship$methods(
 		result <- settings$cluster.apply(
 			X = 1:nrow(grid), FUN = .self$predict.stats,
 			newdata = settings$data, predict.fun = settings$adapter$predict,
-			new.value.grid = grid
+			new.value.grid = grid, levels = settings$interval.levels
 		)
 		result <- do.call(rbind, result)
 		return(result)

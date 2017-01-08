@@ -226,7 +226,8 @@ draw.partial.residual <- function(settings) {
 #'		values between 0 <= levels <= 1 indicating level(s) of interval.
 #'
 #'		For the models supported by \code{\link[lsmeans]{lsmeans}},
-#'		this can be a value indicating confidence interval.
+#'		this can be a value indicating confidence interval. Only the first
+#'		element of the numeric vector is used for confidence intervals.
 #'
 #'		For the models not supported by lsmeans, this can be a value of
 #'		lower and upper quantile, e.g., \code{values = 0.95} indicates

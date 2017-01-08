@@ -181,6 +181,7 @@ pp.settings$methods(
 		.self$init.x.names()
 		.self$init.labels()
 		.self$init.colors()
+		.self$init.intervals()
 	}
 )
 
@@ -374,6 +375,29 @@ pp.settings$methods(
 		brewer = pp.colors(.self)
 		.self$group.colors <- brewer$colors.for.groups()
 		.self$obs.colors <- brewer$colors.for.observations()
+	}
+)
+
+
+#------------------------------------------------------------------------------
+#	信頼区間、分位点のレベル数を調整する。
+#------------------------------------------------------------------------------
+pp.settings$methods(
+	init.intervals = function() {
+		"
+		Initialize settings of intervals.
+		"
+		if (any(class(.self$model) %in% LSMEANS_COMPATIBLE_MODELS)) {
+			.self$interval.levels <- interval.levels[1]
+		} else {
+			if (length(.self$interval.levels) == 1) {
+				.self$interval.levels <- range(
+					.self$interval.levels, 1 - .self$interval.levels
+				)
+			} else {
+				.self$interval.levels <- .self.interval.levels[1:2]
+			}
+		}
 	}
 )
 
