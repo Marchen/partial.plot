@@ -86,7 +86,7 @@ prepare.args.for.legend = function(settings, legend.args) {
 			legend.args$lty <- "solid"
 		}
 	} else {
-		legend.args <- NULL
+		legend.args$lty <- NULL
 	}
 	# Set plot character based on the setting of partial.plot.
 	# 点のシンボルをpartial.plotの設定に基づいて決定。
