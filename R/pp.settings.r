@@ -367,19 +367,56 @@ pp.settings$methods(
 )
 
 
+#------------------------------------------------------------------------------
+#	関数の引き数名の候補を取得する。
+#------------------------------------------------------------------------------
 pp.settings$methods(
-	export.graphic.args = function(
-		function.args = list(), potential.par.names = NULL
+	potential.arg.names = function(fun) {
+		"
+		Return a character vector having names of potential
+		arguments of the function.
+
+		\\describe{
+			\\item{fun}{function to get potential argument names.}
+		}
+		"
+		if (identical(fun, persp)) {
+			args <- names(as.list(args(graphics:::persp.default)))
+			args <- c(args, "cex.lab", "font.lab", "cex.axis", "font.axis")
+		} else if (identical(fun, lines)) {
+			args <- names(as.list(args(lines.default)))
+			args <- c(args, "lty", "lwd", "lend", "ljoin", "lmitre")
+		}
+		return (args)
+	}
+)
+
+
+#------------------------------------------------------------------------------
+#	関数の呼び出しに使う引数に保持している情報を適用する。
+#------------------------------------------------------------------------------
+pp.settings$methods(
+	set.function.args = function(
+		function.args = list(), fun = .self$function.3d
 	) {
-		pars <- list(xlab = settings$xlab, ylab = settings$ylab)
-		pars <- c(pars, setting$other.pars)
-		pars <- pars[potential.par.names]
+		"
+		Assign function arguments kept in this class and returns it in a list.
+
+		\\describe{
+			\\item{function.args}{
+				arguments for the function call to be modified.
+			}
+			\\item{fun}{target function to be call.}
+		}
+		"
+		pars <- c(list(xlab = xlab, ylab = ylab, zlab = zlab), other.pars)
 		# Copy pars if it's not in function.args.
 		for (i in names(pars)) {
-			if (i %in% names(function.args)) {
+			if (!i %in% names(function.args)) {
 				function.args[[i]] <- pars[[i]]
 			}
 		}
+		function.args <- function.args[.self$potential.arg.names(fun)]
 		return(function.args)
 	}
 )
