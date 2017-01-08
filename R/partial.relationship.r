@@ -66,10 +66,9 @@ partial.relationship$methods(
 		# prepare combinations of x variables.
 		# 説明変数の組み合わせを用意。
 		numerics <- numeric.sequences(settings)
-		factors <- get.unique.factors(settings)
 		# calculate prediction.
 		# 予測値を計算。
-		at <- c(numerics, factors)
+		at <- c(numerics, settings$factor.levels)
 		rg <- ref.grid(
 			settings$model, at, data = settings$data, type = "terms"
 		)
@@ -83,7 +82,7 @@ partial.relationship$methods(
 		colnames(lsm)[colnames(lsm) == "asymp.UCL"] <- "upper"
 		# Remove predictions with out-ranged explanatory variable for each group.
 		# 各グループの説明変数の範囲を外れた予測値を削除。
-		if (length(factors) != 0) {
+		if (length(settings$factor.levels) != 0) {
 			lsm <- filter.result(lsm)
 		}
 		return(as.data.frame(lsm))
@@ -149,8 +148,7 @@ partial.relationship$methods(
 		# prepare combinations of x variables.
 		# 説明変数の組み合わせを用意。
 		numerics <- numeric.sequences(settings)
-		factors <- get.unique.factors(settings)
-		grid <- do.call(expand.grid, c(numerics, factors))
+		grid <- do.call(expand.grid, c(numerics, settings$factor.levels))
 		# Initialize cluster.
 		# クラスター初期化
 		cl <- makeCluster(settings$n.cores)
@@ -188,7 +186,7 @@ partial.relationship$methods(
 		"
 		# Get list of unique factors.
 		# 因子の一覧を作成。
-		factors <- expand.grid(get.unique.factors(settings))
+		factors <- expand.grid(settings$factor.levels)
 		# Split data and prediction for each factor group.
 		# データを因子のグループごとに分割。
 		sep = settings$sep

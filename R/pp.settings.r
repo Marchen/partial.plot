@@ -81,6 +81,9 @@ if (require(rgl)) {
 #'		a character vector representing names of numeric explanatory variables
 #'		used for plotting.
 #'
+#'	@field factor.levels
+#'		a list having levels of factors specified by x.names.
+#'
 #'	@field data
 #'		a data.frame containing data used for plotting.
 #'
@@ -145,6 +148,7 @@ pp.settings <- setRefClass(
 		x.names = "character",
 		x.names.factor = "character",
 		x.names.numeric = "character",
+		factor.levels = "list",
 		data = "data.frame",
 		function.3d = "function",
 		draw.residuals = "logical",
@@ -240,6 +244,7 @@ pp.settings$methods(
 		.self$init.colors()
 		.self$init.intervals()
 		.self$init.resolution()
+		.self$init.factor.levels()
 	}
 )
 
@@ -477,6 +482,23 @@ pp.settings$methods(
 				.self$resolution <- 100
 			}
 		}
+	}
+)
+
+
+#------------------------------------------------------------------------------
+#	因子のレベル一覧を初期化する。
+#------------------------------------------------------------------------------
+pp.settings$methods(
+	init.factor.levels = function() {
+		"
+		Initialize factor levels.
+		"
+		result <- list()
+		for (name in .self$x.names.factor) {
+			result[[name]] <- unique(.self$data[[name]])
+		}
+		.self$factor.levels <- result
 	}
 )
 

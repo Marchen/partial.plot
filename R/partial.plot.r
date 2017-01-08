@@ -19,26 +19,6 @@ combine.columns <- function(data, sep) {
 
 
 #------------------------------------------------------------------------------
-#	因子型の変数の一意な値を取得する。
-#------------------------------------------------------------------------------
-#'	(Internal) Extract unique factors in a data.frame
-#'
-#'	@param settings
-#'		an object of \code{\link{pp.settings}} object having settings of
-#'		partial.plot.
-#'
-#'	@return a list having unique values of factors.
-#------------------------------------------------------------------------------
-get.unique.factors <- function(settings) {
-	result <- list()
-	for (name in settings$x.names.factor) {
-		result[[name]] <- unique(settings$data[[name]])
-	}
-	return(result)
-}
-
-
-#------------------------------------------------------------------------------
 #'	(Internal) Calculate partial residual.
 #'
 #'	This function calculates partial residual for specfied model.
