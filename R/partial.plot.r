@@ -230,12 +230,4 @@ partial.plot <- function(
 	invisible(settings)
 }
 
-#library(e1071)
-#model <- svm(
-	#Petal.Length ~ Sepal.Length + Petal.Width + Species, data = iris
-#)
-#info <- partial.plot(
-	#model, c("Sepal.Length", "Species"), pch = 16, n.cores = 1,
-	#draw.residual = FALSE
-#)
 
