@@ -71,6 +71,8 @@ partial.relationship$methods(
 				sep = settings$sep
 			)
 		}
+		# Assign data to settings object.
+		settings$set.relationship(.self)
 	}
 )
 

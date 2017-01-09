@@ -146,6 +146,21 @@ if (require(rgl)) {
 #'	@field n.cores
 #'		an integer specifing number of processes used for multiprocessing.
 #'
+#'	@field relationship
+#'		a data.frame having partial relationship data.
+#'
+#'	@field relationship.split
+#'		a list having partial relationship data splitted for each group.
+#'
+#'	@field residual
+#'		a numeric vector having partial residual data.
+#'
+#'	@field has.relationship
+#'		a logical indicating the object has partial relationship data.
+#'
+#'	@field has.residual
+#'		a logical indicating the object has partial residual data.
+#'
 #------------------------------------------------------------------------------
 pp.settings <- setRefClass(
 	"pp.settings",
@@ -173,7 +188,12 @@ pp.settings <- setRefClass(
 		zlab = "ANY",
 		sep = "character",
 		other.pars = "list",
-		n.cores = "ANY"
+		n.cores = "ANY",
+		relationship = "data.frame",
+		relationship.split = "list",
+		residual = "numeric",
+		has.relationship = "logical",
+		has.residual = "logical"
 	)
 )
 
@@ -250,7 +270,8 @@ pp.settings$methods(
 			draw.interval = draw.interval, interval.levels = interval.levels,
 			resolution = resolution,
 			col = col, xlab = xlab, ylab = ylab, zlab = zlab, sep = sep,
-			n.cores = n.cores, other.pars = list(...)
+			n.cores = n.cores, other.pars = list(...),
+			has.relationship = FALSE, has.residual = FALSE
 		)
 		initFields(data = adapter$data)
 		.self$check.params()
@@ -648,4 +669,34 @@ pp.settings$methods(
 		return(function.args)
 	}
 )
+
+
+#------------------------------------------------------------------------------
+#	偏依存性データを設定する。
+#------------------------------------------------------------------------------
+pp.settings$methods(
+	set.relationship = function(object) {
+		"
+		Set partial relationship data.
+		"
+		.self$relationship <- object$data
+		.self$relationship.split <- object$data.split
+		.self$has.relationship <- TRUE
+	}
+)
+
+
+#------------------------------------------------------------------------------
+#	偏残差データを設定する。
+#------------------------------------------------------------------------------
+pp.settings$methods(
+	set.residual = function(object) {
+		"
+		Import partial residual data.
+		"
+		.self$residual <- object$data
+		.self$has.residual <- TRUE
+	}
+)
+
 

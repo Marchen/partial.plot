@@ -34,6 +34,7 @@ partial.residual$methods(
 		}
 		initFields(settings = settings)
 		.self$calculate.residuals()
+		settings$set.residual(.self)
 	}
 )
 
