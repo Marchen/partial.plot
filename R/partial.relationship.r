@@ -311,17 +311,15 @@ partial.relationship$methods(
 		"
 		Draw intervals of partial.relationship in 2D graph.
 		"
-		if (settings$draw.interval) {
-			for (i in names(settings$group.colors)) {
-				current.data <- .self$data.split[[i]]
-				x <- current.data[[settings$x.names.numeric]]
-				x <- c(x, rev(x))
-				y <- c(current.data$lower, rev(current.data$upper))
-				polygon(
-					x, y, border = NA,
-					col = trans.color(settings$group.colors[i])
-				)
-			}
+		for (i in names(settings$group.colors)) {
+			current.data <- .self$data.split[[i]]
+			x <- current.data[[settings$x.names.numeric]]
+			x <- c(x, rev(x))
+			y <- c(current.data$lower, rev(current.data$upper))
+			polygon(
+				x, y, border = NA,
+				col = trans.color(settings$group.colors[i])
+			)
 		}
 	}
 )

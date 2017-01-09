@@ -114,29 +114,12 @@ partial.residual$methods(
 		"
 		Draw 2D residuals.
 		"
-		# Calculate and draw partial residual
-		# 偏残差を計算して描画。
-		part.resid <- partial.residual(settings)
-		if (!settings$draw.relationship) {
-			args <- list(
-				settings$data[[settings$x.names.numeric]], .self$data,
-				col = settings$obs.colors,
-				xlab = settings$xlab, ylab = settings$ylab
-			)
-			args <- c(args, settings$other.pars)
-			do.call(plot, args)
-		} else {
-			# To handle graphic parameters in ..., use do.call,
-			# not directly call points function.
-			# ...に入ったグラフィックパラメーターを制御するため、
-			# points関数を直接呼ばずにdo.callを使う。
-			args <- list(
-				x = settings$data[[settings$x.names.numeric]],
-				y = .self$data, col = settings$obs.colors
-			)
-			args <- settings$set.function.args(args, points)
-			do.call(points, args)
-		}
+		args <- list(
+			x = settings$data[[settings$x.names.numeric]],
+			y = .self$data, col = settings$obs.colors
+		)
+		args <- settings$set.function.args(args, points)
+		do.call(points, args)
 	}
 )
 

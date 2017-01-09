@@ -19,49 +19,6 @@ combine.columns <- function(data, sep) {
 
 
 #------------------------------------------------------------------------------
-#	新しいプロットを開く。
-#------------------------------------------------------------------------------
-#'	(Internal) Open new plot window.
-#'
-#'	@param settings
-#'		an object of \code{\link{pp.settings}} object having settings of
-#'		partial.plot.
-#'
-#'	@param relationship
-#'		an object of \code{\link{partial.relationship}} class having predicted
-#'		partial relationship and its interval data.
-#'
-#'	@param residual
-#'		an object of \code{\link{partial.residual}} class having predicted
-#'		partial residual data.
-#------------------------------------------------------------------------------
-open.plot.window <- function(
-	settings, relationship = NULL, residual = NULL
-) {
-	# Find possible x and y values.
-	if (!is.null(relationship)) {
-		if (is.null(relationship$data$upper)) {
-			x <- relationship$data[[settings$x.names.numeric]]
-			y <- relationship$fit
-		} else {
-			x <- rep(relationship$data[[settings$x.names.numeric]], 2)
-			y <- c(relationship$data$upper, relationship$data$lower)
-		}
-	} else {
-		x <- y <- numeric()
-	}
-	if (!is.null(residual)) {
-		x <- c(x, settings$data[[settings$x.names.numeric]])
-		y <- c(y, residual$data)
-	}
-	# Open plot window.
-	args <- list(x, y, type = "n", xlab = settings$xlab, ylab = settings$ylab)
-	args <- c(args, settings$other.pars)
-	do.call(plot, args)
-}
-
-
-#------------------------------------------------------------------------------
 #	偏残差・偏回帰プロットを描画。
 #------------------------------------------------------------------------------
 #'	Partial relationship graph.
@@ -268,16 +225,8 @@ partial.plot <- function(
 		residual <- NULL
 	}
 	# Draw
-	if (settings$plot.type == "2D") {
-		open.plot.window(settings, relationship, residual)
-	}
-	if (!is.null(relationship)) {
-		relationship$draw.interval()
-		relationship$draw.relationship()
-	}
-	if (!is.null(residual)) {
-		residual$draw()
-	}
+	drawer <- pp.drawer(settings, relationship, residual)
+	drawer$draw()
 	invisible(settings)
 }
 
