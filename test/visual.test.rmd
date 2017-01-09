@@ -28,17 +28,18 @@ knit_hooks$set(webgl = hook_webgl)
 
 # Test controling graphic elements in 2D plot.
 
+## Testing 2D plot without interaction terms.
+```{R}
+model <- glm(Petal.Length ~ Sepal.Length + Petal.Width, data = iris)
+info <- partial.plot(model, "Sepal.Length", pch = 16)
+pp.legend(info, "topleft")
+```
+
 ## Prepare test model.
 ```{R}
 model <- glm(
 	Petal.Length ~ (Sepal.Length + Petal.Width) * Species, data = iris
 )
-```
-
-## Testing 2D plot without interaction terms.
-```{R}
-info <- partial.plot(model, "Sepal.Length", pch = 16)
-pp.legend(info, "topleft")
 ```
 
 ## Testing 2D plot with an interaction term.
@@ -133,51 +134,49 @@ par(mfrow = c(1, 1))
 -------------------------------------------------------------------------------
 # Test controling graphic elements in 3D plot.
 
-## Test persp.
+## Test _persp()_.
 ```{R}
 info <- partial.plot(
-	model, c("Sepal.Length", "Petal.Width"), pch = 16, col = viridis,
-	function.3d = persp
+	model, c("Sepal.Length", "Petal.Width"), col = viridis, function.3d = persp
 )
 ```
 
-## Test image.
+## Test _image()_.
 ```{R}
 info <- partial.plot(
-	model, c("Sepal.Length", "Petal.Width"), pch = 16, col = viridis,
-	function.3d = image
+	model, c("Sepal.Length", "Petal.Width"), col = viridis, pch = 16,
+    function.3d = image
 )
 ```
 
-## Test contour.
+## Test _contour()_.
 ```{R}
 info <- partial.plot(
-	model, c("Sepal.Length", "Petal.Width"), pch = 16, col = viridis,
-	function.3d = contour
+    model, c("Sepal.Length", "Petal.Width"), function.3d = contour
 )
 ```
 
-## Test persp3d.
+## Test _persp3d()_.
 ```{R, webgl = TRUE, rgl = TRUE}
 info <- partial.plot(
-	model, c("Sepal.Length", "Petal.Width"), pch = 16, col = viridis,
-	function.3d = persp3d
+	model, c("Sepal.Length", "Petal.Width"), col = viridis,
+    function.3d = persp3d
 )
 ```
 
-## Test persp with changing labels.
+## Test _persp()_ with changing labels.
 ```{R}
 info <- partial.plot(
-	model, c("Sepal.Length", "Petal.Width"), pch = 16, col = viridis,
+	model, c("Sepal.Length", "Petal.Width"), col = viridis,
 	function.3d = persp, xlab = "X label", ylab = "Y label", zlab = "Z label"
 )
 ```
 
 
-## Test persp3d with changing labels.
+## Test _persp3d()_ with changing labels.
 ```{R, webgl = TRUE, rgl = TRUE}
 info <- partial.plot(
-	model, c("Sepal.Length", "Petal.Width"), pch = 16, col = viridis,
+	model, c("Sepal.Length", "Petal.Width"), col = viridis,
 	function.3d = persp3d, xlab = "X label", ylab = "Y label", zlab = "Z label"
 )
 ```
@@ -187,7 +186,7 @@ info <- partial.plot(
 
 # Test for functions.
 
-## cforest
+## Test _cforest()_
 ```{R, warning = FALSE, message = FALSE}
 library(party)
 # 2D plot.
@@ -211,7 +210,7 @@ info <- partial.plot(
 )
 ```
 
-## ctree
+## Test _ctree()_
 ```{R, warning = FALSE, message = FALSE}
 library(party)
 # 2D plot.
@@ -234,7 +233,7 @@ info <- partial.plot(
 )
 ```
 
-## Test gam::gam.
+## Test _gam::gam()_
 Waiting for the support of `model.adapter`.
 ```{R}
 #library(gam)
@@ -249,7 +248,7 @@ Waiting for the support of `model.adapter`.
 #)
 ```
 
-## Test mgcv::gam.
+## Test _mgcv::gam()_
 Waiting for the support of `model.adapter`.
 ```{R}
 #library(mgcv)
@@ -264,7 +263,7 @@ Waiting for the support of `model.adapter`.
 #)
 ```
 
-## Test mgcv::gamm.
+## Test _mgcv::gamm()_
 Waiting for the support of `model.adapter`.
 ```{R}
 #library(mgcv)
@@ -279,7 +278,7 @@ Waiting for the support of `model.adapter`.
 #)
 ```
 
-## Test gbm.
+## Test _gbm()_
 Waiting for the support of `model.adapter`.
 ```{R}
 #library(gbm)
@@ -294,7 +293,7 @@ Waiting for the support of `model.adapter`.
 #)
 ```
 
-## Test glmer.
+## Test _glmer()_
 Waiting for the support of `model.adapter`.
 ```{R}
 #library(lme4)
@@ -310,7 +309,7 @@ Waiting for the support of `model.adapter`.
 #)
 ```
 
-## Test glmmadmb.
+## Test _glmmadmb()_
 ```{R, message = FALSE, warning = FALSE}
 library(glmmADMB)
 model <- glmmadmb(
@@ -327,7 +326,7 @@ info <- partial.plot(
 )
 ```
 
-## Test glmmML.
+## Test _glmmML()_
 Waiting for the support of `model.adapter`.
 ```{R}
 #library(glmmML)
@@ -346,7 +345,7 @@ Waiting for the support of `model.adapter`.
 #)
 ```
 
-## Test lm.
+## Test _lm()_
 ```{R}
 model <- lm(
 	Petal.Length ~ (Sepal.Length + Petal.Width) * Species, data = iris
@@ -359,7 +358,7 @@ info <- partial.plot(
 )
 ```
 
-## Test lme.
+## Test _lme()_
 ```{R, message = FALSE}
 library(nlme)
 # 2D plot.
@@ -380,7 +379,7 @@ info <- partial.plot(
 )
 ```
 
-## Test lmer.
+## Test _lmer()_
 Waiting for the support of `model.adapter`.
 ```{R}
 #library(lme4)
@@ -396,7 +395,7 @@ Waiting for the support of `model.adapter`.
 #)
 ```
 
-## Test MCMCglmm.
+## Test _MCMCglmm()_
 ```{R, message = FALSE}
 library(MCMCglmm)
 model <- MCMCglmm(
@@ -413,7 +412,7 @@ info <- partial.plot(
 )
 ```
 
-## Test randomForest.
+## Test _randomForest()_
 Currently, cluster is not supported.
 ```{R}
 library(randomForest)
@@ -431,7 +430,7 @@ info <- partial.plot(
 )
 ```
 
-## Test ranger.
+## Test _ranger()_
 Waiting for the support of `model.adapter`.
 ```{R}
 #library(ranger)
@@ -449,7 +448,7 @@ Waiting for the support of `model.adapter`.
 #)
 ```
 
-## Test rpart.
+## Test _rpart()_
 Waiting for the support of `model.adapter`.
 ```{R}
 #library(rpart)
@@ -466,7 +465,7 @@ Waiting for the support of `model.adapter`.
 #)
 ```
 
-## Test svm.
+## Test _svm()_
 ```{R}
 library(e1071)
 model <- svm(
@@ -482,7 +481,7 @@ info <- partial.plot(
 )
 ```
 
-## Test tree.
+## Test _tree()_
 Waiting for the support of `model.adapter`.
 ```{R}
 #library(tree)
