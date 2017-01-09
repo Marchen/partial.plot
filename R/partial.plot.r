@@ -208,21 +208,21 @@ partial.plot <- function(
 ) {
 	# Initialize setting object.
 	# 設定オブジェクトの初期化。
-	settings <- pp.settings(
-		model, x.names, data, fun.3d, draw.residual, draw.relationship,
-		draw.interval, interval.levels, resolution, col, xlab, ylab, zlab,
-		sep, n.cores, ...
-	)
-	# Calculate required data.
-	if (draw.relationship | draw.interval) {
-		relationship <- partial.relationship(settings)
+	if (is(model, "pp.settings")) {
+		settings <- model$copy()
+		settings$update.pars(
+			fun.3d, draw.residual, draw.relationship, draw.interval,
+			col, xlab, ylab, zlab, ...
+		)
 	} else {
-		relationship <- NULL
-	}
-	if (draw.residual) {
-		residual <- partial.residual(settings)
-	} else {
-		residual <- NULL
+		settings <- pp.settings(
+			model, x.names, data, fun.3d, draw.residual, draw.relationship,
+			draw.interval, interval.levels, resolution, col, xlab, ylab, zlab,
+			sep, n.cores, ...
+		)
+		# Calculate required data.
+		partial.relationship(settings)
+		partial.residual(settings)
 	}
 	# Draw
 	drawer <- pp.drawer(settings)

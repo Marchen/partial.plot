@@ -39,7 +39,7 @@ pp.drawer$methods(
 		Open new plot window.
 		"
 		# Find possible x and y values.
-		if (settings$has.relationship) {
+		if (settings$draw.relationship | settings$draw.interval) {
 			relationship <- settings$relationship
 			if (is.null(relationship$upper)) {
 				x <- relationship[[settings$x.names.numeric]]
@@ -51,7 +51,7 @@ pp.drawer$methods(
 		} else {
 			x <- y <- numeric()
 		}
-		if (settings$has.residual) {c
+		if (settings$draw.relationship) {
 			x <- c(x, settings$data[[settings$x.names.numeric]])
 			y <- c(y, settings$residual)
 		}

@@ -136,6 +136,27 @@ partial.plot(
 par(mfrow = c(1, 1))
 ```
 
+## Reuse information.
+```{R}
+par(mfrow = c(2, 2))
+
+info <- partial.plot(
+	model, c("Sepal.Length", "Species"), pch = 16, n.cores = 1
+)
+pp.legend(info, "topleft", cex = 0.5)
+
+info <- partial.plot(info, pch = 6, draw.relationship = FALSE)
+pp.legend(info, "topleft", cex = 0.5)
+
+info <- partial.plot(info, col = rainbow, draw.interval = FALSE)
+pp.legend(info, "topleft", cex = 0.5)
+
+info <- partial.plot(info, col = heat.colors, draw.residual = FALSE)
+pp.legend(info, "topleft", cex = 0.5)
+
+par(mfrow = c(1, 1))
+```
+
 
 -------------------------------------------------------------------------------
 # Test controling graphic elements in 3D plot.

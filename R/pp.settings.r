@@ -155,12 +155,6 @@ if (require(rgl)) {
 #'	@field residual
 #'		a numeric vector having partial residual data.
 #'
-#'	@field has.relationship
-#'		a logical indicating the object has partial relationship data.
-#'
-#'	@field has.residual
-#'		a logical indicating the object has partial residual data.
-#'
 #------------------------------------------------------------------------------
 pp.settings <- setRefClass(
 	"pp.settings",
@@ -191,9 +185,7 @@ pp.settings <- setRefClass(
 		n.cores = "ANY",
 		relationship = "data.frame",
 		relationship.split = "list",
-		residual = "numeric",
-		has.relationship = "logical",
-		has.residual = "logical"
+		residual = "numeric"
 	)
 )
 
@@ -270,8 +262,7 @@ pp.settings$methods(
 			draw.interval = draw.interval, interval.levels = interval.levels,
 			resolution = resolution,
 			col = col, xlab = xlab, ylab = ylab, zlab = zlab, sep = sep,
-			n.cores = n.cores, other.pars = list(...),
-			has.relationship = FALSE, has.residual = FALSE
+			n.cores = n.cores, other.pars = list(...)
 		)
 		initFields(data = adapter$data)
 		.self$check.params()
@@ -284,6 +275,33 @@ pp.settings$methods(
 		.self$init.resolution()
 		.self$init.factor.levels()
 		.self$init.numeric.sequences()
+	}
+)
+
+
+#------------------------------------------------------------------------------
+#	主に描画関連の設定を更新する。
+#------------------------------------------------------------------------------
+pp.settings$methods(
+	update.pars = function(
+		fun.3d, draw.residual, draw.relationship, draw.interval,
+		col, xlab, ylab, zlab, ...
+	) {
+		"
+		Update settings of (mainly) graphic parameters for data reusing.
+		\\code{fun.3d}, \\code{draw.residual}, \\code{draw.relationship},
+		\\code{draw.interval}, \\code{col}, \\code{xlab}, \\code{ylab},
+		\\code{zlab} and \\code{...} can be set.
+		"
+		initFields(
+			fun.3d = fun.3d, draw.residual = draw.residual,
+			draw.relationship = draw.relationship,
+			draw.interval = draw.interval, col = col, xlab = xlab,
+			ylab = ylab, zlab = zlab, other.pars = list(...)
+		)
+		.self$check.params()
+		.self$init.labels()
+		.self$init.colors()
 	}
 )
 
@@ -634,7 +652,7 @@ pp.settings$methods(
 			}
 		}
 		args <- names(as.list(args(fun)))
-		return (args)
+		return(args)
 	}
 )
 
@@ -681,7 +699,6 @@ pp.settings$methods(
 		"
 		.self$relationship <- object$data
 		.self$relationship.split <- object$data.split
-		.self$has.relationship <- TRUE
 	}
 )
 
@@ -695,8 +712,5 @@ pp.settings$methods(
 		Import partial residual data.
 		"
 		.self$residual <- object$data
-		.self$has.residual <- TRUE
 	}
 )
-
-
