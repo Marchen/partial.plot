@@ -134,6 +134,17 @@ partial.relationship$methods(
 			\\item{\\code{levels}}{levels of quantiles.}
 		}
 		"
+		# Select newdata with the fixed factor level in new.value.grid
+		# to make quantile of the prediction narrower.
+		# 予測値の範囲を狭めるため、因子型で予測対象になっているグループだけを
+		# newdataから取り出す。
+		replace.values <- new.value.grid[index,]
+		df.factor <- replace.values[sapply(replace.values, is.factor)]
+		if (ncol(df.factor) > 0) {
+			for (i in names(df.factor)) {
+				newdata <- subset(newdata, newdata[[i]] == df.factor[[i]])
+			}
+		}
 		# Make data for prediction.
 		# 予測用データを作成。
 		param.names <- names(new.value.grid)
