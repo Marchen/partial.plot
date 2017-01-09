@@ -79,7 +79,7 @@ prepare.args.for.legend = function(settings, legend.args) {
 	}
 	# Set line type based on the setting of partial.plot.
 	# 線の種類をpartial.plotの設定に基づいて決定。
-	if (settings$draw.relationships) {
+	if (settings$draw.relationship) {
 		if (is.null(legend.args$lty)) {
 			legend.args$lty <- "solid"
 		}
@@ -88,7 +88,7 @@ prepare.args.for.legend = function(settings, legend.args) {
 	}
 	# Set plot character based on the setting of partial.plot.
 	# 点のシンボルをpartial.plotの設定に基づいて決定。
-	if (settings$draw.residuals) {
+	if (settings$draw.residual) {
 		if (is.null(legend.args$pch)) {
 			legend.args$pch = 1
 		}

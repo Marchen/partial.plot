@@ -300,7 +300,7 @@ partial.relationship$methods(
 		"
 		Draw intervals of partial.relationship in 2D graph.
 		"
-		if (settings$draw.intervals) {
+		if (settings$draw.interval) {
 			for (i in names(settings$group.colors)) {
 				current.data <- .self$data.split[[i]]
 				x <- current.data[[settings$x.names.numeric]]

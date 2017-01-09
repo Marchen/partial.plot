@@ -92,14 +92,14 @@ open.plot.window <- function(
 #'		\code{\link[graphics]{contour}} and \code{\link[rgl]{persp3d}}
 #'		are supported.
 #'
-#'	@param draw.residuals
+#'	@param draw.residual
 #'		a logical. If TRUE, points representing partial residual are drawn.
 #'
-#'	@param draw.relationships
+#'	@param draw.relationship
 #'		a logical. If TRUE, partial relationships between focal explanatory
 #'		variables and response variable are drawn.
 #'
-#'	@param draw.intervals
+#'	@param draw.interval
 #'		a logical. If TRUE, interval of partial relationships are drawn.
 #'		Note that currently this intervals are confidential intervals if
 #'		\code{model} is supported by lsmeans and  are quantile of perdicted
@@ -229,7 +229,7 @@ open.plot.window <- function(
 #'	# Example 2: no residuals.
 #'	#---------------------------------------------------------------------------
 #'	partial.plot(
-#'		model, c("Sepal.Length", "Species"), pch = 16, draw.residuals = FALSE
+#'		model, c("Sepal.Length", "Species"), pch = 16, draw.residual = FALSE
 #'	)
 #'
 #'
@@ -238,31 +238,31 @@ open.plot.window <- function(
 #'	#---------------------------------------------------------------------------
 #'	partial.plot(
 #'		model, c("Sepal.Length", "Species"), pch = 16,
-#'		draw.relationships = FALSE
+#'		draw.relationship = FALSE
 #'	)
 #'
 #'	@export
 #------------------------------------------------------------------------------
 partial.plot <- function(
 	model, x.names, data = NULL, function.3d = persp,
-	draw.residuals = TRUE, draw.relationships = TRUE, draw.intervals = TRUE,
+	draw.residual = TRUE, draw.relationship = TRUE, draw.interval = TRUE,
 	interval.levels = 0.95, resolution = NULL, col = gg.colors,
 	xlab = NULL, ylab = NULL, zlab = NULL, sep = " - ", n.cores = NULL, ...
 ) {
 	# Initialize setting object.
 	# 設定オブジェクトの初期化。
 	settings <- pp.settings(
-		model, x.names, data, function.3d, draw.residuals, draw.relationships,
-		draw.intervals, interval.levels, resolution, col, xlab, ylab, zlab,
+		model, x.names, data, function.3d, draw.residual, draw.relationship,
+		draw.interval, interval.levels, resolution, col, xlab, ylab, zlab,
 		sep, n.cores, ...
 	)
 	# Calculate required data.
-	if (draw.relationships | draw.intervals) {
+	if (draw.relationship | draw.interval) {
 		relationship <- partial.relationship(settings)
 	} else {
 		relationship <- NULL
 	}
-	if (draw.residuals) {
+	if (draw.residual) {
 		residual <- partial.residual(settings)
 	} else {
 		residual <- NULL
@@ -287,6 +287,6 @@ partial.plot <- function(
 #)
 #info <- partial.plot(
 	#model, c("Sepal.Length", "Species"), pch = 16, n.cores = 1,
-	#draw.residuals = FALSE
+	#draw.residual = FALSE
 #)
 

@@ -51,15 +51,15 @@ pp.legend(info, "topleft")
 ## Hide points.
 ```{R}
 info <- partial.plot(
-	model, c("Sepal.Length", "Species"), draw.residuals = FALSE
+	model, c("Sepal.Length", "Species"), draw.residual = FALSE
 )
 pp.legend(info, "topleft")
 ```
 
-## Hide intervals.
+## Hide interval.
 ```{R}
 info <- partial.plot(
-	model, c("Sepal.Length", "Species"), pch = 16, draw.intervals = FALSE
+	model, c("Sepal.Length", "Species"), pch = 16, draw.interval = FALSE
 )
 pp.legend(info, "topleft")
 ```
@@ -67,7 +67,7 @@ pp.legend(info, "topleft")
 ## Hide lines.
 ```{R}
 info <- partial.plot(
-	model, c("Sepal.Length", "Species"), pch = 16, draw.relationships = FALSE
+	model, c("Sepal.Length", "Species"), pch = 16, draw.relationship = FALSE
 )
 pp.legend(info, "topleft")
 ```

@@ -99,13 +99,13 @@ if (require(rgl)) {
 #'		Possibly \code{\link[graphics]{persp}} and
 #'		\code{\link[graphics]{images}} can work.
 #'
-#'	@field draw.residuals
-#'		a logical representing that partial.plot drows residual points.
+#'	@field draw.residual
+#'		a logical representing that partial.plot draws residual points.
 #'
-#'	@field draw.relationships
-#'		a logical representing that partial.plot drows predicted relationships.
+#'	@field draw.relationship
+#'		a logical representing that partial.plot draws predicted relationships.
 #'
-#'	@field draw.relationships
+#'	@field draw.interval
 #'		a logical representing that partial.plot draws intervals of predicted
 #'		relationships.
 #'
@@ -160,9 +160,9 @@ pp.settings <- setRefClass(
 		numeric.sequences = "list",
 		data = "data.frame",
 		function.3d = "function",
-		draw.residuals = "logical",
-		draw.relationships = "logical",
-		draw.intervals = "logical",
+		draw.residual = "logical",
+		draw.relationship = "logical",
+		draw.interval = "logical",
 		interval.levels = "numeric",
 		resolution = "ANY",
 		col = "ANY",
@@ -184,8 +184,8 @@ pp.settings <- setRefClass(
 pp.settings$methods(
 	initialize = function(
 		model, x.names, data = NULL, function.3d = persp,
-		draw.residuals = TRUE, draw.relationships = TRUE,
-		draw.intervals = TRUE, interval.levels = 0.95, resolution = NULL,
+		draw.residual = TRUE, draw.relationship = TRUE,
+		draw.interval = TRUE, interval.levels = 0.95, resolution = NULL,
 		col = gg.colors, xlab = NULL, ylab = NULL, zlab = NULL, sep = " - ",
 		n.cores = NULL, ...
 	) {
@@ -202,11 +202,18 @@ pp.settings$methods(
 				the function used for drawing 3D relationship graphs.
 				Possibly, persp and image can work.
 			}
-			\\item{draw.residuals}{
-				whether the partial.plot drewn residual points or not.
+			\\item{draw.residual}{
+				whether the partial.plot draws residual points.
 			}
-			\\item{draw.relationships}{
-				whether partial.plot drew predicted relationships or not.
+			\\item{draw.relationship}{
+				whether partial.plot draws predicted relationships.
+			}
+			\\item{draw.interval}{
+				whetehr partial.plot draws interval of predicted relationships.
+			}
+			\\item{interval.levels}{
+				numeric vector specifying level of confidence
+				intervals/quantile.
 			}
 			\\item{resolution}{
 				an integer specifying resolution of lines, polygons,
@@ -238,9 +245,9 @@ pp.settings$methods(
 		initFields(
 			adapter = model.adapter(model, data = data),
 			function.3d = function.3d, model = model, x.names = x.names,
-			draw.residuals = draw.residuals,
-			draw.relationships = draw.relationships,
-			draw.intervals = draw.intervals, interval.levels = interval.levels,
+			draw.residual = draw.residual,
+			draw.relationship = draw.relationship,
+			draw.interval = draw.interval, interval.levels = interval.levels,
 			resolution = resolution,
 			col = col, xlab = xlab, ylab = ylab, zlab = zlab, sep = sep,
 			n.cores = n.cores, other.pars = list(...)

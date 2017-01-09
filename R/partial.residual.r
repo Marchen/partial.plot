@@ -117,7 +117,7 @@ partial.residual$methods(
 		# Calculate and draw partial residual
 		# 偏残差を計算して描画。
 		part.resid <- partial.residual(settings)
-		if (!settings$draw.relationships) {
+		if (!settings$draw.relationship) {
 			args <- list(
 				settings$data[[settings$x.names.numeric]], .self$data,
 				col = settings$obs.colors,
