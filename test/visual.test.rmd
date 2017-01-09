@@ -1,0 +1,501 @@
+---
+title: "Test of partial.plot() for models."
+author: "Michio Oguro"
+date: "`r Sys.Date()`"
+output:
+    html_document:
+        fig_width: 6
+        fig_height: 6
+        fig_retina: 2
+        dpi: 300
+        dev.args: list(dpi = 300)
+vignette: >
+    %\VignetteIndexEntry{Test of partial.plot() for models.}
+    %\VignetteEngine{knitr::rmarkdown}
+    \usepackage[utf8]{inputenc}
+---
+
+
+```{R, echo = FALSE, message = FALSE}
+library(partial.plot)
+library(viridis)
+library(knitr)
+library(rgl)
+knit_hooks$set(webgl = hook_webgl)
+```
+
+-------------------------------------------------------------------------------
+
+# Test controling graphic elements in 2D plot.
+
+## Prepare test model.
+```{R}
+model <- glm(
+	Petal.Length ~ (Sepal.Length + Petal.Width) * Species, data = iris
+)
+```
+
+## Testing 2D plot without interaction terms.
+```{R}
+info <- partial.plot(model, "Sepal.Length", pch = 16)
+pp.legend(info, "topleft")
+```
+
+## Testing 2D plot with an interaction term.
+```{R}
+info <- partial.plot(model, c("Sepal.Length", "Species"), pch = 16)
+pp.legend(info, "topleft")
+```
+
+## Hide points.
+```{R}
+info <- partial.plot(
+	model, c("Sepal.Length", "Species"), draw.residuals = FALSE
+)
+pp.legend(info, "topleft")
+```
+
+## Hide intervals.
+```{R}
+info <- partial.plot(
+	model, c("Sepal.Length", "Species"), pch = 16, draw.intervals = FALSE
+)
+pp.legend(info, "topleft")
+```
+
+## Hide lines.
+```{R}
+info <- partial.plot(
+	model, c("Sepal.Length", "Species"), pch = 16, draw.relationships = FALSE
+)
+pp.legend(info, "topleft")
+```
+
+## Set labels.
+```{R}
+info <- partial.plot(
+	model, c("Sepal.Length", "Species"), pch = 16,
+    xlab = "X Label", ylab = "Y Label"
+)
+pp.legend(info, "topleft")
+```
+
+## Change colors.
+```{R}
+par(mfrow = c(2, 2))
+info <- partial.plot(
+	model, c("Sepal.Length", "Species"), pch = 16,
+    main = "col = 'black'", col = "black"
+)
+pp.legend(info, "topleft", cex = 0.7)
+info <- partial.plot(
+	model, c("Sepal.Length", "Species"), pch = 16,
+    main = "col = viridis", col = viridis
+)
+pp.legend(info, "topleft", cex = 0.7)
+info <- partial.plot(
+	model, c("Sepal.Length", "Species"), pch = 16,
+	main = "col = c('red', 'blue', 'cyan')", col = c("red", "blue", "cyan")
+)
+pp.legend(info, "topleft", cex = 0.7)
+info <- partial.plot(
+	model, c("Sepal.Length", "Species"), pch = 16,
+	main = "col = c(versicolor='blue', \nsetosa='red', virginica='cyan')",
+    col = c(versicolor = "blue", setosa = "red", virginica = "cyan")
+)
+pp.legend(info, "topleft", cex = 0.7)
+par(mfrow = c(1, 1))
+```
+
+## Change intervals.
+```{R}
+par(mfrow = c(2, 2))
+partial.plot(
+	model, c("Sepal.Length", "Species"), pch = 16,
+    main = "interval = 0.95 (Default)"
+)
+partial.plot(
+	model, c("Sepal.Length", "Species"), pch = 16,
+    main = "interval = 0.8", interval.levels = 0.8
+)
+partial.plot(
+	model, c("Sepal.Length", "Species"), pch = 16,
+	main = "interval = 0.7", interval.levels = 0.7
+)
+partial.plot(
+	model, c("Sepal.Length", "Species"), pch = 16,
+	main = "interval = 0.6", interval.levels = 0.6
+)
+par(mfrow = c(1, 1))
+```
+
+
+-------------------------------------------------------------------------------
+# Test controling graphic elements in 3D plot.
+
+## Test persp.
+```{R}
+info <- partial.plot(
+	model, c("Sepal.Length", "Petal.Width"), pch = 16, col = viridis,
+	function.3d = persp
+)
+```
+
+## Test image.
+```{R}
+info <- partial.plot(
+	model, c("Sepal.Length", "Petal.Width"), pch = 16, col = viridis,
+	function.3d = image
+)
+```
+
+## Test contour.
+```{R}
+info <- partial.plot(
+	model, c("Sepal.Length", "Petal.Width"), pch = 16, col = viridis,
+	function.3d = contour
+)
+```
+
+## Test persp3d.
+```{R, webgl = TRUE, rgl = TRUE}
+info <- partial.plot(
+	model, c("Sepal.Length", "Petal.Width"), pch = 16, col = viridis,
+	function.3d = persp3d
+)
+```
+
+## Test persp with changing labels.
+```{R}
+info <- partial.plot(
+	model, c("Sepal.Length", "Petal.Width"), pch = 16, col = viridis,
+	function.3d = persp, xlab = "X label", ylab = "Y label", zlab = "Z label"
+)
+```
+
+
+## Test persp3d with changing labels.
+```{R, webgl = TRUE, rgl = TRUE}
+info <- partial.plot(
+	model, c("Sepal.Length", "Petal.Width"), pch = 16, col = viridis,
+	function.3d = persp3d, xlab = "X label", ylab = "Y label", zlab = "Z label"
+)
+```
+
+
+-------------------------------------------------------------------------------
+
+# Test for functions.
+
+## cforest
+```{R, warning = FALSE, message = FALSE}
+library(party)
+# 2D plot.
+model <- cforest(
+	Petal.Length ~ Sepal.Length + Petal.Width + Species, data = iris,
+    controls = cforest_unbiased(ntree = 10)
+)
+info <- partial.plot(
+	model, c("Sepal.Length", "Species"), pch = 16, n.cores = 2
+)
+pp.legend(info, "topleft")
+
+# 3D plot.
+model <- cforest(
+	Petal.Length ~ Sepal.Length + Petal.Width, data = iris,
+	controls = cforest_unbiased(ntree = 10)
+)
+info <- partial.plot(
+	model, c("Sepal.Length", "Petal.Width"), pch = 16, n.cores = 2,
+    function.3d = persp, col = viridis, theta = 40 
+)
+```
+
+## ctree
+```{R, warning = FALSE, message = FALSE}
+library(party)
+# 2D plot.
+model <- ctree(
+	Petal.Length ~ Sepal.Length + Petal.Width + Species, data = iris
+)
+info <- partial.plot(
+	model, c("Sepal.Length", "Species"), pch = 16, n.cores = 2
+)
+pp.legend(info, "topleft")
+
+# 3D plot.
+model <- ctree(
+	Petal.Length ~ Sepal.Length + Petal.Width, data = iris,
+	controls = cforest_unbiased(ntree = 10)
+)
+info <- partial.plot(
+	model, c("Sepal.Length", "Petal.Width"), pch = 16, n.cores = 2,
+    function.3d = persp, col = viridis, theta = 40 
+)
+```
+
+## Test gam::gam.
+Waiting for the support of `model.adapter`.
+```{R}
+#library(gam)
+#model <- gam(
+	#Petal.Length ~ (Sepal.Length + Petal.Width) * Species, data = iris
+#)
+#info <- partial.plot(model, c("Sepal.Length", "Species"), pch = 16)
+#pp.legend(info, "topleft")
+#info <- partial.plot(
+	#model, c("Sepal.Length", "Petal.Width"), pch = 16, col = viridis,
+	#function.3d = persp
+#)
+```
+
+## Test mgcv::gam.
+Waiting for the support of `model.adapter`.
+```{R}
+#library(mgcv)
+#model <- gam(
+	#Petal.Length ~ (Sepal.Length + Petal.Width) * Species, data = iris
+#)
+#info <- partial.plot(model, c("Sepal.Length", "Species"), pch = 16)
+#pp.legend(info, "topleft")
+#info <- partial.plot(
+	#model, c("Sepal.Length", "Petal.Width"), pch = 16, col = viridis,
+	#function.3d = persp
+#)
+```
+
+## Test mgcv::gamm.
+Waiting for the support of `model.adapter`.
+```{R}
+#library(mgcv)
+#model <- gamm(
+	#Petal.Length ~ (Sepal.Length + Petal.Width) * Species, data = iris
+#)
+#info <- partial.plot(model, c("Sepal.Length", "Species"), pch = 16)
+#pp.legend(info, "topleft")
+#info <- partial.plot(
+	#model, c("Sepal.Length", "Petal.Width"), pch = 16, col = viridis,
+	#function.3d = persp
+#)
+```
+
+## Test gbm.
+Waiting for the support of `model.adapter`.
+```{R}
+#library(gbm)
+#model <- gbm(
+	#Petal.Length ~ (Sepal.Length + Petal.Width) * Species, data = iris
+#)
+#info <- partial.plot(model, c("Sepal.Length", "Species"), pch = 16, n.cores = 1)
+#pp.legend(info, "topleft")
+#info <- partial.plot(
+	#model, c("Sepal.Length", "Petal.Width"), pch = 16, col = viridis,
+	#function.3d = persp, n.cores = 1
+#)
+```
+
+## Test glmer.
+Waiting for the support of `model.adapter`.
+```{R}
+#library(lme4)
+#model <- glmer(
+	#as.numeric(Petal.Length) ~ (Sepal.Length + Petal.Width) * Species + (1 | Sepal.Length),
+    #data = iris, family = poisson
+#)
+#info <- partial.plot(model, c("Sepal.Length", "Species"), pch = 16)
+#pp.legend(info, "topleft")
+#info <- partial.plot(
+	#model, c("Sepal.Length", "Petal.Width"), pch = 16, col = viridis,
+	#function.3d = persp
+#)
+```
+
+## Test glmmadmb.
+```{R, message = FALSE, warning = FALSE}
+library(glmmADMB)
+model <- glmmadmb(
+	Petal.Length ~ (Sepal.Length + Petal.Width) * Species, data = iris,
+    family = "gaussian"
+)
+# 2D plot
+info <- partial.plot(model, c("Sepal.Length", "Species"), pch = 16)
+pp.legend(info, "topleft")
+# 3D plot
+info <- partial.plot(
+	model, c("Sepal.Length", "Petal.Width"), pch = 16, col = viridis,
+	function.3d = persp
+)
+```
+
+## Test glmmML.
+Waiting for the support of `model.adapter`.
+```{R}
+#library(glmmML)
+
+#model <- glmmML(
+	#age ~ (shoeSize + score) * nativeSpeaker, cluster = 1:200, data = readingSkills,
+    #family = poisson
+#)
+## 2D plot.
+#info <- partial.plot(model, c("score", "nativeSpeaker"), pch = 16)
+#pp.legend(info, "topleft")
+## 3D plot.
+#info <- partial.plot(
+    #model, c("shoeSize", "score"), pch = 16, col = viridis,
+	#function.3d = persp
+#)
+```
+
+## Test lm.
+```{R}
+model <- lm(
+	Petal.Length ~ (Sepal.Length + Petal.Width) * Species, data = iris
+)
+info <- partial.plot(model, c("Sepal.Length", "Species"), pch = 16)
+pp.legend(info, "topleft")
+info <- partial.plot(
+	model, c("Sepal.Length", "Petal.Width"), pch = 16, col = viridis,
+	function.3d = persp
+)
+```
+
+## Test lme.
+```{R, message = FALSE}
+library(nlme)
+# 2D plot.
+model <- lme(
+	MEANSES ~ (DISCLIM + PRACAD) * Sector, random = ~ 1 | School,
+    data =  MathAchSchool
+)
+info <- partial.plot(model, c("DISCLIM", "Sector"), pch = 16)
+pp.legend(info, "topleft")
+
+# 3D plot.
+model <- lme(
+	MEANSES ~ DISCLIM + PRACAD, random = ~ 1 | School,
+	data = MathAchSchool
+)
+info <- partial.plot(
+	model, c("DISCLIM", "PRACAD"), col = viridis, function.3d = persp
+)
+```
+
+## Test lmer.
+Waiting for the support of `model.adapter`.
+```{R}
+#library(lme4)
+#model <- lmer(
+	#Petal.Length ~ (Sepal.Length + Petal.Width) * Species + (1 | Sepal.Length),
+    #data = iris
+#)
+#info <- partial.plot(model, c("Sepal.Length", "Species"), pch = 16)
+#pp.legend(info, "topleft")
+#info <- partial.plot(
+	#model, c("Sepal.Length", "Petal.Width"), pch = 16, col = viridis,
+	#function.3d = persp
+#)
+```
+
+## Test MCMCglmm.
+```{R, message = FALSE}
+library(MCMCglmm)
+model <- MCMCglmm(
+	Petal.Length ~ (Sepal.Length + Petal.Width) * Species, data = iris,
+    verbose = FALSE
+)
+# 2D plot
+info <- partial.plot(model, c("Sepal.Length", "Species"), pch = 16, data = iris)
+pp.legend(info, "topleft")
+# 3D plot
+info <- partial.plot(
+	model, c("Sepal.Length", "Petal.Width"), pch = 16, col = viridis,
+	function.3d = persp, data = iris
+)
+```
+
+## Test randomForest.
+Currently, cluster is not supported.
+```{R}
+library(randomForest)
+model <- randomForest(
+	Petal.Length ~ Sepal.Length + Petal.Width + Species, data = iris,
+    ntree = 100
+)
+info <- partial.plot(
+	model, c("Sepal.Length", "Species"), pch = 16, n.cores = 1
+)
+pp.legend(info, "topleft")
+info <- partial.plot(
+	model, c("Sepal.Length", "Petal.Width"), pch = 16, col = viridis,
+	function.3d = persp, n.cores = 1
+)
+```
+
+## Test ranger.
+Waiting for the support of `model.adapter`.
+```{R}
+#library(ranger)
+#model <- ranger(
+	#Petal.Length ~ Sepal.Length + Petal.Width + Species, data = iris,
+	#write.forest = TRUE
+#)
+#info <- partial.plot(
+	#model, c("Sepal.Length", "Species"), pch = 16, n.cores = 1
+#)
+#pp.legend(info, "topleft")
+#info <- partial.plot(
+	#model, c("Sepal.Length", "Petal.Width"), pch = 16, col = viridis,
+	#function.3d = persp, n.cores = 1
+#)
+```
+
+## Test rpart.
+Waiting for the support of `model.adapter`.
+```{R}
+#library(rpart)
+#model <- rpart(
+	#Petal.Length ~ Sepal.Length + Petal.Width + Species, data = iris
+#)
+#info <- partial.plot(
+	#model, c("Sepal.Length", "Species"), pch = 16, n.cores = 1
+#)
+#pp.legend(info, "topleft")
+#info <- partial.plot(
+	#model, c("Sepal.Length", "Petal.Width"), pch = 16, col = viridis,
+	#function.3d = persp, n.cores = 1
+#)
+```
+
+## Test svm.
+```{R}
+library(e1071)
+model <- svm(
+	Petal.Length ~ Sepal.Length + Petal.Width + Species, data = iris
+)
+info <- partial.plot(
+	model, c("Sepal.Length", "Species"), pch = 16, n.cores = 1
+)
+pp.legend(info, "topleft")
+info <- partial.plot(
+	model, c("Sepal.Length", "Petal.Width"), pch = 16, col = viridis,
+	function.3d = persp, n.cores = 1
+)
+```
+
+## Test tree.
+Waiting for the support of `model.adapter`.
+```{R}
+#library(tree)
+#model <- tree(
+	#Petal.Length ~ Sepal.Length + Petal.Width + Species, data = iris
+#)
+#info <- partial.plot(
+	#model, c("Sepal.Length", "Species"), pch = 16, n.cores = 1
+#)
+#pp.legend(info, "topleft")
+#info <- partial.plot(
+	#model, c("Sepal.Length", "Petal.Width"), pch = 16, col = viridis,
+	#function.3d = persp, n.cores = 1
+#)
+```
+

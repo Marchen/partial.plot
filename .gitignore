@@ -250,3 +250,5 @@ inst/doc/
 vignettes/*.html
 vignettes/*.R
 .Rapp.history
+test/*.html
+test/visual.test_files/
