@@ -73,10 +73,6 @@ if (require(rgl)) {
 #'		a character vector representing names of explanatory variables used
 #'		for plotting.
 #'
-#'	@field plot.type
-#'		a character literal to indicate plot type. Possible values are
-#'		"2D" and "3D".
-#'
 #'	@field x.names.factor
 #'		a character vector representing names of factor explanatory variables
 #'		used for plotting.
@@ -84,6 +80,10 @@ if (require(rgl)) {
 #'	@field x.names.numeric
 #'		a character vector representing names of numeric explanatory variables
 #'		used for plotting.
+#'
+#'	@field plot.type
+#'		a character literal to indicate plot type. Possible values are
+#'		"2D" and "3D".
 #'
 #'	@field factor.levels
 #'		a list having levels of factors specified by x.names.
@@ -204,47 +204,55 @@ pp.settings$methods(
 		"
 		Initialize pp.settings object.
 		\\describe{
-			\\item{model}{a supported model object used for plotting.}
-			\\item{x.names}{
+			\\item{\\code{model}}{
+				a supported model object used for plotting.
+				}
+			\\item{\\code{x.names}}{
 				a character vector representing names of explanatory variables
 				used for plotting.
 			}
-			\\item{data}{a data.frame containing data used for plotting.}
-			\\item{fun.3d}{
+			\\item{\\code{data}}{
+				a data.frame containing data used for plotting.
+			}
+			\\item{\\code{fun.3d}}{
 				the function used for drawing 3D relationship graphs.
 				Possibly, persp and image can work.
 			}
-			\\item{draw.residual}{
+			\\item{\\code{draw.residual}}{
 				whether the partial.plot draws residual points.
 			}
-			\\item{draw.relationship}{
+			\\item{\\code{draw.relationship}}{
 				whether partial.plot draws predicted relationships.
 			}
-			\\item{draw.interval}{
+			\\item{\\code{draw.interval}}{
 				whetehr partial.plot draws interval of predicted relationships.
 			}
-			\\item{interval.levels}{
+			\\item{\\code{interval.levels}}{
 				numeric vector specifying level of confidence
 				intervals/quantile.
 			}
-			\\item{resolution}{
+			\\item{\\code{resolution}}{
 				an integer specifying resolution of lines, polygons,
 				wireframes, and images of numeric variables.
 			}
-			\\item{col}{color vector.}
-			\\item{xlab, ylab, zlab}{
+			\\item{\\code{col}}{
+				color vector or color producing function.
+			}
+			\\item{\\code{xlab}, \\code{ylab}, \\code{zlab}}{
 				a character specifying used for label of X/Y/Z axis.
 			}
-			\\item{sep}{
+			\\item{\\code{sep}}{
 				a character representing separator of grouping factor levels.
 			}
-			\\item{n.cores}{
+			\\item{\\code{n.cores}}{
 				an integer representing number of processes used for
 				calculation. If NULL is specified, maximum number of logical
 				processors are used. This value is ignored when the models
 				compatible with lsmeans are specified.
 			}
-			\\item{...}{other graphic parameters.}
+			\\item{\\code{...}}{
+				other graphic parameters.
+			}
 		}
 		"
 		# If required arguments are not specified, exit function with doing
