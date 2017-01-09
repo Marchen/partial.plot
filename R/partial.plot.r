@@ -21,23 +21,40 @@ combine.columns <- function(data, sep) {
 #------------------------------------------------------------------------------
 #	新しいプロットを開く。
 #------------------------------------------------------------------------------
-#'	(Internal) Open new plot.
+#'	(Internal) Open new plot window.
 #'
 #'	@param settings
 #'		an object of \code{\link{pp.settings}} object having settings of
 #'		partial.plot.
-#'	@param partial.residual.data
-#'		a named list of data.frame containing result of
-#'		\code{\link{partial.relationship.lsmeans}} function.
+#'
+#'	@param relationship
+#'		an object of \code{\link{partial.relationship}} class having predicted
+#'		partial relationship and its interval data.
+#'
+#'	@param residual
+#'		an object of \code{\link{partial.residual}} class having predicted
+#'		partial residual data.
 #------------------------------------------------------------------------------
-open.new.plot <- function(settings, partial.residual.data) {
-	if (is.null(partial.residual.data$upper)) {
-		x <- partial.residual.data[[settings$x.names.numeric]]
-		y <- partial.residual.data$fit
+open.plot.window <- function(
+	settings, relationship = NULL, residual = NULL
+) {
+	# Find possible x and y values.
+	if (!is.null(relationship)) {
+		if (is.null(relationship$data$upper)) {
+			x <- relationship$data[[settings$x.names.numeric]]
+			y <- relationship$fit
+		} else {
+			x <- rep(relationship$data[[settings$x.names.numeric]], 2)
+			y <- c(relationship$data$upper, relationship$data$lower)
+		}
 	} else {
-		x <- rep(partial.residual.data[[settings$x.names.numeric]], 2)
-		y <- c(partial.residual.data$upper, partial.residual.data$lower)
+		x <- y <- numeric()
 	}
+	if (!is.null(residual)) {
+		x <- c(x, settings$data[[settings$x.names.numeric]])
+		y <- c(y, residual$data)
+	}
+	# Open plot window.
 	args <- list(x, y, type = "n", xlab = settings$xlab, ylab = settings$ylab)
 	args <- c(args, settings$other.pars)
 	do.call(plot, args)
@@ -68,6 +85,12 @@ open.new.plot <- function(settings, partial.residual.data) {
 #'		a data.frame used for prediction. If not specified, this function
 #'		try to obtain original data used for the modeling from the object
 #'		specified by the \code{model} argument.
+#'
+#'	@param function.3d
+#'		a function to produce 3d graph. Currently
+#'		\code{\link[graphics]{persp}}, \code{\link[grpahics]{image}},
+#'		\code{\link[graphics]{contour}} and \code{\link[rgl]{persp3d}}
+#'		are supported.
 #'
 #'	@param draw.residuals
 #'		a logical. If TRUE, points representing partial residual are drawn.
@@ -235,18 +258,35 @@ partial.plot <- function(
 	)
 	# Calculate required data.
 	if (draw.relationships | draw.intervals) {
-		relationships <- partial.relationship(settings)
+		relationship <- partial.relationship(settings)
+	} else {
+		relationship <- NULL
 	}
 	if (draw.residuals) {
-		residuals <- partial.residual(settings)
+		residual <- partial.residual(settings)
+	} else {
+		residual <- NULL
 	}
 	# Draw
 	if (settings$plot.type == "2D") {
-		open.new.plot(settings, relationships$data)
+		open.plot.window(settings, relationship, residual)
 	}
-	relationships$draw.interval()
-	relationships$draw.relationship()
-	residuals$draw()
+	if (!is.null(relationship)) {
+		relationship$draw.interval()
+		relationship$draw.relationship()
+	}
+	if (!is.null(residual)) {
+		residual$draw()
+	}
 	invisible(settings)
 }
+
+#library(e1071)
+#model <- svm(
+	#Petal.Length ~ Sepal.Length + Petal.Width + Species, data = iris
+#)
+#info <- partial.plot(
+	#model, c("Sepal.Length", "Species"), pch = 16, n.cores = 1,
+	#draw.residuals = FALSE
+#)
 

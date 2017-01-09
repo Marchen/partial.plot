@@ -6,14 +6,14 @@
 #'	@field settings
 #'		pp.settings object having settings of the class.
 #'
-#'	@field residuals
+#'	@field data
 #'		a numeric vector having calculated partial residual data.
 #'
 #'	@include pp.settings.r
 #------------------------------------------------------------------------------
 partial.residual <- setRefClass(
 	"partial.residual",
-	fields = list(settings = "pp.settings", residuals = "numeric")
+	fields = list(settings = "pp.settings", data = "numeric")
 )
 
 
@@ -81,7 +81,7 @@ partial.residual$methods(
 		pred2 <- pred2$fit[, "fit"]
 		# Calculate partial residual.
 		# 偏残差を計算。
-		.self$residuals <- (
+		.self$data <- (
 			settings$adapter$link(settings$data[[settings$adapter$y.names()]])
 			- (pred1 - pred2)
 		)
@@ -119,7 +119,7 @@ partial.residual$methods(
 		part.resid <- partial.residual(settings)
 		if (!settings$draw.relationships) {
 			args <- list(
-				settings$data[[settings$x.names.numeric]], .self$residuals,
+				settings$data[[settings$x.names.numeric]], .self$data,
 				col = settings$obs.colors,
 				xlab = settings$xlab, ylab = settings$ylab
 			)
@@ -132,7 +132,7 @@ partial.residual$methods(
 			# points関数を直接呼ばずにdo.callを使う。
 			args <- list(
 				x = settings$data[[settings$x.names.numeric]],
-				y = .self$residuals, col = settings$obs.colors
+				y = .self$data, col = settings$obs.colors
 			)
 			args <- settings$set.function.args(args, points)
 			do.call(points, args)
