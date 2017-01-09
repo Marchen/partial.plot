@@ -18,6 +18,8 @@ get.this.file.dir <- function() {
 
 old.wd <- setwd(get.this.file.dir())
 
+devtools::install()
+
 rmarkdown::render("visual.test.rmd")
 
 setwd(old.wd)

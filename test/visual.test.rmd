@@ -24,6 +24,12 @@ library(rgl)
 knit_hooks$set(webgl = hook_webgl)
 ```
 
+# Notes.
+
+This is just a test suite for functionality of partial.plot().
+But this may help you to understand what current partial.plot() can draw
+and how to control its behavior.
+
 -------------------------------------------------------------------------------
 
 # Test controling graphic elements in 2D plot.
