@@ -86,7 +86,7 @@ open.plot.window <- function(
 #'		try to obtain original data used for the modeling from the object
 #'		specified by the \code{model} argument.
 #'
-#'	@param function.3d
+#'	@param fun.3d
 #'		a function to produce 3d graph. Currently
 #'		\code{\link[graphics]{persp}}, \code{\link[grpahics]{image}},
 #'		\code{\link[graphics]{contour}} and \code{\link[rgl]{persp3d}}
@@ -244,7 +244,7 @@ open.plot.window <- function(
 #'	@export
 #------------------------------------------------------------------------------
 partial.plot <- function(
-	model, x.names, data = NULL, function.3d = persp,
+	model, x.names, data = NULL, fun.3d = persp,
 	draw.residual = TRUE, draw.relationship = TRUE, draw.interval = TRUE,
 	interval.levels = 0.95, resolution = NULL, col = gg.colors,
 	xlab = NULL, ylab = NULL, zlab = NULL, sep = " - ", n.cores = NULL, ...
@@ -252,7 +252,7 @@ partial.plot <- function(
 	# Initialize setting object.
 	# 設定オブジェクトの初期化。
 	settings <- pp.settings(
-		model, x.names, data, function.3d, draw.residual, draw.relationship,
+		model, x.names, data, fun.3d, draw.residual, draw.relationship,
 		draw.interval, interval.levels, resolution, col, xlab, ylab, zlab,
 		sep, n.cores, ...
 	)

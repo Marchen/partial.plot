@@ -325,9 +325,9 @@ partial.relationship$methods(
 		Draw 3D partial relationship.
 		"
 		z.matrix <- matrix(.self$data$fit, nrow = settings$resolution)
-		if (identical(settings$function.3d, image)) {
+		if (identical(settings$fun.3d, image)) {
 			col <- color.ramp(z.matrix, settings$col, unique.pal = TRUE)
-		} else if (identical(settings$function.3d, persp)) {
+		} else if (identical(settings$fun.3d, persp)) {
 			col <- pp.colors(settings)$colors.for.persp(z.matrix)
 		} else {
 			col <- color.ramp(z.matrix, settings$col)
@@ -340,7 +340,7 @@ partial.relationship$methods(
 			col = col
 		)
 		args <- settings$set.function.args(args)
-		do.call(settings$function.3d, args)
+		do.call(settings$fun.3d, args)
 	}
 )
 

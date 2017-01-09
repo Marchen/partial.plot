@@ -94,7 +94,7 @@ if (require(rgl)) {
 #'	@field data
 #'		a data.frame containing data used for plotting.
 #'
-#'	@field function.3d
+#'	@field fun.3d
 #'		the function draws 3D graphs.
 #'		Possibly \code{\link[graphics]{persp}} and
 #'		\code{\link[graphics]{images}} can work.
@@ -159,7 +159,7 @@ pp.settings <- setRefClass(
 		factor.levels = "list",
 		numeric.sequences = "list",
 		data = "data.frame",
-		function.3d = "function",
+		fun.3d = "function",
 		draw.residual = "logical",
 		draw.relationship = "logical",
 		draw.interval = "logical",
@@ -183,7 +183,7 @@ pp.settings <- setRefClass(
 #------------------------------------------------------------------------------
 pp.settings$methods(
 	initialize = function(
-		model, x.names, data = NULL, function.3d = persp,
+		model, x.names, data = NULL, fun.3d = persp,
 		draw.residual = TRUE, draw.relationship = TRUE,
 		draw.interval = TRUE, interval.levels = 0.95, resolution = NULL,
 		col = gg.colors, xlab = NULL, ylab = NULL, zlab = NULL, sep = " - ",
@@ -198,7 +198,7 @@ pp.settings$methods(
 				used for plotting.
 			}
 			\\item{data}{a data.frame containing data used for plotting.}
-			\\item{function.3d}{
+			\\item{fun.3d}{
 				the function used for drawing 3D relationship graphs.
 				Possibly, persp and image can work.
 			}
@@ -244,7 +244,7 @@ pp.settings$methods(
 		}
 		initFields(
 			adapter = model.adapter(model, data = data),
-			function.3d = function.3d, model = model, x.names = x.names,
+			fun.3d = fun.3d, model = model, x.names = x.names,
 			draw.residual = draw.residual,
 			draw.relationship = draw.relationship,
 			draw.interval = draw.interval, interval.levels = interval.levels,
@@ -623,7 +623,7 @@ pp.settings$methods(
 #------------------------------------------------------------------------------
 pp.settings$methods(
 	set.function.args = function(
-		function.args = list(), fun = .self$function.3d
+		function.args = list(), fun = .self$fun.3d
 	) {
 		"
 		Assign function arguments kept in this class and returns it in a list.

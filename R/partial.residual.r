@@ -149,7 +149,7 @@ partial.residual$methods(
 		"
 		Draw 3D residuals.
 		"
-		if (identical(settings$function.3d, image)) {
+		if (identical(settings$fun.3d, image)) {
 			points(
 				settings$data[[settings$x.names.numeric[1]]],
 				settings$data[[settings$x.names.numeric[2]]],

@@ -137,7 +137,7 @@ par(mfrow = c(1, 1))
 ## Test _persp()_.
 ```{R}
 info <- partial.plot(
-	model, c("Sepal.Length", "Petal.Width"), col = viridis, function.3d = persp
+	model, c("Sepal.Length", "Petal.Width"), col = viridis, fun.3d = persp
 )
 ```
 
@@ -145,14 +145,14 @@ info <- partial.plot(
 ```{R}
 info <- partial.plot(
 	model, c("Sepal.Length", "Petal.Width"), col = viridis, pch = 16,
-    function.3d = image
+    fun.3d = image
 )
 ```
 
 ## Test _contour()_.
 ```{R}
 info <- partial.plot(
-    model, c("Sepal.Length", "Petal.Width"), function.3d = contour
+    model, c("Sepal.Length", "Petal.Width"), fun.3d = contour
 )
 ```
 
@@ -160,7 +160,7 @@ info <- partial.plot(
 ```{R, webgl = TRUE, rgl = TRUE}
 info <- partial.plot(
 	model, c("Sepal.Length", "Petal.Width"), col = viridis,
-    function.3d = persp3d
+    fun.3d = persp3d
 )
 ```
 
@@ -168,7 +168,7 @@ info <- partial.plot(
 ```{R}
 info <- partial.plot(
 	model, c("Sepal.Length", "Petal.Width"), col = viridis,
-	function.3d = persp, xlab = "X label", ylab = "Y label", zlab = "Z label"
+	fun.3d = persp, xlab = "X label", ylab = "Y label", zlab = "Z label"
 )
 ```
 
@@ -177,7 +177,7 @@ info <- partial.plot(
 ```{R, webgl = TRUE, rgl = TRUE}
 info <- partial.plot(
 	model, c("Sepal.Length", "Petal.Width"), col = viridis,
-	function.3d = persp3d, xlab = "X label", ylab = "Y label", zlab = "Z label"
+	fun.3d = persp3d, xlab = "X label", ylab = "Y label", zlab = "Z label"
 )
 ```
 
@@ -206,7 +206,7 @@ model <- cforest(
 )
 info <- partial.plot(
 	model, c("Sepal.Length", "Petal.Width"), pch = 16, n.cores = 2,
-    function.3d = persp, col = viridis, theta = 40 
+    fun.3d = persp, col = viridis, theta = 40 
 )
 ```
 
@@ -229,7 +229,7 @@ model <- ctree(
 )
 info <- partial.plot(
 	model, c("Sepal.Length", "Petal.Width"), pch = 16, n.cores = 2,
-    function.3d = persp, col = viridis, theta = 40 
+    fun.3d = persp, col = viridis, theta = 40 
 )
 ```
 
@@ -244,7 +244,7 @@ Waiting for the support of `model.adapter`.
 #pp.legend(info, "topleft")
 #info <- partial.plot(
 	#model, c("Sepal.Length", "Petal.Width"), pch = 16, col = viridis,
-	#function.3d = persp
+	#fun.3d = persp
 #)
 ```
 
@@ -259,7 +259,7 @@ Waiting for the support of `model.adapter`.
 #pp.legend(info, "topleft")
 #info <- partial.plot(
 	#model, c("Sepal.Length", "Petal.Width"), pch = 16, col = viridis,
-	#function.3d = persp
+	#fun.3d = persp
 #)
 ```
 
@@ -274,7 +274,7 @@ Waiting for the support of `model.adapter`.
 #pp.legend(info, "topleft")
 #info <- partial.plot(
 	#model, c("Sepal.Length", "Petal.Width"), pch = 16, col = viridis,
-	#function.3d = persp
+	#fun.3d = persp
 #)
 ```
 
@@ -289,7 +289,7 @@ Waiting for the support of `model.adapter`.
 #pp.legend(info, "topleft")
 #info <- partial.plot(
 	#model, c("Sepal.Length", "Petal.Width"), pch = 16, col = viridis,
-	#function.3d = persp, n.cores = 1
+	#fun.3d = persp, n.cores = 1
 #)
 ```
 
@@ -305,7 +305,7 @@ Waiting for the support of `model.adapter`.
 #pp.legend(info, "topleft")
 #info <- partial.plot(
 	#model, c("Sepal.Length", "Petal.Width"), pch = 16, col = viridis,
-	#function.3d = persp
+	#fun.3d = persp
 #)
 ```
 
@@ -322,7 +322,7 @@ pp.legend(info, "topleft")
 # 3D plot
 info <- partial.plot(
 	model, c("Sepal.Length", "Petal.Width"), pch = 16, col = viridis,
-	function.3d = persp
+	fun.3d = persp
 )
 ```
 
@@ -341,7 +341,7 @@ Waiting for the support of `model.adapter`.
 ## 3D plot.
 #info <- partial.plot(
     #model, c("shoeSize", "score"), pch = 16, col = viridis,
-	#function.3d = persp
+	#fun.3d = persp
 #)
 ```
 
@@ -354,7 +354,7 @@ info <- partial.plot(model, c("Sepal.Length", "Species"), pch = 16)
 pp.legend(info, "topleft")
 info <- partial.plot(
 	model, c("Sepal.Length", "Petal.Width"), pch = 16, col = viridis,
-	function.3d = persp
+	fun.3d = persp
 )
 ```
 
@@ -375,7 +375,7 @@ model <- lme(
 	data = MathAchSchool
 )
 info <- partial.plot(
-	model, c("DISCLIM", "PRACAD"), col = viridis, function.3d = persp
+	model, c("DISCLIM", "PRACAD"), col = viridis, fun.3d = persp
 )
 ```
 
@@ -391,7 +391,7 @@ Waiting for the support of `model.adapter`.
 #pp.legend(info, "topleft")
 #info <- partial.plot(
 	#model, c("Sepal.Length", "Petal.Width"), pch = 16, col = viridis,
-	#function.3d = persp
+	#fun.3d = persp
 #)
 ```
 
@@ -408,7 +408,7 @@ pp.legend(info, "topleft")
 # 3D plot
 info <- partial.plot(
 	model, c("Sepal.Length", "Petal.Width"), pch = 16, col = viridis,
-	function.3d = persp, data = iris
+	fun.3d = persp, data = iris
 )
 ```
 
@@ -426,7 +426,7 @@ info <- partial.plot(
 pp.legend(info, "topleft")
 info <- partial.plot(
 	model, c("Sepal.Length", "Petal.Width"), pch = 16, col = viridis,
-	function.3d = persp, n.cores = 1
+	fun.3d = persp, n.cores = 1
 )
 ```
 
@@ -444,7 +444,7 @@ Waiting for the support of `model.adapter`.
 #pp.legend(info, "topleft")
 #info <- partial.plot(
 	#model, c("Sepal.Length", "Petal.Width"), pch = 16, col = viridis,
-	#function.3d = persp, n.cores = 1
+	#fun.3d = persp, n.cores = 1
 #)
 ```
 
@@ -461,7 +461,7 @@ Waiting for the support of `model.adapter`.
 #pp.legend(info, "topleft")
 #info <- partial.plot(
 	#model, c("Sepal.Length", "Petal.Width"), pch = 16, col = viridis,
-	#function.3d = persp, n.cores = 1
+	#fun.3d = persp, n.cores = 1
 #)
 ```
 
@@ -477,7 +477,7 @@ info <- partial.plot(
 pp.legend(info, "topleft")
 info <- partial.plot(
 	model, c("Sepal.Length", "Petal.Width"), pch = 16, col = viridis,
-	function.3d = persp, n.cores = 1
+	fun.3d = persp, n.cores = 1
 )
 ```
 
@@ -494,7 +494,7 @@ Waiting for the support of `model.adapter`.
 #pp.legend(info, "topleft")
 #info <- partial.plot(
 	#model, c("Sepal.Length", "Petal.Width"), pch = 16, col = viridis,
-	#function.3d = persp, n.cores = 1
+	#fun.3d = persp, n.cores = 1
 #)
 ```
 
