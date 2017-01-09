@@ -152,6 +152,9 @@ partial.relationship$methods(
 		grid <- do.call(
 			expand.grid, c(settings$numeric.sequences, settings$factor.levels)
 		)
+		if (length(settings$factor.levels) != 0) {
+			grid <- filter.result(grid)
+		}
 		# Initialize cluster.
 		# クラスター初期化
 		cl <- makeCluster(settings$n.cores)
