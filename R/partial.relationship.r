@@ -2,9 +2,14 @@
 #	Names of models supported by lsmeans.
 #------------------------------------------------------------------------------
 LSMEANS_COMPATIBLE_MODELS <- c(
-	"lm", "glm", "lme", "glmmML", "MCMCglmm", "glmmadmb"
+	"glm", glmer = "glmerMod", "glmmadmb", "lm", "lme", "lmer = lmerMod",
+	"MCMCglmm"
 )
 
+LSMEANS_INCOMPATIBLE_MODELS <- c(
+	cforest = "RandomForest", ctree = "BinaryTree", "gam", "gamm", "gbm",
+	"glmmML", "randomForest", "ranger", "rpart", "svm", "tree"
+)
 
 #------------------------------------------------------------------------------
 #	変依存性を計算するクラス。
@@ -43,7 +48,7 @@ partial.relationship$methods(
 		}
 		.self$settings <- settings
 		# Calculate partial relationship data.
-		if (any(class(settings$model) %in% LSMEANS_COMPATIBLE_MODELS)) {
+		if (!any(class(settings$model) %in% LSMEANS_INCOMPATIBLE_MODELS)) {
 			.self$data <- partial.relationship.lsmeans()
 		} else {
 			.self$data <- partial.relationship.internal()
