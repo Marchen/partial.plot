@@ -225,7 +225,7 @@ partial.plot <- function(
 		residual <- NULL
 	}
 	# Draw
-	drawer <- pp.drawer(settings, relationship, residual)
+	drawer <- pp.drawer(settings)
 	drawer$draw()
 	invisible(settings)
 }

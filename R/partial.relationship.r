@@ -14,9 +14,7 @@ LSMEANS_INCOMPATIBLE_MODELS <- c(
 #------------------------------------------------------------------------------
 #	変依存性を計算するクラス。
 #------------------------------------------------------------------------------
-#'	(Internal) A reference class calculates and draws partial relationship.
-#'
-#'	To use this class initialize it and call draw() method.
+#'	(Internal) A reference class calculates partial relationship.
 #'
 #'	@field data
 #'		data.frame to keep calculated partial relationship data.
@@ -247,124 +245,6 @@ partial.relationship$methods(
 		}
 		result <- do.call(rbind, result)
 		return(result)
-	}
-)
-
-
-#------------------------------------------------------------------------------
-#	説明変数と応答変数の関係式を描画する。
-#------------------------------------------------------------------------------
-partial.relationship$methods(
-	draw.relationship = function() {
-		"
-		Draw partial relationships.
-		"
-		if (settings$plot.type == "2D") {
-			draw.relationship.2d()
-		} else {
-			draw.relationship.3d()
-		}
-	}
-)
-
-
-#------------------------------------------------------------------------------
-#	説明変数と応答変数の関係式の信頼区間を描画する。
-#------------------------------------------------------------------------------
-partial.relationship$methods(
-	draw.interval = function() {
-		"
-		Draw intervals of partial relationships.
-		"
-		if (settings$plot.type == "2D") {
-			draw.interval.2d()
-		} else {
-			draw.interval.3d()
-		}
-	}
-)
-
-#------------------------------------------------------------------------------
-#	二次元偏依存性の線を描画する。
-#------------------------------------------------------------------------------
-partial.relationship$methods(
-	draw.relationship.2d = function() {
-		for (i in names(settings$group.colors)) {
-			"
-			Draw partial relationship lines in 2D graph.
-			"
-			current.data <- .self$data.split[[i]]
-			args <- list(
-				x = current.data[[settings$x.names.numeric]],
-				y = current.data$fit, col = settings$group.colors[i]
-			)
-			args <- settings$set.function.args(args, lines)
-			do.call(lines, args)
-		}
-	}
-)
-
-
-#------------------------------------------------------------------------------
-#	二次元偏依存性の信頼（などの）区間を描画する。
-#------------------------------------------------------------------------------
-partial.relationship$methods(
-	draw.interval.2d = function() {
-		"
-		Draw intervals of partial.relationship in 2D graph.
-		"
-		for (i in names(settings$group.colors)) {
-			current.data <- .self$data.split[[i]]
-			x <- current.data[[settings$x.names.numeric]]
-			x <- c(x, rev(x))
-			y <- c(current.data$lower, rev(current.data$upper))
-			polygon(
-				x, y, border = NA,
-				col = trans.color(settings$group.colors[i])
-			)
-		}
-	}
-)
-
-
-#------------------------------------------------------------------------------
-#	三次元偏依存性グラフを描画する。
-#------------------------------------------------------------------------------
-partial.relationship$methods(
-	draw.relationship.3d = function() {
-		"
-		Draw 3D partial relationship.
-		"
-		z.matrix <- matrix(.self$data$fit, nrow = settings$resolution)
-		if (identical(settings$fun.3d, image)) {
-			col <- color.ramp(z.matrix, settings$col, unique.pal = TRUE)
-		} else if (identical(settings$fun.3d, persp)) {
-			col <- pp.colors(settings)$colors.for.persp(z.matrix)
-		} else {
-			col <- color.ramp(z.matrix, settings$col)
-		}
-		args <- list(
-			z = z.matrix,
-			x = unique(.self$data[[settings$x.names[1]]]),
-			y = unique(.self$data[[settings$x.names[2]]]),
-			xlab = settings$xlab, ylab = settings$ylab, zlab = settings$zlab,
-			col = col
-		)
-		args <- settings$set.function.args(args)
-		do.call(settings$fun.3d, args)
-	}
-)
-
-
-#------------------------------------------------------------------------------
-#	三次元偏依存性グラフの信頼区間を描画する。
-#------------------------------------------------------------------------------
-partial.relationship$methods(
-	draw.interval.3d = function() {
-		"
-		Draw 3D interval of partial relationship (not implimented).
-		"
-		#####   DO NOTHING   #####
 	}
 )
 

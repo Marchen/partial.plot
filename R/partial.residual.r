@@ -1,7 +1,7 @@
 #------------------------------------------------------------------------------
-#	偏残差を計算、描画するクラス。
+#	偏残差を計算するクラス。
 #------------------------------------------------------------------------------
-#'	(Internal) A reference class calculate and draw partial residuals.
+#'	(Internal) A reference class calculate partial residuals.
 #'
 #'	@field settings
 #'		pp.settings object having settings of the class.
@@ -86,60 +86,6 @@ partial.residual$methods(
 			settings$adapter$link(settings$data[[settings$adapter$y.names()]])
 			- (pred1 - pred2)
 		)
-	}
-)
-
-
-#------------------------------------------------------------------------------
-#	偏残差の点を描画。
-#------------------------------------------------------------------------------
-partial.residual$methods(
-	draw = function() {
-		"
-		Draw partial residuals.
-		"
-		if (settings$plot.type == "2D") {
-			.self$draw.2d()
-		} else {
-			.self$draw.3d()
-		}
-	}
-)
-
-
-#------------------------------------------------------------------------------
-#	二次元プロットで偏残差の点を描画。
-#------------------------------------------------------------------------------
-partial.residual$methods(
-	draw.2d = function() {
-		"
-		Draw 2D residuals.
-		"
-		args <- list(
-			x = settings$data[[settings$x.names.numeric]],
-			y = .self$data, col = settings$obs.colors
-		)
-		args <- settings$set.function.args(args, points)
-		do.call(points, args)
-	}
-)
-
-
-#------------------------------------------------------------------------------
-#	三次元プロットで偏残差の点を描画。
-#------------------------------------------------------------------------------
-partial.residual$methods(
-	draw.3d = function() {
-		"
-		Draw 3D residuals.
-		"
-		if (identical(settings$fun.3d, image)) {
-			points(
-				settings$data[[settings$x.names.numeric[1]]],
-				settings$data[[settings$x.names.numeric[2]]],
-				pch = 16, col = "white"
-			)
-		}
 	}
 )
 
