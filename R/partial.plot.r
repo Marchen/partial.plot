@@ -233,18 +233,20 @@ partial.plot <- function(
 		draw.intervals, interval.levels, resolution, col, xlab, ylab, zlab,
 		sep, n.cores, ...
 	)
-	# Draw partial relationship graph.
-	# 関係式グラフの描画。
-	if (draw.relationships) {
-		pr.data <- partial.relationship(settings)
-		pr.data$draw()
+	# Calculate required data.
+	if (draw.relationships | draw.intervals) {
+		relationships <- partial.relationship(settings)
 	}
-	# Plot partial residuals.
-	# 偏残差の描画。
 	if (draw.residuals) {
 		residuals <- partial.residual(settings)
-		residuals$draw()
 	}
+	# Draw
+	if (settings$plot.type == "2D") {
+		open.new.plot(settings, relationships$data)
+	}
+	relationships$draw.interval()
+	relationships$draw.relationship()
+	residuals$draw()
 	invisible(settings)
 }
 
