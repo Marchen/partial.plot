@@ -39,7 +39,7 @@ pp.drawer$methods(
 		Open new plot window.
 		"
 		# Find possible x and y values.
-		if (settings$draw.relationship | settings$draw.interval) {
+		if (settings$has.relationship) {
 			relationship <- settings$relationship
 			if (is.null(relationship$upper)) {
 				x <- relationship[[settings$x.names.numeric]]
@@ -51,7 +51,7 @@ pp.drawer$methods(
 		} else {
 			x <- y <- numeric()
 		}
-		if (settings$draw.relationship) {
+		if (settings$has.residual) {
 			x <- c(x, settings$data[[settings$x.names.numeric]])
 			y <- c(y, settings$residual)
 		}
@@ -76,13 +76,13 @@ pp.drawer$methods(
 		if (settings$plot.type == "2D") {
 			open.plot.window()
 		}
-		if (settings$draw.interval) {
+		if (settings$draw.interval & settings$has.relationship) {
 			.self$draw.interval()
 		}
-		if (settings$draw.relationship) {
+		if (settings$draw.relationship & settings$has.relationship) {
 			.self$draw.relationship()
 		}
-		if (settings$draw.residual) {
+		if (settings$draw.residual & settings$has.residual) {
 			.self$draw.residual()
 		}
 	}
@@ -226,7 +226,9 @@ pp.drawer$methods(
 		"
 		Draw 3D partial relationship.
 		"
-		z.matrix <- matrix(settings$relationship$fit, nrow = settings$resolution)
+		z.matrix <- matrix(
+			settings$relationship$fit, nrow = settings$resolution
+		)
 		if (identical(settings$fun.3d, image)) {
 			col <- color.ramp(z.matrix, settings$col, unique.pal = TRUE)
 		} else if (identical(settings$fun.3d, persp)) {

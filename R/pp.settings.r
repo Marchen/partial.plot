@@ -81,6 +81,12 @@ if (require(rgl)) {
 #'		a character vector representing names of numeric explanatory variables
 #'		used for plotting.
 #'
+#'	@field type
+#'		a character literal indicating type of scale for plotting.
+#'		This is similar to type argument of many predict methods.
+#'		Possible values are "response", "link".
+#'		"prob" will be implimented in future.
+#'
 #'	@field plot.type
 #'		a character literal to indicate plot type. Possible values are
 #'		"2D" and "3D".
@@ -155,6 +161,12 @@ if (require(rgl)) {
 #'	@field residual
 #'		a numeric vector having partial residual data.
 #'
+#'	@field has.relationship
+#'		a logical indicating the object has partial relationship data.
+#'
+#'	@field has.residual
+#'		a logical indicating the object has partial residual data.
+#'
 #------------------------------------------------------------------------------
 pp.settings <- setRefClass(
 	"pp.settings",
@@ -164,6 +176,7 @@ pp.settings <- setRefClass(
 		x.names = "character",
 		x.names.factor = "character",
 		x.names.numeric = "character",
+		type = "character",
 		plot.type = "character",
 		factor.levels = "list",
 		numeric.sequences = "list",
@@ -185,7 +198,9 @@ pp.settings <- setRefClass(
 		n.cores = "ANY",
 		relationship = "data.frame",
 		relationship.split = "list",
-		residual = "numeric"
+		residual = "numeric",
+		has.relationship = "logical",
+		has.residual = "logical"
 	)
 )
 
@@ -195,7 +210,7 @@ pp.settings <- setRefClass(
 #------------------------------------------------------------------------------
 pp.settings$methods(
 	initialize = function(
-		model, x.names, data = NULL, fun.3d = persp,
+		model, x.names, data = NULL, type = "response", fun.3d = persp,
 		draw.residual = TRUE, draw.relationship = TRUE,
 		draw.interval = TRUE, interval.levels = 0.95, resolution = NULL,
 		col = gg.colors, xlab = NULL, ylab = NULL, zlab = NULL, sep = " - ",
@@ -213,6 +228,10 @@ pp.settings$methods(
 			}
 			\\item{\\code{data}}{
 				a data.frame containing data used for plotting.
+			}
+			\\item{\\code{type}}{
+				type of relationship to draw.
+				Possible values are 'response' and 'link'.
 			}
 			\\item{\\code{fun.3d}}{
 				the function used for drawing 3D relationship graphs.
@@ -263,14 +282,15 @@ pp.settings$methods(
 			return()
 		}
 		initFields(
-			adapter = model.adapter(model, data = data),
+			adapter = model.adapter(model, data = data), type = type,
 			fun.3d = fun.3d, model = model, x.names = x.names,
 			draw.residual = draw.residual,
 			draw.relationship = draw.relationship,
 			draw.interval = draw.interval, interval.levels = interval.levels,
 			resolution = resolution,
 			col = col, xlab = xlab, ylab = ylab, zlab = zlab, sep = sep,
-			n.cores = n.cores, other.pars = list(...)
+			n.cores = n.cores, other.pars = list(...),
+			has.relationship = FALSE, has.residual = FALSE
 		)
 		initFields(data = adapter$data)
 		.self$check.params()
@@ -418,6 +438,24 @@ pp.settings$methods(
 
 
 #------------------------------------------------------------------------------
+#	予測値の種類の設定が正しいかをチェックする。
+#------------------------------------------------------------------------------
+pp.settings$methods(
+	check.type = function() {
+		"
+		Check specified type.
+		"
+		if (length(type) != 1) {
+			stop("'type' should be a character of length 1.")
+		}
+		if (!type %in% c("response", "link")) {
+			stop("'type' should be one of 'response' and 'link'.")
+		}
+	}
+)
+
+
+#------------------------------------------------------------------------------
 #	パラメーターの整合性を確認する。
 #------------------------------------------------------------------------------
 pp.settings$methods(
@@ -430,6 +468,7 @@ pp.settings$methods(
 		.self$check.intervals()
 		.self$check.resolution()
 		.self$check.labels()
+		.self$check.type()
 	}
 )
 
@@ -707,6 +746,7 @@ pp.settings$methods(
 		"
 		.self$relationship <- object$data
 		.self$relationship.split <- object$data.split
+		.self$has.relationship <- TRUE
 	}
 )
 
@@ -720,5 +760,6 @@ pp.settings$methods(
 		Import partial residual data.
 		"
 		.self$residual <- object$data
+		.self$has.residual <- TRUE
 	}
 )

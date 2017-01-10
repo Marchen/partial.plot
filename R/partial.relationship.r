@@ -90,16 +90,16 @@ partial.relationship$methods(
 		# 予測値を計算。
 		at <- c(settings$numeric.sequences, settings$factor.levels)
 		rg <- ref.grid(
-			settings$model, at, data = settings$data, type = "terms"
+			settings$model, at, data = settings$data, type = settings$type
 		)
 		lsm <- summary(
 			lsmeans(rg, settings$x.names), level = settings$interval.levels
 		)
-		colnames(lsm)[colnames(lsm) == "lsmean"] <- "fit"
-		colnames(lsm)[colnames(lsm) == "lower.CL"] <- "lower"
-		colnames(lsm)[colnames(lsm) == "upper.CL"] <- "upper"
-		colnames(lsm)[colnames(lsm) == "asymp.LCL"] <- "lower"
-		colnames(lsm)[colnames(lsm) == "asymp.UCL"] <- "upper"
+		colnames(lsm) <- gsub(
+			"^lsmean$|^response$|^prob$", "fit", colnames(lsm)
+		)
+		colnames(lsm) <- gsub("^lower.CL$|^asymp.LCL$", "lower", colnames(lsm))
+		colnames(lsm) <- gsub("^upper.CL$|^asymp.UCL$", "upper", colnames(lsm))
 		# Remove predictions with out-ranged explanatory variable for each group.
 		# 各グループの説明変数の範囲を外れた予測値を削除。
 		if (length(settings$factor.levels) != 0) {
@@ -115,7 +115,7 @@ partial.relationship$methods(
 #------------------------------------------------------------------------------
 partial.relationship$methods(
 	predict.stats = function(
-		newdata, predict.fun, new.value.grid, index, levels
+		newdata, predict.fun, new.value.grid, index, levels, type
 	) {
 		"
 		Calculate prediction in cluster.
@@ -150,11 +150,7 @@ partial.relationship$methods(
 		param.names <- names(new.value.grid)
 		newdata[param.names] <- replace.values
 		# Make prediction.
-		prediction <- predict.fun(
-			#### TODO #####
-			#### typeをなんとかする。
-			newdata = newdata
-		)
+		prediction <- predict.fun(newdata = newdata, type = type)
 		quantiles <- quantile(prediction$fit, probs = levels, na.rm = TRUE)
 		result <- c(fit = median(prediction$fit), quantiles, replace.values)
 		names(result) <- c("fit", "lower", "upper", param.names)
@@ -188,12 +184,17 @@ partial.relationship$methods(
 		clusterEvalQ(cl, library(model.adapter))
 		# Run calculation.
 		# 計算実行
+		type <- settings$adapter$predict.types["link"]
 		result <- settings$cluster.apply(
 			X = 1:nrow(grid), FUN = .self$predict.stats,
 			newdata = settings$data, predict.fun = settings$adapter$predict,
-			new.value.grid = grid, levels = settings$interval.levels
+			new.value.grid = grid, levels = settings$interval.levels,
+			type = type
 		)
 		result <- do.call(rbind, result)
+		if (settings$type == "response") {
+			result$fit <- settings$adapter$linkinv(result$fit)
+		}
 		return(result)
 	}
 )

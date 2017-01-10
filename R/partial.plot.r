@@ -43,6 +43,12 @@ combine.columns <- function(data, sep) {
 #'		try to obtain original data used for the modeling from the object
 #'		specified by the \code{model} argument.
 #'
+#'	@param type
+#'		a character literal indicating type of scale for plotting.
+#'		This is similar to type argument of many predict methods.
+#'		Possible values are "response", "link".
+#'		"prob" will be implimented in future.
+#'
 #'	@param fun.3d
 #'		a function to produce 3d graph. Currently
 #'		\code{\link[graphics]{persp}}, \code{\link[grpahics]{image}},
@@ -201,7 +207,7 @@ combine.columns <- function(data, sep) {
 #'	@export
 #------------------------------------------------------------------------------
 partial.plot <- function(
-	model, x.names, data = NULL, fun.3d = persp,
+	model, x.names, data = NULL, type = "response", fun.3d = persp,
 	draw.residual = TRUE, draw.relationship = TRUE, draw.interval = TRUE,
 	interval.levels = 0.95, resolution = NULL, col = gg.colors,
 	xlab = NULL, ylab = NULL, zlab = NULL, sep = " - ", n.cores = NULL, ...
@@ -216,9 +222,9 @@ partial.plot <- function(
 		)
 	} else {
 		settings <- pp.settings(
-			model, x.names, data, fun.3d, draw.residual, draw.relationship,
-			draw.interval, interval.levels, resolution, col, xlab, ylab, zlab,
-			sep, n.cores, ...
+			model, x.names, data, type, fun.3d, draw.residual,
+			draw.relationship, draw.interval, interval.levels, resolution, col,
+			xlab, ylab, zlab, sep, n.cores, ...
 		)
 		# Calculate required data.
 		partial.relationship(settings)

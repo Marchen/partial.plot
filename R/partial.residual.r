@@ -29,12 +29,22 @@ partial.residual$methods(
 			\\item{\\code{settings}}{\\code{\\link{pp.settings}} object.}
 		}
 		"
+		# Initialize settings.
 		if (missing(settings)) {
 			return()
 		}
 		initFields(settings = settings)
-		.self$calculate.residuals()
-		settings$set.residual(.self)
+		# Calculate partial residual if possible.
+		if (identical(settings$adapter$link, binomial()$linkfun)) {
+			message <- paste(
+				"Currently, partial residual can't be calculated",
+				"for logit link function."
+			)
+			warning(message)
+		} else {
+			.self$calculate.residuals()
+			settings$set.residual(.self)
+		}
 	}
 )
 
@@ -82,10 +92,14 @@ partial.residual$methods(
 		pred2 <- pred2$fit[, "fit"]
 		# Calculate partial residual.
 		# 偏残差を計算。
-		.self$data <- (
+		result <- (
 			settings$adapter$link(settings$data[[settings$adapter$y.names()]])
 			- (pred1 - pred2)
 		)
+		if (settings$type == "response") {
+			result <- settings$adapter$linkinv(result)
+		}
+		.self$data <- result
 	}
 )
 
