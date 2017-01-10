@@ -241,7 +241,7 @@ color.ramp.numeric <- function(
 ) {
 	# If pal is not a function, make color making function.
 	if (!is.function(pal)) {
-		pal <- colorRamp(pal)
+		pal <- colorRampPalette(pal)
 	}
 	# If n.class is null, n.class become number of unique values in x.
 	if (is.null(n.class)) {
