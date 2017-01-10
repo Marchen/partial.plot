@@ -54,8 +54,41 @@ info <- partial.plot(model, c("Sepal.Length", "Species"), pch = 16)
 pp.legend(info, "topleft")
 ```
 
+## Link function.
+```{R}
+# Test using iris.
+model <- glm(Petal.Length ~ Sepal.Length + Petal.Width, data = iris)
+info <- partial.plot(model, "Sepal.Length", pch = 16)
+
+model <- glm(
+	Petal.Length ~ Sepal.Length + Petal.Width, data = iris,
+	family = Gamma(log)
+)
+info <- partial.plot(model, "Sepal.Length", pch = 16, type = "response")
+info <- partial.plot(model, "Sepal.Length", pch = 16, type = "link")
+
+# Test using ChickWeight
+model <- glm(
+    weight ~ Time * Diet, family = Gamma, data = as.data.frame(ChickWeight)
+)
+info <- partial.plot(model, c("Time", "Diet"), pch = 16, type = "response")
+points(ChickWeight$Time, ChickWeight$weight, col = "black", pch = 16)
+info <- partial.plot(model, c("Time", "Diet"), pch = 16, type = "link")
+
+# Test from glmmML
+id <- factor(rep(1:20, rep(5, 20)))
+y <- rbinom(100, prob = rep(runif(20), rep(5, 20)), size = 1)
+x <- rnorm(100)
+dat <- data.frame(y = y, x = x, id = id)
+model <- glm(y ~ x + id, data = dat, family = binomial)
+partial.plot(model, c("x", "id"))
+```
+
 ## Hide points.
 ```{R}
+model <- glm(
+	Petal.Length ~ (Sepal.Length + Petal.Width) * Species, data = iris
+)
 info <- partial.plot(
 	model, c("Sepal.Length", "Species"), draw.residual = FALSE
 )

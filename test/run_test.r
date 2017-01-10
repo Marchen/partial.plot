@@ -18,9 +18,7 @@ get.this.file.dir <- function() {
 
 old.wd <- setwd(get.this.file.dir())
 
-devtools::install()
-
-rmarkdown::render("visual.test.rmd")
+rmarkdown::render("../vignettes/visual.test.rmd")
 
 setwd(old.wd)
 rm(old.wd)
