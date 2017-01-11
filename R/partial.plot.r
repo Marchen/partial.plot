@@ -44,10 +44,14 @@ combine.columns <- function(data, sep) {
 #'		specified by the \code{model} argument.
 #'
 #'	@param type
-#'		a character literal indicating type of scale for plotting.
+#'		a character literal indicating type of scale of plotting.
 #'		This is similar to type argument of many predict methods.
 #'		Possible values are "response", "link".
-#'		"prob" will be implimented in future.
+#'		If "link" is specified, partial relationship and residuals are
+#'		drawn in the scale of the linear predictor.
+#'		On the other hand, partial relationship and residuals are drawn
+#'		in the scale of the response variable if "response" is specified.
+#'		"prob" may be implimented in the future.
 #'
 #'	@param fun.3d
 #'		a function to produce 3d graph. Currently
