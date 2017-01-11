@@ -23,19 +23,25 @@ vignette: >
 
 --------------------------------------------------------------------------------
 
-## <a id = "index">目次</a>
+# <a id = "index">目次</a>
 
 * [はじめに](#introduction)
 * [インストールとアップデート](#installation)
-* [クイックスタート（プロ用）](#quickstart)
+* [クイックスタート（R魔法使い用）](#quickstart)
 * [基本的なつかいかた](#basic_usage)
 	* [データの準備とモデルの作成](#preparation)
 	* [モデルの予測結果の作図](#partial_plot)
 	* [凡例の追加](#legend)
+* [もう少し複雑なモデルの可視化](#basic_usage2)
+* [三次元プロット](#3d_plot)
 * [グラフの見た目の変更](#advanced_settings)
 	* [作図する要素の変更](#remove_objects)
 	* [色の変更](#change_colors)
+	* [ラベル区切り文字の変更](#sep)
+	* [信頼区間の変更](#interval_levels)
+	* [リンク関数](#link_function)
 	* [その他の設定](#other_settings)
+* [結果の再利用](#reuse_result)
 * [対応モデル](#supported_models)
 * [既知の問題](#known_issues)
 * [おまけ](#value_add)
@@ -45,7 +51,7 @@ vignette: >
 
 --------------------------------------------------------------------------------
 
-## <a id = "introduction">はじめに</a>
+# <a id = "introduction">はじめに</a>
 
 とりあえず、このパッケージはまだまだ開発中です。
 バグは残っているでしょうし、足りない機能もたくさんあると思います。
@@ -55,20 +61,15 @@ vignette: >
 もしバグを見つけたり、こういう機能が欲しい、と思うことがあったりしたら、
 ぜひぜひお知らせ下さい。
 
-そのほかのことはそのうち書きます。たぶん。
-
-
 --------------------------------------------------------------------------------
 
-## <a id = "installation">インストールとアップデート</a>
+# <a id = "installation">インストールとアップデート</a>
 
-まずはインストール。
-ということで、以下のコマンドをRにコピー＆ペーストすれば
+以下のコマンドをRにコピー＆ペーストすれば
 必要なパッケージ一式をインストールできるはずです。
 
 ```{R, message = FALSE, warning = FALSE, eval = FALSE}
-install.packages("testthat")
-install.packages("lsmeans")
+install.packages(c("testthat","lsmeans"))
 install.packages(
 	c("model.adapter", "partial.plot"),
 	repos = "http://hostgk3.biology.tohoku.ac.jp/marchen/R/repos"
@@ -78,15 +79,13 @@ install.packages(
 もし、うまく行かない場合は以下のコマンドを試してください。
 
 ```{R, message = FALSE, warning = FALSE, eval = FALSE}
-install.packages("testthat")
-install.packages("lsmeans")
+install.packages(c("testthat","lsmeans"))
 install.packages(
 	c("model.adapter", "partial.plot"),
 	repos = "http://hostgk3.biology.tohoku.ac.jp/marchen/R/repos",
 	type = "source"
 )
 ```
-
 
 パッケージをアップデートするには、以下のコマンドを実行します。
 
@@ -99,9 +98,9 @@ update.packages(
 
 --------------------------------------------------------------------------------
 
-## <a id = "quickstart">クイックスタート（プロ用）</a>
+# <a id = "quickstart">クイックスタート（R魔法使い用）</a>
 
-まー、プロの人は見ればわかるでしょう。
+まー、魔法使いの人は見ればわかるでしょう。
 
 ```{R, echo = FALSE, message = FALSE}
 library(partial.plot)
@@ -125,19 +124,23 @@ info <- partial.plot(model, c("Sepal.Length", "Species"), pch = 16)
 # 凡例を追加。
 pp.legend(info, "topleft")
 
+# 三次元プロット。
+info <- partial.plot(
+	model, c("Sepal.Length", "Petal.Width"), col = terrain.colors,
+    theta = 20
+)
+
 ```
 
 
 --------------------------------------------------------------------------------
 
-## <a id = "basic_usage">基本的なつかいかた</a>
+# <a id = "basic_usage">基本的なつかいかた</a>
 
-### <a id = "preparation">データの準備とモデルの作成</a>
+## <a id = "preparation">データの準備とモデルの作成</a>
 
 今回はテスト用のデータにお約束のFisherのIrisデータを使います。
-このデータは３種のアヤメ（setosa, versicolor, virginica）の
-萼片の長さ（Sepal.Length）、萼片の幅（Sepal.Width）、
-花弁の長さ（Petal.Length）、花弁の幅（Petal.Width）のデータが含まれています。
+このデータは３種のアヤメ（setosa, versicolor, virginica）の萼片の長さ（Sepal.Length）、萼片の幅（Sepal.Width）、花弁の長さ（Petal.Length）、花弁の幅（Petal.Width）のデータが含まれています。
 
 ```{R}
 # データの読み込み。
@@ -147,12 +150,30 @@ data(iris)
 str(iris)
 ```
 
+さらに、種ごとに花弁の長さと萼片の長さ、萼片の幅、花弁の幅をプロットしてみます。
+
+```{R}
+# データの可視化。
+par(mfrow = c(2, 2))
+plot(
+	Petal.Length ~ Sepal.Length, data = iris,
+	pch = as.numeric(Species) + 14, col = as.numeric(Species) + 1
+)
+plot(
+	Petal.Length ~ Sepal.Width, data = iris,
+	pch = as.numeric(Species) + 14, col = as.numeric(Species) + 1
+)
+plot(
+	Petal.Length ~ Petal.Width, data = iris,
+	pch = as.numeric(Species) + 14, col = as.numeric(Species) + 1
+)
+```
+
+グラフを見ると、萼片の長さと花弁の長さの関係、萼片の幅と花弁の長さとの関係は種によって違いそうです。
+
 このデータを用いて、花弁の長さを予測するモデルを作ることにします。
-とりあえずモデルにはお約束の一般化線形混合モデル（GLM）を使い、
-説明変数には萼片の長さ、花弁の幅、種を用いることにします。
-また、モデルに種と萼片の長さ、種と花弁の幅の交互作用を組み込んで、
-萼片の長さと花弁の長さ、花弁の幅と花弁の長さとの関係が種によって変わる、
-ということを仮定します。
+とりあえずモデルにはお約束の一般化線形混合モデル（GLM）を使い、説明変数には萼片の長さ、花弁の幅、種を用いることにします。
+また、モデルに種と萼片の長さ、種と花弁の幅の交互作用を組み込んで、萼片の長さと花弁の長さ、花弁の幅と花弁の長さとの関係が種によって変わるかもしれない、ということを仮定します。
 
 ```{R}
 # 予測モデルの作成。
@@ -164,12 +185,14 @@ model <- glm(
 summary(model)
 ```
 
+予測結果を見ると、Sepal.Length:Speciesversicolor、Sepal.Length:Speciesvirginica、Petal.Width:Speciesversicolorの推定値のP値が0.05以下なので、どうやら種によって萼片の長さと花弁の長さの関係、花弁の幅と花弁の長さの関係が異なっているようです。
 
-### <a id = "partial_plot">モデルの予測結果の作図</a>
+## <a id = "partial_plot">モデルの予測結果の作図</a>
 
-できあがったモデルを使ってモデルの予測結果を作図してみます。
+上の結果を眺めていても、予測結果がどのような感じなのか、なかなかわかりません。
+そこで、できあがったモデルを使ってモデルの予測結果を作図してみます。
 基本的な使い方は以下の通りです。
-以下の例ではモデルによって予測された萼片の長さと花弁の長さとの関係を作図しています。
+以下の例ではモデルによって予測された種ごとの萼片の長さと花弁の長さとの関係を作図しています。
 
 ```{R}
 # ライブラリの読み込み。
@@ -179,17 +202,19 @@ library(partial.plot)
 partial.plot(model, c("Sepal.Length", "Species"), pch = 16)
 ```
 
-と、いうことで、`partial.plot`関数の説明です。
-`partial.plot`はまず一番目の引数にGLMの結果を入力します。
+`partial.plot()`関数はまず一番目の引数にモデルの結果を入力します。
 この場合はGLMの結果のオブジェクト`model`を使っています。
 
 ２番目の引数には結果を可視化する説明変数名を指定します。
 この場合、萼片の長さを表す`"Sepal.Length"`と種を表す`"Species"`を指定しています。
 因子型の変数は複数指定することができます。
-この２つの引数は必ず指定する必要があります。
+以上の２つの引数は必ず指定する必要があります。
 
 また、今回はグラフを見やすくするため、`pch = 16`を追加で指定し、
 グラフのシンボルを変えています。
+
+図に表された線はモデルによって予測された萼片の長さと花弁の長さの関係式、線の後ろの色の付いた部分は予測された関係式の信頼区間を、点は偏残差を表します。
+偏残差は他の変数（この場合は花弁の長さ）で説明できなかった説明変数のばらつきを表します。
 
 もし、花弁の幅と花弁の長さとの関係を作図したい場合、以下のように引数を指定します。
 
@@ -198,20 +223,23 @@ partial.plot(model, c("Sepal.Length", "Species"), pch = 16)
 partial.plot(model, c("Petal.Width", "Species"), pch = 16)
 ```
 
+この場合、線は種ごとの花弁の幅と花弁の長さの関係式を、色の付いた部分は関係式の信頼区間を、点は偏残差を表します。
+
 
 ### <a id = "legend">凡例の追加</a>
 
-partial.plot関数は凡例に関する情報を返り値として返します。
-例えば、
+ただ線や信頼区間、偏残差をプロットするだけでは色と種の対応関係がわかりません。
+`partial.plot`の凡例追加機能を使って、凡例を追加することができます。
+
+`partial.plot()`関数は図の設定などの情報を返します。例えば、
 
 ```{R, eval = FALSE}
 # 萼片の長さと花弁の長さとの関係を作図。
 info <- partial.plot(model, c("Sepal.Length", "Species"), pch = 16)
 ```
 
-というプログラムを書くと、凡例に関する情報が`info`変数に代入されます。
-これを以下の例のように`pp.legend()`関数に渡すと、
-モデルによって予測された関係を作図したときの情報を使って凡例を書くことができます。
+というプログラムを書くと、図の情報が`info`変数に代入されます。
+これを以下の例のように`pp.legend()`関数に渡すと、できあがった図に凡例を追加することができます。
 
 ```{R}
 # 凡例を追加。
@@ -219,19 +247,17 @@ info <- partial.plot(model, c("Sepal.Length", "Species"), pch = 16)
 pp.legend(info, "topleft")
 ```
 
-`pp.legend`関数の使い方は`legend`関数とほとんど同じで、
-入力した引数は全て`legend`関数にそのまま用いられます。
-ただし、`legend.info`という引数に`partial.plot`の結果を代入すると、
-その作図に使った情報を渡すことができます。
-必ず`legend.info = partial.plotの結果`というように引数を指定して下さい。
+`pp.legend()`関数の使い方は`legend()`関数とほとんど同じです。
+１番目の引数には`partial.plot()`の結果を指定します。
+２番目以降に入力した引数は全て`legend()`関数にそのまま渡されます。
 
 
 --------------------------------------------------------------------------------
 
-## <a id = "basic_usage2">もう少し複雑なモデルの可視化</a>
+# <a id = "basic_usage2">もう少し複雑なモデルの可視化</a>
 
-partial.plot()を使って、もう少し複雑なグラフを書くこともできます。
-今度はRに含まれているCO2データセットを使います。
+`partial.plot()`を使って、もう少し複雑なグラフを書くこともできます。
+今度はRに含まれている`CO2`データセットを使います。
 このデータセットはケベックとミシシッピからとってきた植物を使って低温処理実験を行い、その後、様々なCO<sub>2</sub>濃度でCO<sub>2</sub>吸収速度を測定したデータが入っています。
 
 `conc`が測定したCO2吸収速度、`uptake`がCO2吸収速度、`Treatment`が低温処理のありなし（あり：chilled、なし：nonchilled）、Typeが植物の由来（QuebecとMississippi）を表しています。
@@ -245,9 +271,10 @@ class(CO2) <- "data.frame"
 
 # データの傾向を見てみる。
 plot(
-	uptake ~ conc, data = CO2, col = color.ramp(CO2$Type),
-	pch = color.ramp(CO2$Treatment, c(chilled = 16, nonchilled = 17)),
-	ylim = c(0, 50)
+	uptake ~ conc, data = CO2,
+    col = c("blue3", "red3")[as.numeric(CO2$Type)],
+	pch = c(16, 17)[as.numeric(CO2$Treatment)],
+    ylim = c(0, 50)
 )
 legend(
 	"bottomright",
@@ -255,59 +282,144 @@ legend(
 		"Mississippi - Chilled", "Mississippi - Non-Chilled",
 		"Quebec - Chilled", "Quebec - Non-Chilled"
 	),
-	col = rep(color.ramp(CO2$Type, unique.pal = TRUE), each = 2),
+	col = rep(c("blue3", "red3"), each = 2),
 	pch = c(16, 17, 16, 17)
 )
 
 ```
 
-上の図を見るとなんとなく、CO<sub>2</sub>濃度とCO<sub>2</sub>吸収の関係は線形ではなさそうです。
-そして、
-
+この関係をglmでモデル化してみます。モデルの応答変数はCO<sub>2</sub>吸収速度（`upteke`）です。
+上の図を見ると、CO<sub>2</sub>濃度とCO<sub>2</sub>吸収の関係は線形ではなさそうなので、説明変数にCO<sub>2</sub>濃度（`conc`）と二次の項（ `I(conc ^ 2)`）を加えることで二次式の当てはめを行います。
+さらに、`Type * Treatment`の項を加えることで、由来と低温処理の交互作用を見ることにします。
 
 ```{R}
-model <- glm(uptake ~ (conc + I(conc^2))  +(Type * Treatment), data = CO2)
-info <- partial.plot(model, c("conc", "Treatment", "Type"), data = CO2,sep=" -- ")
-pp.legend(info, "topright")
+model <- glm(uptake ~ conc + I(conc^2) + Type * Treatment, data = CO2)
+summary(model)
 ```
+
+どうやらモデル構築に使った変数全てがCO<sub>2</sub>吸収速度に影響していそうです。
+ということで、例によって得られた関係式を`partial.plot()`で可視化してみます。
+このモデルで得られた関係性を可視化するには、以下のように`partial.plot()`を呼び出します。
+２番目の引数に`c("conc", "Treatment", "Type")`の３つを指定することでCO<sub>2</sub>濃度、処理、由来の３つの効果を同時に可視化することが可能です。
+
+```{R}
+info <- partial.plot(
+	model, c("conc", "Treatment", "Type"), data = CO2
+)
+pp.legend(info, "bottomright")
+```
+
+`partial.plot()`は複数の因子型によりグループごとの作図に対応しています。
+ここではTreatmentとType、２つの因子型変数の組み合わせの４グループごとに作図を行いましたが、さらにたくさんの因子型引数でグループ分けすることも可能です。
+
 
 --------------------------------------------------------------------------------
 
-## <a id = "advanced_settings">グラフの見た目の変更</a>
+# <a id = "3d_plot">三次元プロット</a>
+
+これまでの例ではモデルの予測結果を二次元に表していましたが、`partial.plot()`は三次元のプロットを描画することも可能です。
+ここでも先ほどのFisherのIrisデータを使います。
+今回は（テスト用に）種の違いを無視して花弁の長さを萼片の長さと花弁の幅で説明してみます。
+
+```{R}
+# データの読み込み。
+data(iris)
+
+# 予測モデルの作成。
+model <- glm(
+	Petal.Length ~ Sepal.Length + Petal.Width, data = iris
+)
+
+# 予測結果を見る。
+summary(model)
+```
+
+予測結果を見ると萼片の長さも花弁の花弁の長さに有意な影響を与えているようです。
+そこで、`partial.plot()`を使って予測結果を可視化してみます。
+
+```{R}
+partial.plot(
+	model, c("Sepal.Length", "Petal.Width"), col = terrain.colors, theta = 20
+)
+```
+
+デフォルトでは花弁の長さと萼片の長さ、花弁の幅の関係が`persp()`関数を使って描画されます。
+三次元プロットに使う関数を変えるにはpartial.plotの`fun.3d`引数に使いたい関数を指定します。
+現在、`persp()`, `image()`、`contour()`での描画に対応しています。
+
+```{R}
+partial.plot(
+	model, c("Sepal.Length", "Petal.Width"), fun.3d = image,
+	col = terrain.colors
+)
+partial.plot(
+	model, c("Sepal.Length", "Petal.Width"), fun.3d = contour, col = "black"
+)
+```
+
+もし、お使いのパソコンに`rgl`パッケージがインストールしてあるなら、`persp3d()`関数も使うことができます。
+ブラウザによっては結果が表示できないので、試してみたい場合には`rgl`パッケージをインストールして、お使いのRで試してみて下さい。
+
+```{R, message = FALSE, warning = FALSE, eval = FALSE}
+# rglパッケージをインストール。
+install.packages("rgl")
+
+# 三次元プロット
+partial.plot(
+	model, c("Sepal.Length", "Petal.Width"), fun.3d = persp3d,
+	col = terrain.colors
+)
+```
+
+
+--------------------------------------------------------------------------------
+
+# <a id = "advanced_settings">グラフの見た目の変更</a>
 
 いくつかの設定を変えることで、グラフの見た目を変えることができます。
 
 
-### <a id = "remove_objects">作図する要素の変更</a>
+## <a id = "remove_objects">作図する要素の変更</a>
 
-`draw.residuals`引数を`FALSE`にすると、残差のシンボルを描画しないことができます。
+`draw.residual`引数を`FALSE`にすると、残差のシンボルを描画しないことができます。
 ```{R, message = FALSE, echo = FALSE}
 # 予測モデルの作成。
 model <- glm(
 	Petal.Length ~ (Sepal.Length + Petal.Width) * Species, data = iris
 )
 ```
+
 ```{R}
-partial.plot(
-	model, c("Sepal.Length", "Species"), draw.residuals = FALSE
+info <- partial.plot(
+	model, c("Sepal.Length", "Species"), draw.residual = FALSE
 )
+pp.legend(info, "topleft")
 ```
 
-また、`draw.relationships`引数を`FALSE`にすると、
-モデルによって予測された関係を描画しないことができます。
+また、`draw.relationship`引数を`FALSE`にすると、モデルによって予測された関係を描画しないことができます。
 ```{R}
-partial.plot(
-	model, c("Sepal.Length", "Species"), draw.relationships = FALSE,
+info <- partial.plot(
+	model, c("Sepal.Length", "Species"), draw.relationship = FALSE,
 	pch = 16
 )
+pp.legend(info, "topleft")
+```
+
+さらに、`draw.interval`引数を`FALSE`にすると、予測された関係の信頼区間を描画しないこともできます。
+```{R}
+info <- partial.plot(
+	model, c("Sepal.Length", "Species"), draw.interval = FALSE,
+	pch = 16
+)
+pp.legend(info, "topleft")
 ```
 
 
-### <a id = "change_colors">色の変更</a>
+## <a id = "change_colors">色の変更</a>
 
-rainbow()関数やheat.colors()関数など、一番目の引数に色の数を渡すと
-色を返す関数を使ってグラフの色を変えることができます。
-?rainbowで出てくるヘルプに載っている関数は基本的に使えます。
+`rainbow()`関数や`heat.colors()`関数など、一番目の引数に色の数を渡すと色を返す関数を使ってグラフの色を変えることができます。
+?rainbowで出てくるヘルプに載っている関数などが使えます。
+個人的には`viridis`パッケージの`viridis()`関数で精製される色がおすすめです。
 
 ```{R}
 # グラフの色を変える。
@@ -319,9 +431,7 @@ pp.legend(info, "topleft")
 ```
 
 また、名前付きの色ベクトルを作ることで、個別に色を指定することもできます。
-以下の例のように、`c`関数を用いて`グループ名 = 色`という形式で、
-色ベクトルを作り、それを`col`引数に渡すことで各グループ（この場合は種）の
-色を指定することができます。
+以下の例のように`c()`関数を用いて`グループ名 = 色`という形式で色ベクトルを作り、それを`col`引数に渡すことで各グループ（この場合は種）の色を指定することができます。
 
 ```{R}
 # 色ベクトルを用意。
@@ -335,20 +445,99 @@ info <- partial.plot(
 pp.legend(info, "topleft")
 ```
 
-### <a id = "sep">ラベル区切り文字の変更</a>
 
+## <a id = "sep">ラベル区切り文字の変更</a>
 
-
-
-### <a id = "other_settings">その他の設定</a>
-
-`partial.plot`関数は普通の`plot`関数と同じように、
-グラフィックパラメーターを変えて、グラフの見た目を変えることができます。
-上の例では`pch = 16`を指定してシンボルを●に変えましたが、
-他のグラフィックパラメーターも変えることができます。
+複数の因子型説明変数を描画するとき、レジェンドで因子名の間を区切る文字を変えることができます。
 
 ```{R}
-# 作図
+model <- glm(uptake ~ conc + I(conc^2) + Type * Treatment, data = CO2)
+info <- partial.plot(
+	model, c("conc", "Treatment", "Type"), data = CO2, sep = "/"
+)
+pp.legend(info, "bottomright")
+```
+
+
+## <a id = "interval_levels">信頼区間の変更</a>
+
+線の周りに描画される信頼区間はデフォルトでは95%信頼区間になっています。
+`interval.levels`引数に0から1の値を与えることで、この値も変更することが可能です。
+
+```{R}
+par(mfrow = c(2, 2))
+model <- glm(uptake ~ conc + I(conc^2) + Type * Treatment, data = CO2)
+# 95%（デフォルト）
+info <- partial.plot(
+	model, c("conc", "Treatment", "Type"), data = CO2,
+	main = "interval.levels = 0.95"
+)
+# 80%
+info <- partial.plot(
+	model, c("conc", "Treatment", "Type"), data = CO2, interval.levels = 0.8,
+	main = "interval.levels = 0.8"
+)
+# 70%
+info <- partial.plot(
+	model, c("conc", "Treatment", "Type"), data = CO2, interval.levels = 0.7,
+	main = "interval.levels = 0.7"
+)
+# 60%
+info <- partial.plot(
+	model, c("conc", "Treatment", "Type"), data = CO2, interval.levels = 0.6,
+	main = "interval.levels = 0.6"
+)
+par(mfrow = c(1, 1))
+
+```
+
+
+## <a id = "link_function">リンク関数</a>
+
+GLMやGLMMなどのモデルを用いると、リンク関数が適用された応答変数に対して、線形モデルの当てはめが行われます。
+GLM全般を説明するのは大変なので、詳細はGoogle先生に聞いてみて下さい。
+例えば、下の例のように分布にガンマ分布、リンク関数に`log`を用いると、GLMは
+$$
+Petal.Length = exp(切片 + 係数１ \times Sepal.Length + 係数２ \times Petal.Width)
+$$
+という関係式を推定します。
+
+```{R}
+model <- glm(
+	Petal.Length ~ (Sepal.Length + Petal.Width), data = iris,
+	family = Gamma(log)
+)
+summary(model)
+```
+
+モデルの推定結果で切片に対応するのは`summary(model)`の結果の(Intercept)のEstimate（-0.19569）、係数１に対応するのはSepal.LengthのEstimate（0.10529）、係数２に対応するのはPetal.WidthのEstimate（0.64334）です。
+
+`partial.plot()`は作図の際、応答変数と同じ単位（普通の単位）・線形予測子の単位（リンク関数を適用したあとの単位）、両方の単位で作図を行うことができます。
+作図の単位を制御するには`type`引数を用い、`type`引数に`"response"`を指定すると応答変数の単位で、`type`引数に`link`を指定すると線形予測子の単位で作図を行います。
+
+```{R}
+partial.plot(
+	model, c("Sepal.Length", "Petal.Width"), type = "response",
+    col = terrain.colors, main = "response"
+)
+partial.plot(
+	model, c("Sepal.Length", "Petal.Width"), type = "link",
+    col = terrain.colors, main = "link"
+)
+```
+
+
+## <a id = "other_settings">その他の設定</a>
+
+`partial.plot()`関数は普通の`plot()`関数と同じように、グラフィックパラメーターを変えて、グラフの見た目を変えることができます。
+上の例では`pch = 16`を指定してシンボルを●に変えましたが、他のグラフィックパラメーターも変えることができます。
+
+```{R}
+# モデル作成
+model <- glm(
+	Petal.Length ~ (Sepal.Length + Petal.Width) * Species, data = iris
+)
+# 作図、シンボルのサイズ、軸ラベルも変えてみる。
 info <- partial.plot(
 	model, c("Sepal.Length", "Species"), pch = 16, cex = 1.5,
 	xlab = "Sepal length (mm)", ylab = "Petal Length"
@@ -359,31 +548,72 @@ pp.legend(info, "topleft")
 
 --------------------------------------------------------------------------------
 
-## <a id = "supported_models">対応しているモデル</a>
+# <a id = "reuse_result">結果の再利用</a>
 
-今のところ、`lm()`、`glm()`、`lme()`、`MCMCglmm()`に対応しています（たぶん）。
-各モデルへの対応は`model.adapter`パッケージに依存しているので、
-将来的には`randomForest()`など、`model.adapter`パッケージが対応する
-機械学習系のモデルにも対応する予定です。
+モデルによっては予測値を計算するのに計算時間がかかることがあります。
+`partial.plot()`は結果に計算済みの関係式や偏残差情報を記憶しているので描画の設定だけを変えて、グラフを書き直すことができます。
+
+```{R}
+par(mfrow = c(2, 2))
+
+# 最初のpartial.plotを実行。
+info <- partial.plot(model, c("Sepal.Length", "Species"), pch = 16)
+pp.legend(info, "topleft", cex = 0.5)
+
+# 結果を再利用して、シンボルと関係式描画の設定を変える。
+info <- partial.plot(info, pch = 6, draw.relationship = FALSE)
+pp.legend(info, "topleft", cex = 0.5)
+
+# 結果を再利用して、シンボル、色、信頼区間描画の設定を変える。
+info <- partial.plot(info, col = rainbow, draw.interval = FALSE)
+pp.legend(info, "topleft", cex = 0.5)
+
+# 結果を再利用して、シンボル、色、偏残差描画の設定を変える。
+info <- partial.plot(info, col = heat.colors, draw.residual = FALSE)
+pp.legend(info, "topleft", cex = 0.5)
+
+par(mfrow = c(1, 1))
+```
+
+現在、書き換えることのできる設定は`fun.3d`, `draw.residual`,
+`draw.relationship`, `draw.interval`, `col`, `xlab`, `ylab`, `zlab`,
+その他のグラフィックパラメーターです。
+
+レジェンドの複数因子間の区切り文字`sep`は実装上の都合により変更することができません。
+要望があれば、そのうち修正するかもしれません。
+
+また、予測された関係式の信頼区間を指定する`interval.levels`も同様の理由により変更できません。
+こちらはどうしても再計算が必要なので、修正が難しいと思います。
 
 
 --------------------------------------------------------------------------------
 
-## <a id = "known_issues">既知の問題</a>
+# <a id = "supported_models">対応しているモデル</a>
+
+今のところ、`lm()`、`glm()`、`lme()`、`MCMCglmm()`、`cforest()`、`ctree()`、`svm()`、`randomForest()`に対応しています（たぶん）。
+各モデルへの対応は`model.adapter`パッケージに依存しているので、
+将来的には`model.adapter`パッケージが対応する他のモデルにも対応する予定です。
+`glmmadmb()`も作図可能ですが、`model.adapter`パッケージの対応が不完全なので、完全に動作しているのか不明です。
+
+
+--------------------------------------------------------------------------------
+
+# <a id = "known_issues">既知の問題</a>
 
 今のところ、以下の問題があることがわかっています。
 
-* 作図時の説明変数に連続変数を１つしか入れられない。将来的には２つまで対応する予定。
+* 並列計算がうまくいかない。そのうち直します。
 * 作図時に最低１つ以上の連続変数を入れる必要がある。将来的には因子型だけでの作図にも対応する予定。
+* データにNAが含まれていると停止する。
 
 
 --------------------------------------------------------------------------------
 
-## <a id = "value_add">おまけ</a>
+# <a id = "value_add">おまけ</a>
 
 作図に使っている以下の関数も何かの役立つかもしれません。
 
-### <a id = "color_ramp">color.ramp()</a>
+## <a id = "color_ramp">color.ramp()</a>
 
 `color.ramp()`関数は因子型変数から色を表す文字列ベクトルを生成します。
 以下の例のように使います。
@@ -415,9 +645,9 @@ plot(
 )
 ```
 
-### <a id = "gg_colors">gg.colors()</a>
+## <a id = "gg_colors">gg.colors()</a>
 
-ggplotと似たような色を生成します。
+`ggplot()`と似たような色を生成します。
 
 ```{R}
 barplot(1:10, col = gg.colors(10))
@@ -426,15 +656,21 @@ barplot(1:10, col = gg.colors(10))
 
 --------------------------------------------------------------------------------
 
-## <a id = "version_history">更新履歴</a>
+# <a id = "version_history">更新履歴</a>
+* 2016.01.11: 0.1.0
+	* 三次元プロット機能に対応。
+	* `color.ramp.data.frame()`メソッドの削除。
+	* `color.ramp.numeric()`メソッドの追加。
+	* `cforest()`, `ctree()`, `randomForest()`, `svm()`へ対応。
+	* リンク関数の扱いの向上。
 * 2016.12.31: 0.0.5
-	* グループ変数の区切り文字をコントロールするsepオプションをpartial.plot()関数に追加。
+	* グループ変数の区切り文字をコントロールする`sep`オプションを`partial.plot()`関数に追加。
 * 2016.07.23: 0.0.4
-	* partial.plot.legend()関数をpp.legend()関数にリネーム。
-	* pp.legend()関数の引数の順番を変更。
+	* `partial.plot.legend()`関数を`pp.legend()`関数にリネーム。
+	* `pp.legend()`関数の引数の順番を変更。
 * 2016.07.14: 0.0.3
-	* partial.plot()関数がグラフィックパラメーター'log'をサポートするようにした。
+	* `partial.plot()`関数がグラフィックパラメーター`log`をサポートするようにした。
 * 2016.07.11: 0.0.2
-	* partial.plot.legend()関数がレジェンドのタイトルを描画するように修正。
+	* `partial.plot.legend()`関数がレジェンドのタイトルを描画するように修正。
 * 2016.06.27: 0.0.1
 	* 開発版リリース。

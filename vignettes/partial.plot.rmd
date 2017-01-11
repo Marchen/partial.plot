@@ -30,6 +30,7 @@ This package provides tools for visualizing a result of multivariate analyses.
 	* [Preparing dataset and an example model](#preparation)
 	* [Drawing prediction](#partial_plot)
 	* [Adding legend](#legend)
+* [Visualizing slighly complicated model](#basic_usage2)
 * [Controlling elements of graph](#advanced_settings)
 	* [Removing elements](#remove_elements)
 	* [Changing colors](#change_colors)
@@ -44,6 +45,9 @@ This package provides tools for visualizing a result of multivariate analyses.
 --------------------------------------------------------------------------------
 
 ## <a id = "introduction">Introduction</a>
+
+By recent active development of R and it's community, now ecologists have
+several kind of models to test and explain results and predict 
 
 First of all, this package is still in development.
 There may be bugs and missing functionalities, and parhaps serious bag which 
@@ -60,8 +64,7 @@ For other things, I will write...
 To install the package, just copy & paste following commands into the R console.
 
 ```{R, message = FALSE, warning = FALSE, eval = FALSE}
-install.packages("testthat")
-install.packages("lsmeans")
+install.packages(c("testthat","lsmeans"))
 install.packages(
 	c("model.adapter", "partial.plot"),
 	repos = "http://hostgk3.biology.tohoku.ac.jp/marchen/R/repos"
@@ -71,8 +74,7 @@ install.packages(
 If the command above couldn't work, try this one.
 
 ```{R, message = FALSE, warning = FALSE, eval = FALSE}
-install.packages("testthat")
-install.packages("lsmeans")
+install.packages(c("testthat","lsmeans"))
 install.packages(
 	c("model.adapter", "partial.plot"),
 	repos = "http://hostgk3.biology.tohoku.ac.jp/marchen/R/repos",
@@ -91,7 +93,7 @@ update.packages(
 
 --------------------------------------------------------------------------------
 
-## <a id = "quickstart">Quick start (for professional users)</a>
+## <a id = "quickstart">Quick start (for R wizards)</a>
 
 Try this one!
 
@@ -126,7 +128,7 @@ pp.legend(info, "topleft")
 
 ### <a id = "preparation">Preparing dataset and an example model</a>
 
-In this time we use the Fisher's iris dataset.
+In this time, we use the Fisher's iris dataset.
 This dataset having petal length (Petal.Length), petal width (Petal.Width),
 sepal length (Sepal.Length) and sepal width (Sepal.Width) data of 3 species of 
 Iris (setosa, versicolor, and virginica).
@@ -139,6 +141,21 @@ data(iris)
 
 # See the structure of the dataset.
 str(iris)
+
+# Visualize data.
+par(mfrow = c(2, 2))
+plot(
+	Petal.Length ~ Sepal.Length, data = iris,
+	pch = as.numeric(Species) + 14, col = as.numeric(Species) + 1
+)
+plot(
+	Petal.Length ~ Sepal.Width, data = iris,
+	pch = as.numeric(Species) + 14, col = as.numeric(Species) + 1
+)
+plot(
+	Petal.Length ~ Petal.Width, data = iris,
+	pch = as.numeric(Species) + 14, col = as.numeric(Species) + 1
+)
 ```
 
 In this guide, we will make a model to predict petal length by other variables.
@@ -146,7 +163,7 @@ For the modeling, we are going to use generalized linear model (GLM).
 For explanatory variables of the model we will use sepal length, petal width
 and species.
 By including interaction terms between sepal length and species, and between
-petal width and species, we assume that relationships between sepal length and 
+petal width and species, we assume that relationships between sepal length and
 petal length and between petal width and petal length differ between species.
 
 ```{R}
@@ -161,8 +178,8 @@ summary(model)
 
 
 ### <a id = "partial_plot">Visualize prediction model</a>
-Now we are going to visualize result of the GLM analysis with `partial.plot()`.
-Basic usage of `partial.plot()` function is as follow.
+Now we are going to visualize the result of the GLM analysis with
+`partial.plot()`. Basic usage of `partial.plot()` function is as follow.
 The example below visualize predicted relationship between sepal length and
 petal length of the three species.
 
@@ -174,11 +191,11 @@ library(partial.plot)
 partial.plot(model, c("Sepal.Length", "Species"), pch = 16)
 ```
 
-The first argument of the `partial.plot()` is model object returned by a 
+The first argument of the `partial.plot()` is model object returned by a
 model function.
 In this case we used `model` object returned by `glm()`.
 
-The second argument is a character vector specifying names of explanatory 
+The second argument is a character vector specifying names of explanatory
 variables whose relationships to response variable are visualized.
 In the example, `"Sepal.Length"` and `"Species"` are specified.
 For this argument, multiple names of factors can be specified.
@@ -199,7 +216,7 @@ partial.plot(model, c("Petal.Width", "Species"), pch = 16)
 ### <a id = "legend">Adding legend</a>
 
 `partial.plot()` returns information can be used to produce its legend.
-For example, if we write following command, information about the plot 
+For example, if we write following command, information about the plot
 is stored in the `info` variable.
 
 ```{R, eval = FALSE}
@@ -207,7 +224,7 @@ is stored in the `info` variable.
 info <- partial.plot(model, c("Sepal.Length", "Species"), pch = 16)
 ```
 
-By passing `info` to `pp.legend()` function, we can draw a legend using 
+By passing `info` to `pp.legend()` function, we can draw a legend using
 settings used for `partial.plot()`.
 
 
@@ -219,8 +236,9 @@ pp.legend(info, "topleft")
 
 The usage of `pp.legend` function is almost similar to the `legend` function.
 The first argument is result of `partial.plot`, and other arguments are passed
-to `legend` function. 
+to `legend` function.
 
+--------------------------------------------------------------------------------
 
 --------------------------------------------------------------------------------
 
@@ -232,20 +250,20 @@ graph.
 
 ### <a id = "remove_elements">Removing elements</a>
 
-We can suppress drawing symbols representing residuals by setting `FALSE` 
-to `draw.residuals` argument.
+We can suppress drawing symbols representing residuals by setting `FALSE`
+to `draw.residual` argument.
 
 ```{R}
 partial.plot(
-	model, c("Sepal.Length", "Species"), draw.residuals = FALSE
+	model, c("Sepal.Length", "Species"), draw.residual = FALSE
 )
 ```
 
-Also, we can suppress drawing predicted partial relationship by specifying 
-`FALSE` to `draw.relationships` argument.
+Also, we can suppress drawing predicted partial relationship by specifying
+`FALSE` to `draw.relationship` argument.
 ```{R}
 partial.plot(
-	model, c("Sepal.Length", "Species"), draw.relationships = FALSE,
+	model, c("Sepal.Length", "Species"), draw.relationship = FALSE,
 	pch = 16
 )
 ```
@@ -304,7 +322,7 @@ pp.legend(info, "topleft")
 
 ## <a id = "supported_models">Supported models</a>
 
-At this moment, (maybe) `lm()`, `glm()`, `lme()`, and `MCMCglmm()` are 
+At this moment, (maybe) `lm()`, `glm()`, `lme()`, and `MCMCglmm()` are
 supported.
 Support for the models are provided by the `model.adapter` package.
 Therefore machine learning models such as `randomForest` will be supported
@@ -315,7 +333,7 @@ in near future.
 
 ## <a id = "known_issues">Known issues</a>
 
-* Drawing for only one continuous variable is supported. 
+* Drawing for only one continuous variable is supported.
 Two explanatory variables will be supported in future.
 * At least one continuous variable should be specified.
 Plotting only by factors will be supported in future.
