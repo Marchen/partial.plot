@@ -252,7 +252,7 @@ library(party)
 # 2D plot.
 model <- cforest(
 	Petal.Length ~ Sepal.Length + Petal.Width + Species, data = iris,
-    controls = cforest_unbiased(ntree = 10)
+    controls = cforest_unbiased(ntree = 10, mtry = 2)
 )
 info <- partial.plot(
 	model, c("Sepal.Length", "Species"), pch = 16, n.cores = 2
@@ -262,7 +262,7 @@ pp.legend(info, "topleft")
 # 3D plot.
 model <- cforest(
 	Petal.Length ~ Sepal.Length + Petal.Width, data = iris,
-	controls = cforest_unbiased(ntree = 10)
+	controls = cforest_unbiased(ntree = 10, mtry = 2)
 )
 info <- partial.plot(
 	model, c("Sepal.Length", "Petal.Width"), pch = 16, n.cores = 2,
@@ -275,7 +275,8 @@ info <- partial.plot(
 library(party)
 # 2D plot.
 model <- ctree(
-	Petal.Length ~ Sepal.Length + Petal.Width + Species, data = iris
+	Petal.Length ~ Sepal.Length + Petal.Width + Species, data = iris,
+	controls = ctree_control(mtry = 2)
 )
 info <- partial.plot(
 	model, c("Sepal.Length", "Species"), pch = 16, n.cores = 2
@@ -285,7 +286,7 @@ pp.legend(info, "topleft")
 # 3D plot.
 model <- ctree(
 	Petal.Length ~ Sepal.Length + Petal.Width, data = iris,
-	controls = cforest_unbiased(ntree = 10)
+	controls = ctree_control(mtry = 2)
 )
 info <- partial.plot(
 	model, c("Sepal.Length", "Petal.Width"), pch = 16, n.cores = 2,
