@@ -681,7 +681,7 @@ pp.settings$methods(
 		if (identical(fun, persp)) {
 			return(ARG_NAMES$persp)
 		}
-		if (identical(fun, graphics::image)) {
+		if (identical(fun, image)) {
 			return(ARG_NAMES$image)
 		}
 		if (identical(fun, graphics::lines)) {
