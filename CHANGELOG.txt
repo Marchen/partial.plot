@@ -1,4 +1,13 @@
-﻿2016-12-31: 0.0.5
+﻿2017-01-11: 0.1.0
+- Removed color.ramp.data.frame() method.
+- Add color.ramp.numeric() method.
+- Add support for 3D plot.
+- Add support for cforest, ctree, randomForest and svm via update of model.adapter.
+- Add test suite.
+- Improved handling of link function.
+- Several bug fixes.
+
+2016-12-31: 0.0.5
 - Added 'sep' option to partial.plot() which controls separator of factor levels.
 - Refactoring and bug fixes.
 
