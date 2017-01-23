@@ -31,6 +31,36 @@ pp.drawer$methods(
 
 
 #------------------------------------------------------------------------------
+#	プロットの値の範囲を計算する。
+#------------------------------------------------------------------------------
+pp.drawer$methods(
+	xy.values = function() {
+		"
+		Find possible x and y values.
+		"
+		x.name <- settings$x.names.numeric[1]
+		if (settings$draw.relationship) {
+			relationship <- settings$relationship
+			if (is.null(relationship$upper)) {
+				x <- relationship[[x.name]]
+				y <- relationship$fit
+			} else {
+				x <- rep(relationship[[x.name]], 2)
+				y <- c(relationship$upper, relationship$lower)
+			}
+		} else {
+			x <- y <- numeric()
+		}
+		if (settings$draw.residual & settings$has.residual) {
+			x <- c(x, settings$data[[x.name]])
+			y <- c(y, settings$residual)
+		}
+		return(data.frame(x = x, y = y))
+	}
+)
+
+
+#------------------------------------------------------------------------------
 #	新しいプロットを開く。
 #------------------------------------------------------------------------------
 pp.drawer$methods(
@@ -38,26 +68,13 @@ pp.drawer$methods(
 		"
 		Open new plot window.
 		"
-		# Find possible x and y values.
-		if (settings$has.relationship) {
-			relationship <- settings$relationship
-			if (is.null(relationship$upper)) {
-				x <- relationship[[settings$x.names.numeric]]
-				y <- relationship$fit
-			} else {
-				x <- rep(relationship[[settings$x.names.numeric]], 2)
-				y <- c(relationship$upper, relationship$lower)
-			}
-		} else {
-			x <- y <- numeric()
-		}
-		if (settings$has.residual) {
-			x <- c(x, settings$data[[settings$x.names.numeric]])
-			y <- c(y, settings$residual)
-		}
 		# Open plot window.
+		if (settings$add) {
+			return()
+		}
+		xy <- .self$xy.values()
 		args <- list(
-			x, y, type = "n", xlab = settings$xlab, ylab = settings$ylab
+			xy$x, xy$y, type = "n", xlab = settings$xlab, ylab = settings$ylab
 		)
 		args <- c(args, settings$other.pars)
 		do.call(plot, args)
