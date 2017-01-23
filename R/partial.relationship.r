@@ -177,11 +177,6 @@ partial.relationship$methods(
 		if (length(settings$factor.levels) != 0) {
 			grid <- .self$filter.result(grid)
 		}
-		# Initialize cluster.
-		# クラスター初期化
-		cl <- makeCluster(settings$n.cores)
-		on.exit(stopCluster(cl))
-		clusterEvalQ(cl, library(model.adapter))
 		# Run calculation.
 		# 計算実行
 		type <- settings$adapter$predict.types["link"]
