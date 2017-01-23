@@ -10,7 +10,7 @@
 #------------------------------------------------------------------------------
 pp.drawer <- setRefClass(
 	"pp.drawer",
-	fields = list(settings = "pp.settings")
+	fields = list(settings = "pp.settings", vt = "matrix")
 )
 
 
@@ -154,6 +154,20 @@ pp.drawer$methods(
 				settings$data[[settings$x.names.numeric[2]]],
 				pch = 16, col = "white"
 			)
+		} else if (identical(settings$fun.3d, persp)) {
+			xy <- trans3d(
+				settings$data[[settings$x.names.numeric[1]]],
+				settings$data[[settings$x.names.numeric[2]]],
+				settings$residual, .self$vt
+			)
+			args <- list(x = xy$x, y = xy$y)
+			args <- settings$set.function.args(args, points)
+			do.call(points, args)
+		} else if (identical(settings$fun.3d, rgl::persp3d)) {
+			rgl::points3d(settings$data[[settings$x.names.numeric[1]]],
+				settings$data[[settings$x.names.numeric[2]]],
+				settings$residual
+			)
 		}
 	}
 )
@@ -261,7 +275,13 @@ pp.drawer$methods(
 			col = col
 		)
 		args <- settings$set.function.args(args)
-		do.call(settings$fun.3d, args)
+		if (identical(settings$fun.3d, persp)) {
+			args$zlim <- range(.self$xy.values()$y)
+		}
+		result <- do.call(settings$fun.3d, args)
+		if (identical(settings$fun.3d, persp)) {
+			.self$vt <- result
+		}
 	}
 )
 
@@ -277,5 +297,3 @@ pp.drawer$methods(
 		#####   DO NOTHING   #####
 	}
 )
-
-
