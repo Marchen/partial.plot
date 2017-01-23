@@ -143,6 +143,9 @@ if (require(rgl)) {
 #'	@field zlab
 #'		a character or expression specifying used for label of Z axis.
 #'
+#'	@field add
+#'		logical indicating whether graphic elements are added to existing plot.
+#'
 #'	@field sep
 #'		a character representing separator of grouping factor levels.
 #'
@@ -193,6 +196,7 @@ pp.settings <- setRefClass(
 		xlab = "ANY",
 		ylab = "ANY",
 		zlab = "ANY",
+		add = "logical",
 		sep = "character",
 		other.pars = "list",
 		n.cores = "ANY",
@@ -213,8 +217,8 @@ pp.settings$methods(
 		model, x.names, data = NULL, type = "response", fun.3d = persp,
 		draw.residual = TRUE, draw.relationship = TRUE,
 		draw.interval = TRUE, interval.levels = 0.95, resolution = NULL,
-		col = gg.colors, xlab = NULL, ylab = NULL, zlab = NULL, sep = " - ",
-		n.cores = NULL, ...
+		col = gg.colors, xlab = NULL, ylab = NULL, zlab = NULL, add = FALSE,
+		sep = " - ", n.cores = NULL, ...
 	) {
 		"
 		Initialize pp.settings object.
@@ -260,6 +264,10 @@ pp.settings$methods(
 			\\item{\\code{xlab}, \\code{ylab}, \\code{zlab}}{
 				a character specifying used for label of X/Y/Z axis.
 			}
+			\\item{\\code{add}}{
+				logical specifying whether graphic elements are added to the
+				existing plot.
+			}
 			\\item{\\code{sep}}{
 				a character representing separator of grouping factor levels.
 			}
@@ -288,8 +296,8 @@ pp.settings$methods(
 			draw.relationship = draw.relationship,
 			draw.interval = draw.interval, interval.levels = interval.levels,
 			resolution = resolution,
-			col = col, xlab = xlab, ylab = ylab, zlab = zlab, sep = sep,
-			n.cores = n.cores, other.pars = list(...),
+			col = col, xlab = xlab, ylab = ylab, zlab = zlab, add = add,
+			sep = sep, n.cores = n.cores, other.pars = list(...),
 			has.relationship = FALSE, has.residual = FALSE
 		)
 		initFields(data = adapter$data)
