@@ -56,9 +56,9 @@ partial.relationship$methods(
 		.self$settings <- settings
 		# Calculate partial relationship data.
 		if (!any(class(settings$model) %in% LSMEANS_INCOMPATIBLE_MODELS)) {
-			.self$data <- partial.relationship.lsmeans()
+			.self$data <- .self$partial.relationship.lsmeans()
 		} else {
-			.self$data <- partial.relationship.internal()
+			.self$data <- .self$partial.relationship.internal()
 		}
 		# Split data.
 		if (length(settings$x.names.factor) == 0) {
@@ -103,7 +103,7 @@ partial.relationship$methods(
 		# Remove predictions with out-ranged explanatory variable for each group.
 		# 各グループの説明変数の範囲を外れた予測値を削除。
 		if (length(settings$factor.levels) != 0) {
-			lsm <- filter.result(lsm)
+			lsm <- .self$filter.result(lsm)
 		}
 		return(as.data.frame(lsm))
 	}
@@ -175,7 +175,7 @@ partial.relationship$methods(
 			expand.grid, c(settings$numeric.sequences, settings$factor.levels)
 		)
 		if (length(settings$factor.levels) != 0) {
-			grid <- filter.result(grid)
+			grid <- .self$filter.result(grid)
 		}
 		# Initialize cluster.
 		# クラスター初期化

@@ -74,7 +74,7 @@ pp.drawer$methods(
 		Draw graph.
 		"
 		if (settings$plot.type == "2D") {
-			open.plot.window()
+			.self$open.plot.window()
 		}
 		if (settings$draw.interval & settings$has.relationship) {
 			.self$draw.interval()
@@ -151,9 +151,9 @@ pp.drawer$methods(
 		Draw partial relationships.
 		"
 		if (settings$plot.type == "2D") {
-			draw.relationship.2d()
+			.self$draw.relationship.2d()
 		} else {
-			draw.relationship.3d()
+			.self$draw.relationship.3d()
 		}
 	}
 )
@@ -168,9 +168,9 @@ pp.drawer$methods(
 		Draw intervals of partial relationships.
 		"
 		if (settings$plot.type == "2D") {
-			draw.interval.2d()
+			.self$draw.interval.2d()
 		} else {
-			draw.interval.3d()
+			.self$draw.interval.3d()
 		}
 	}
 )
