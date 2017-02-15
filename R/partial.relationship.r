@@ -2,7 +2,7 @@
 #	Names of models supported by lsmeans.
 #------------------------------------------------------------------------------
 LSMEANS_COMPATIBLE_MODELS <- c(
-	"glm", glmer = "glmerMod", "glmmadmb", "lm", "lme", "lmer = lmerMod",
+	"glm", glmer = "glmerMod", "glmmadmb", "lm", "lme", lmer = "lmerMod",
 	"MCMCglmm"
 )
 
