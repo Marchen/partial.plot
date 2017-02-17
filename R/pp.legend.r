@@ -60,7 +60,7 @@ pp.legend <- function(settings, x, ...) {
 #'		a list containing arguments used for \code{\link[grahpic]{legend}}
 #'		function manually specified by users.
 #'
-#'	@value
+#'	@return
 #'		A list containing arguments used for \code{\link[grahpic]{legend}}
 #'		function
 #------------------------------------------------------------------------------
