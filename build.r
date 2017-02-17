@@ -50,7 +50,7 @@ build(path = "../repos/src/contrib")
 if (version$os == "mingw32") {
 	bin.path <- "../repos/bin/windows/contrib/%s/"
 } else {
-	bin.path = "../repos/bin/macosx/mavericks/contrib/%s/"
+	bin.path <- "../repos/bin/macosx/mavericks/contrib/%s/"
 }
 r.ver <- paste(version$major, strsplit(version$minor, "\\.")[[1]][1], sep = ".")
 bin.path <- sprintf(bin.path, r.ver)
