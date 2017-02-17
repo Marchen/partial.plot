@@ -96,7 +96,7 @@ partial.relationship$methods(
 			lsmeans(rg, settings$x.names), level = settings$interval.levels
 		)
 		colnames(lsm) <- gsub(
-			"^lsmean$|^response$|^prob$", "fit", colnames(lsm)
+			"^lsmean$|^response$|^prob$|^rate$", "fit", colnames(lsm)
 		)
 		colnames(lsm) <- gsub("^lower.CL$|^asymp.LCL$", "lower", colnames(lsm))
 		colnames(lsm) <- gsub("^upper.CL$|^asymp.UCL$", "upper", colnames(lsm))
