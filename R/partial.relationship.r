@@ -179,12 +179,11 @@ partial.relationship$methods(
 		}
 		# Run calculation.
 		# 計算実行
-		type <- settings$adapter$predict.types["link"]
 		result <- settings$cluster.apply(
 			X = 1:nrow(grid), FUN = .self$predict.stats,
 			newdata = settings$data, predict.fun = settings$adapter$predict,
 			new.value.grid = grid, levels = settings$interval.levels,
-			type = type
+			type = "link"
 		)
 		result <- do.call(rbind, result)
 		if (settings$type == "response") {
