@@ -23,43 +23,56 @@ old.wd <- setwd(get.this.file.dir())
 
 
 #------------------------------------------------------------------------------
-#	Install package before building vignettes.
+#	Get R version.
 #------------------------------------------------------------------------------
-system("Rscript -e library(devtools);install()")
+r.ver <- paste(
+	version$major, strsplit(version$minor, "\\.")[[1]][1], sep = "."
+)
+
+
+#------------------------------------------------------------------------------
+#	Set path for Rtools.
+#------------------------------------------------------------------------------
+rtools <- c(
+	"3.0" = ";C:/Rtools31/bin;C:/Rtools31/gcc-4.6.3/bin",
+	"3.1" = ";C:/Rtools32/bin;C:/Rtools32/gcc-4.6.3/bin",
+	"3.2" = ";C:/Rtools33/bin;C:/Rtools33/gcc-4.6.3/bin",
+	"3.3" = ";C:/Rtools34/bin;C:/Rtools34/mingw_32/bin"
+)
+
+Sys.setenv(PATH = paste0(Sys.getenv("PATH"), rtools[r.ver]))
 
 
 #------------------------------------------------------------------------------
 #	Build documentation.
 #------------------------------------------------------------------------------
 roxygenize(clean = TRUE)
-
-#clean_vignettes()
 build_vignettes()
 
-render("vignettes/partial.plot.j.rmd", encoding = "utf-8")
-render("vignettes/partial.plot.rmd", encoding = "utf-8")
+
+#------------------------------------------------------------------------------
+#	Install partial.plot package before building vignettes.
+#------------------------------------------------------------------------------
+system("Rscript -e library(devtools);install()")
 
 
 #------------------------------------------------------------------------------
 #	Build package
 #------------------------------------------------------------------------------
 # Build source package
-build(path = "../repos/src/contrib")
+build(path = "../repos/src/contrib", vignettes = FALSE)
 
 # Build binary package
 if (version$os == "mingw32") {
-	bin.path <- "../repos/bin/windows/contrib/%s/"
+	bin.path <- "../repos/bin/windows/contrib/%s"
 } else {
-	bin.path <- "../repos/bin/macosx/mavericks/contrib/%s/"
+	bin.path <- "../repos/bin/macosx/mavericks/contrib/%s"
 }
-r.ver <- paste(version$major, strsplit(version$minor, "\\.")[[1]][1], sep = ".")
-bin.path <- sprintf(bin.path, r.ver)
-if (!dir.exists(bin.path)) {
+bin.path <- normalizePath(sprintf(bin.path, r.ver))
+if (!file.exists(bin.path)) {
 	dir.create(bin.path)
 }
-build(binary = TRUE, args = "--preclean", path = bin.path)
-
-install()
+build(binary = TRUE, args = "--preclean", path = bin.path, vignettes = FALSE)
 
 
 #------------------------------------------------------------------------------
