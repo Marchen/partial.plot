@@ -93,7 +93,8 @@ partial.relationship$methods(
 			settings$model, at, data = settings$data, type = settings$type
 		)
 		lsm <- summary(
-			lsmeans(rg, settings$x.names), level = settings$interval.levels
+			lsmeans::lsmeans(rg, settings$x.names),
+			level = settings$interval.levels
 		)
 		colnames(lsm) <- gsub(
 			"^lsmean$|^response$|^prob$|^rate$", "fit", colnames(lsm)
