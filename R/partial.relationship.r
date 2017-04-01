@@ -103,9 +103,7 @@ partial.relationship$methods(
 		colnames(lsm) <- gsub("^upper.CL$|^asymp.UCL$", "upper", colnames(lsm))
 		# Remove predictions with out-ranged explanatory variable for each group.
 		# 各グループの説明変数の範囲を外れた予測値を削除。
-		if (length(settings$factor.levels) != 0) {
-			lsm <- .self$filter.result(lsm)
-		}
+		lsm <- .self$filter.result(lsm)
 		return(as.data.frame(lsm))
 	}
 )
@@ -165,9 +163,7 @@ partial.relationship$methods(
 		grid <- do.call(
 			expand.grid, c(settings$numeric.sequences, settings$factor.levels)
 		)
-		if (length(settings$factor.levels) != 0) {
-			grid <- .self$filter.result(grid)
-		}
+		grid <- .self$filter.result(grid)
 		# Run calculation.
 		# 計算実行
 		result <- settings$cluster.apply(
@@ -202,6 +198,9 @@ partial.relationship$methods(
 			\\item{prediction}{result of lsmeans.}
 		}
 		"
+		if (length(settings$factor.levels) == 0 | settings$extraporate) {
+			return(prediction)
+		}
 		# Get list of unique factors.
 		# 因子の一覧を作成。
 		factors <- expand.grid(settings$factor.levels)
@@ -217,7 +216,7 @@ partial.relationship$methods(
 		result <- list()
 		for (i in 1:nrow(factors)) {
 			split.name <- combine.columns(
-				as.data.frame(factors[i,]), sep = sep
+				as.data.frame(factors[i, ]), sep = sep
 			)
 			current.pred <- pred.split[[split.name]]
 			current.data <- orig.data.split[[split.name]]
@@ -225,7 +224,7 @@ partial.relationship$methods(
 				var.range <- range(current.data[[numeric.name]])
 				filter <- current.pred[[numeric.name]] >= var.range[1]
 				filter <- filter & current.pred[[numeric.name]] <= var.range[2]
-				current.pred <- current.pred[filter,]
+				current.pred <- current.pred[filter, ]
 			}
 			result[[split.name]] <- current.pred
 		}

@@ -414,6 +414,13 @@ info <- partial.plot(
 pp.legend(info, "topleft")
 ```
 
+`extraporate`引数を`TRUE`にすると、説明変数の範囲外の値も含めた予測範囲を描画します。
+```{R}
+info <- partial.plot(
+	model, c("Sepal.Length", "Species"), pch = 16, extraporate = TRUE
+)
+pp.legend(info, "topleft")
+```
 
 ## <a id = "change_colors">色の変更</a>
 

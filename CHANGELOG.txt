@@ -1,4 +1,8 @@
-﻿2017-01-11: 0.1.0
+﻿2017-04-xx: 0.1.1
+- Add 'extraporate' option to extend predicted relationship of all groups to range
+  of x axis.
+
+2017-01-11: 0.1.0
 - Removed color.ramp.data.frame() method.
 - Add color.ramp.numeric() method.
 - Add support for 3D plot.

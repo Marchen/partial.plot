@@ -112,6 +112,10 @@ combine.columns <- function(data, sep) {
 #'	@param sep
 #'		a character used for separator of factor levels.
 #'
+#'	@param extraporate
+#'		a logical indicating whether extraporation is allowed for predicted
+#'		relationships.
+#'
 #'	@param n.cores
 #'		an integer representing number of processes used for calculation.
 #'		If NULL is specified, maximum number of logical processors are used.
@@ -218,7 +222,7 @@ partial.plot <- function(
 	draw.residual = TRUE, draw.relationship = TRUE, draw.interval = TRUE,
 	interval.levels = 0.95, resolution = NULL, col = gg.colors,
 	xlab = NULL, ylab = NULL, zlab = NULL, add = FALSE, sep = " - ",
-	n.cores = NULL, ...
+	extraporate = FALSE, n.cores = NULL, ...
 ) {
 	# Initialize setting object.
 	# 設定オブジェクトの初期化。
@@ -232,7 +236,7 @@ partial.plot <- function(
 		settings <- pp.settings(
 			model, x.names, data, type, fun.3d, draw.residual,
 			draw.relationship, draw.interval, interval.levels, resolution, col,
-			xlab, ylab, zlab, add, sep, n.cores, ...
+			xlab, ylab, zlab, add, sep, extraporate, n.cores, ...
 		)
 		# Calculate required data.
 		partial.relationship(settings)

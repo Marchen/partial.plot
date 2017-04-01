@@ -149,6 +149,10 @@ if (require(rgl)) {
 #'	@field sep
 #'		a character representing separator of grouping factor levels.
 #'
+#'	@field extraporate
+#'		a logical indicating whether extraporation is allowed for predicted
+#'		relationships.
+#'
 #'	@field other.pars
 #		a list containing other graphic parameters passed to partial.plot().
 #'
@@ -198,6 +202,7 @@ pp.settings <- setRefClass(
 		zlab = "ANY",
 		add = "logical",
 		sep = "character",
+		extraporate = "logical",
 		other.pars = "list",
 		n.cores = "ANY",
 		relationship = "data.frame",
@@ -218,7 +223,7 @@ pp.settings$methods(
 		draw.residual = TRUE, draw.relationship = TRUE,
 		draw.interval = TRUE, interval.levels = 0.95, resolution = NULL,
 		col = gg.colors, xlab = NULL, ylab = NULL, zlab = NULL, add = FALSE,
-		sep = " - ", n.cores = NULL, ...
+		sep = " - ", extraporate = FALSE, n.cores = NULL, ...
 	) {
 		"
 		Initialize pp.settings object.
@@ -271,6 +276,10 @@ pp.settings$methods(
 			\\item{\\code{sep}}{
 				a character representing separator of grouping factor levels.
 			}
+			\\item{\\code{expraporate}}{
+				a logical indicating whether extraporation is allowed for
+				predicted relationships.
+			}
 			\\item{\\code{n.cores}}{
 				an integer representing number of processes used for
 				calculation. If NULL is specified, maximum number of logical
@@ -297,8 +306,9 @@ pp.settings$methods(
 			draw.interval = draw.interval, interval.levels = interval.levels,
 			resolution = resolution,
 			col = col, xlab = xlab, ylab = ylab, zlab = zlab, add = add,
-			sep = sep, n.cores = n.cores, other.pars = list(...),
-			has.relationship = FALSE, has.residual = FALSE
+			sep = sep, extraporate = extraporate, n.cores = n.cores,
+			other.pars = list(...), has.relationship = FALSE,
+			has.residual = FALSE
 		)
 		initFields(data = adapter$data)
 		.self$check.params()
@@ -510,7 +520,10 @@ pp.settings$methods(
 		"
 		Initialize names of factor and numeric explanatory variables.
 		"
-		.self$x.names.factor <- x.names[sapply(data[x.names], is.factor)]
+		.self$x.names.factor <- x.names[
+			sapply(data[x.names], is.factor)
+			| sapply(data[x.names], is.character)
+		]
 		.self$x.names.numeric <- x.names[sapply(data[x.names], is.numeric)]
 	}
 )

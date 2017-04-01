@@ -111,6 +111,14 @@ info <- partial.plot(
 pp.legend(info, "topleft")
 ```
 
+## Draw extraporation.
+```{R draw_extraporation}
+info <- partial.plot(
+	model, c("Sepal.Length", "Species"), pch = 16, extraporate = TRUE
+)
+pp.legend(info, "topleft")
+```
+
 ## Set labels.
 ```{R}
 info <- partial.plot(
