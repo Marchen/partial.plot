@@ -299,8 +299,10 @@ pp.settings$methods(
 			return()
 		}
 		initFields(
-			adapter = model.adapter(model, data = data), type = type,
-			fun.3d = fun.3d, model = model, x.names = x.names,
+			adapter = model.adapter(
+				model, data = data, envir = parent.frame(5L)
+			),
+			type = type, fun.3d = fun.3d, model = model, x.names = x.names,
 			draw.residual = draw.residual,
 			draw.relationship = draw.relationship,
 			draw.interval = draw.interval, interval.levels = interval.levels,
