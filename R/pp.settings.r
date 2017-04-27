@@ -682,7 +682,7 @@ pp.settings$methods(
 			cl <- makeCluster(.self$n.cores)
 			on.exit(stopCluster(cl))
 			clusterEvalQ(cl, library(model.adapter))
-			res = clusterCall(
+			res <- clusterCall(
 				cl, library, package = .self$adapter$package.name,
 				character.only = TRUE
 			)
