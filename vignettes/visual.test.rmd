@@ -363,19 +363,25 @@ Waiting for the support of `model.adapter`.
 ```
 
 ## Test _glmer()_
-Waiting for the support of `model.adapter`.
-#library(lme4)
-#model <- glmer(
-	#as.numeric(Petal.Length) ~ (Sepal.Length + Petal.Width) * Species + (1 | Sepal.Length),
-    #data = iris, family = poisson
-#)
-#info <- partial.plot(model, c("Sepal.Length", "Species"), pch = 16)
-#pp.legend(info, "topleft")
-#info <- partial.plot(
-	#model, c("Sepal.Length", "Petal.Width"), pch = 16, col = viridis,
-	#fun.3d = persp
-#)
 ```{R glmer}
+library(lme4)
+
+# Prepare Data
+iris2 <- iris
+iris2$random <- factor(rep(c("a", "b", "c"), 50))
+iris2$Seeds <- rpois(150, iris2$Petal.Length*3 + as.numeric(iris2$Species))
+
+# Run test.
+model <- glmer(
+	Seeds ~ (Petal.Length + Petal.Width) + Species + (1 | random),
+    data = iris2, family = poisson
+)
+info <- partial.plot(model, c("Petal.Length", "Species"), pch = 16)
+pp.legend(info, "topleft")
+info <- partial.plot(
+	model, c("Petal.Length", "Petal.Width"), pch = 16, col = viridis,
+	fun.3d = persp
+)
 ```
 
 ## Test _glmmadmb()_
