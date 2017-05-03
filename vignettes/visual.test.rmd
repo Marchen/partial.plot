@@ -404,20 +404,22 @@ info <- partial.plot(
 ## Test _glmmML()_
 Waiting for the support of `model.adapter`.
 ```{R glmmML}
-#library(glmmML)
+library(party)
+library(glmmML)
 
-#model <- glmmML(
-	#age ~ (shoeSize + score) * nativeSpeaker, cluster = 1:200, data = readingSkills,
-    #family = poisson
-#)
-## 2D plot.
-#info <- partial.plot(model, c("score", "nativeSpeaker"), pch = 16)
-#pp.legend(info, "topleft")
-## 3D plot.
-#info <- partial.plot(
-    #model, c("shoeSize", "score"), pch = 16, col = viridis,
-	#fun.3d = persp
-#)
+model <- glmmML(
+	age ~ (shoeSize + score) * nativeSpeaker, cluster = 1:200,
+	data = readingSkills, family = poisson
+)
+# 2D plot.
+info <- partial.plot(model, c("score", "nativeSpeaker"), pch = 16)
+info <- partial.plot(model, c("score", "nativeSpeaker"), pch = 16, type = "link")
+pp.legend(info, "topleft")
+# 3D plot.
+info <- partial.plot(
+    model, c("shoeSize", "score"), pch = 16, col = viridis,
+	fun.3d = persp
+)
 ```
 
 ## Test _lm()_
