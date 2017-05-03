@@ -501,20 +501,20 @@ info <- partial.plot(
 
 ## Test _ranger()_
 Waiting for the support of `model.adapter`.
-#library(ranger)
-#model <- ranger(
-	#Petal.Length ~ Sepal.Length + Petal.Width + Species, data = iris,
-	#write.forest = TRUE
-#)
-#info <- partial.plot(
-	#model, c("Sepal.Length", "Species"), pch = 16, n.cores = 1
-#)
-#pp.legend(info, "topleft")
-#info <- partial.plot(
-	#model, c("Sepal.Length", "Petal.Width"), pch = 16, col = viridis,
-	#fun.3d = persp, n.cores = 1
-#)
 ```{R ranger}
+library(ranger)
+model <- ranger(
+	Petal.Length ~ Sepal.Length + Petal.Width + Species, data = iris,
+	write.forest = TRUE
+)
+info <- partial.plot(
+	model, c("Sepal.Length", "Species"), pch = 16, n.cores = 1
+)
+pp.legend(info, "topleft")
+info <- partial.plot(
+	model, c("Sepal.Length", "Petal.Width"), pch = 16, col = viridis,
+	fun.3d = persp, n.cores = 1
+)
 ```
 
 ## Test _rpart()_
