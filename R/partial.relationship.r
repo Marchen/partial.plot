@@ -174,7 +174,9 @@ partial.relationship$methods(
 		)
 		result <- do.call(rbind, result)
 		if (settings$type == "response") {
-			result$fit <- settings$adapter$linkinv(result$fit)
+			for (i in c("fit", "lower", "upper")) {
+				result[[i]] <- settings$adapter$linkinv(result[[i]])
+			}
 		}
 		return(result)
 	}
