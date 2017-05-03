@@ -35,7 +35,7 @@ and how to control its behavior.
 # Test controling graphic elements in 2D plot.
 
 ## Testing 2D plot without interaction terms.
-```{R}
+```{R no_interaction_2d}
 model <- glm(Petal.Length ~ Sepal.Length + Petal.Width, data = iris)
 info <- partial.plot(model, "Sepal.Length", pch = 16)
 pp.legend(info, "topleft")
@@ -49,13 +49,13 @@ model <- glm(
 ```
 
 ## Testing 2D plot with an interaction term.
-```{R}
+```{R interaction_2d}
 info <- partial.plot(model, c("Sepal.Length", "Species"), pch = 16)
 pp.legend(info, "topleft")
 ```
 
 ## Link function.
-```{R}
+```{R linkfun}
 # Test using iris.
 model <- glm(Petal.Length ~ Sepal.Length + Petal.Width, data = iris)
 info <- partial.plot(model, "Sepal.Length", pch = 16)
@@ -85,7 +85,7 @@ partial.plot(model, c("x", "id"))
 ```
 
 ## Hide points.
-```{R}
+```{R hide_points}
 model <- glm(
 	Petal.Length ~ (Sepal.Length + Petal.Width) * Species, data = iris
 )
@@ -96,7 +96,7 @@ pp.legend(info, "topleft")
 ```
 
 ## Hide interval.
-```{R}
+```{R hide_interval}
 info <- partial.plot(
 	model, c("Sepal.Length", "Species"), pch = 16, draw.interval = FALSE
 )
@@ -104,7 +104,7 @@ pp.legend(info, "topleft")
 ```
 
 ## Hide lines.
-```{R}
+```{R hide_lines}
 info <- partial.plot(
 	model, c("Sepal.Length", "Species"), pch = 16, draw.relationship = FALSE
 )
@@ -120,7 +120,7 @@ pp.legend(info, "topleft")
 ```
 
 ## Set labels.
-```{R}
+```{R set_lebels_2d}
 info <- partial.plot(
 	model, c("Sepal.Length", "Species"), pch = 16,
     xlab = "X Label", ylab = "Y Label"
@@ -129,7 +129,7 @@ pp.legend(info, "topleft")
 ```
 
 ## Change colors.
-```{R}
+```{R change_colors}
 par(mfrow = c(2, 2))
 info <- partial.plot(
 	model, c("Sepal.Length", "Species"), pch = 16,
@@ -156,7 +156,7 @@ par(mfrow = c(1, 1))
 ```
 
 ## Change intervals.
-```{R}
+```{R change_intervals}
 par(mfrow = c(2, 2))
 partial.plot(
 	model, c("Sepal.Length", "Species"), pch = 16,
@@ -178,7 +178,7 @@ par(mfrow = c(1, 1))
 ```
 
 ## Reuse information.
-```{R}
+```{R reuse_information}
 par(mfrow = c(2, 2))
 
 info <- partial.plot(
@@ -203,14 +203,14 @@ par(mfrow = c(1, 1))
 # Test controling graphic elements in 3D plot.
 
 ## Test _persp()_.
-```{R}
+```{R persp}
 info <- partial.plot(
 	model, c("Sepal.Length", "Petal.Width"), col = viridis, fun.3d = persp
 )
 ```
 
 ## Test _image()_.
-```{R}
+```{R image}
 info <- partial.plot(
 	model, c("Sepal.Length", "Petal.Width"), col = viridis, pch = 16,
     fun.3d = image
@@ -218,14 +218,14 @@ info <- partial.plot(
 ```
 
 ## Test _contour()_.
-```{R}
+```{R contour}
 info <- partial.plot(
     model, c("Sepal.Length", "Petal.Width"), fun.3d = contour
 )
 ```
 
 ## Test _persp3d()_.
-```{R, webgl = TRUE, rgl = TRUE}
+```{R, persp3d, webgl = TRUE, rgl = TRUE}
 info <- partial.plot(
 	model, c("Sepal.Length", "Petal.Width"), col = viridis,
     fun.3d = persp3d
@@ -233,7 +233,7 @@ info <- partial.plot(
 ```
 
 ## Test _persp()_ with changing labels.
-```{R}
+```{R change_label_persp}
 info <- partial.plot(
 	model, c("Sepal.Length", "Petal.Width"), col = viridis,
 	fun.3d = persp, xlab = "X label", ylab = "Y label", zlab = "Z label"
@@ -242,7 +242,7 @@ info <- partial.plot(
 
 
 ## Test _persp3d()_ with changing labels.
-```{R, webgl = TRUE, rgl = TRUE}
+```{R, change_label_persp_3d, webgl = TRUE, rgl = TRUE}
 info <- partial.plot(
 	model, c("Sepal.Length", "Petal.Width"), col = viridis,
 	fun.3d = persp3d, xlab = "X label", ylab = "Y label", zlab = "Z label"
@@ -255,7 +255,7 @@ info <- partial.plot(
 # Test for functions.
 
 ## Test _cforest()_
-```{R, warning = FALSE, message = FALSE}
+```{R, cforest, warning = FALSE, message = FALSE}
 library(party)
 # 2D plot.
 model <- cforest(
@@ -274,12 +274,12 @@ model <- cforest(
 )
 info <- partial.plot(
 	model, c("Sepal.Length", "Petal.Width"), pch = 16, n.cores = 2,
-    fun.3d = persp, col = viridis, theta = 40 
+    fun.3d = persp, col = viridis, theta = 40
 )
 ```
 
 ## Test _ctree()_
-```{R, warning = FALSE, message = FALSE}
+```{R, ctree, warning = FALSE, message = FALSE}
 library(party)
 # 2D plot.
 model <- ctree(
@@ -298,13 +298,13 @@ model <- ctree(
 )
 info <- partial.plot(
 	model, c("Sepal.Length", "Petal.Width"), pch = 16, n.cores = 2,
-    fun.3d = persp, col = viridis, theta = 40 
+    fun.3d = persp, col = viridis, theta = 40
 )
 ```
 
 ## Test _gam::gam()_
 Waiting for the support of `model.adapter`.
-```{R}
+```{R gam_gam}
 #library(gam)
 #model <- gam(
 	#Petal.Length ~ (Sepal.Length + Petal.Width) * Species, data = iris
@@ -319,7 +319,7 @@ Waiting for the support of `model.adapter`.
 
 ## Test _mgcv::gam()_
 Waiting for the support of `model.adapter`.
-```{R}
+```{R mgcv_gam}
 #library(mgcv)
 #model <- gam(
 	#Petal.Length ~ (Sepal.Length + Petal.Width) * Species, data = iris
@@ -334,7 +334,7 @@ Waiting for the support of `model.adapter`.
 
 ## Test _mgcv::gamm()_
 Waiting for the support of `model.adapter`.
-```{R}
+```{R gamm}
 #library(mgcv)
 #model <- gamm(
 	#Petal.Length ~ (Sepal.Length + Petal.Width) * Species, data = iris
@@ -349,7 +349,7 @@ Waiting for the support of `model.adapter`.
 
 ## Test _gbm()_
 Waiting for the support of `model.adapter`.
-```{R}
+```{R gbm}
 #library(gbm)
 #model <- gbm(
 	#Petal.Length ~ (Sepal.Length + Petal.Width) * Species, data = iris
@@ -364,7 +364,6 @@ Waiting for the support of `model.adapter`.
 
 ## Test _glmer()_
 Waiting for the support of `model.adapter`.
-```{R}
 #library(lme4)
 #model <- glmer(
 	#as.numeric(Petal.Length) ~ (Sepal.Length + Petal.Width) * Species + (1 | Sepal.Length),
@@ -376,10 +375,11 @@ Waiting for the support of `model.adapter`.
 	#model, c("Sepal.Length", "Petal.Width"), pch = 16, col = viridis,
 	#fun.3d = persp
 #)
+```{R glmer}
 ```
 
 ## Test _glmmadmb()_
-```{R, message = FALSE, warning = FALSE}
+```{R, glmmadmb, message = FALSE, warning = FALSE}
 library(glmmADMB)
 model <- glmmadmb(
 	Petal.Length ~ (Sepal.Length + Petal.Width) * Species, data = iris,
@@ -397,7 +397,7 @@ info <- partial.plot(
 
 ## Test _glmmML()_
 Waiting for the support of `model.adapter`.
-```{R}
+```{R glmmML}
 #library(glmmML)
 
 #model <- glmmML(
@@ -415,7 +415,7 @@ Waiting for the support of `model.adapter`.
 ```
 
 ## Test _lm()_
-```{R}
+```{R lm}
 model <- lm(
 	Petal.Length ~ (Sepal.Length + Petal.Width) * Species, data = iris
 )
@@ -428,7 +428,7 @@ info <- partial.plot(
 ```
 
 ## Test _lme()_
-```{R, message = FALSE}
+```{R, lme, message = FALSE}
 library(nlme)
 # 2D plot.
 model <- lme(
@@ -450,7 +450,6 @@ info <- partial.plot(
 
 ## Test _lmer()_
 Waiting for the support of `model.adapter`.
-```{R}
 #library(lme4)
 #model <- lmer(
 	#Petal.Length ~ (Sepal.Length + Petal.Width) * Species + (1 | Sepal.Length),
@@ -462,10 +461,11 @@ Waiting for the support of `model.adapter`.
 	#model, c("Sepal.Length", "Petal.Width"), pch = 16, col = viridis,
 	#fun.3d = persp
 #)
+```{R lmer}
 ```
 
 ## Test _MCMCglmm()_
-```{R, message = FALSE}
+```{R, MCMCglmm, message = FALSE}
 library(MCMCglmm)
 model <- MCMCglmm(
 	Petal.Length ~ (Sepal.Length + Petal.Width) * Species, data = iris,
@@ -483,7 +483,7 @@ info <- partial.plot(
 
 ## Test _randomForest()_
 Currently, cluster is not supported.
-```{R}
+```{R randomForest}
 library(randomForest)
 model <- randomForest(
 	Petal.Length ~ Sepal.Length + Petal.Width + Species, data = iris,
@@ -501,7 +501,6 @@ info <- partial.plot(
 
 ## Test _ranger()_
 Waiting for the support of `model.adapter`.
-```{R}
 #library(ranger)
 #model <- ranger(
 	#Petal.Length ~ Sepal.Length + Petal.Width + Species, data = iris,
@@ -515,11 +514,11 @@ Waiting for the support of `model.adapter`.
 	#model, c("Sepal.Length", "Petal.Width"), pch = 16, col = viridis,
 	#fun.3d = persp, n.cores = 1
 #)
+```{R ranger}
 ```
 
 ## Test _rpart()_
 Waiting for the support of `model.adapter`.
-```{R}
 #library(rpart)
 #model <- rpart(
 	#Petal.Length ~ Sepal.Length + Petal.Width + Species, data = iris
@@ -532,10 +531,11 @@ Waiting for the support of `model.adapter`.
 	#model, c("Sepal.Length", "Petal.Width"), pch = 16, col = viridis,
 	#fun.3d = persp, n.cores = 1
 #)
+```{R rpart}
 ```
 
 ## Test _svm()_
-```{R}
+```{R svm}
 library(e1071)
 model <- svm(
 	Petal.Length ~ Sepal.Length + Petal.Width + Species, data = iris
@@ -552,7 +552,6 @@ info <- partial.plot(
 
 ## Test _tree()_
 Waiting for the support of `model.adapter`.
-```{R}
 #library(tree)
 #model <- tree(
 	#Petal.Length ~ Sepal.Length + Petal.Width + Species, data = iris
@@ -565,5 +564,6 @@ Waiting for the support of `model.adapter`.
 	#model, c("Sepal.Length", "Petal.Width"), pch = 16, col = viridis,
 	#fun.3d = persp, n.cores = 1
 #)
+```{R tree}
 ```
 
