@@ -141,7 +141,7 @@ partial.relationship$methods(
 		# Make prediction.
 		prediction <- predict.fun(newdata = newdata, type = type)
 		quantiles <- quantile(prediction$fit, probs = levels, na.rm = TRUE)
-		result <- c(fit = median(prediction$fit), quantiles, replace.values)
+		result <- c(fit = mean(prediction$fit), quantiles, replace.values)
 		names(result) <- c("fit", "lower", "upper", param.names)
 		result <- as.data.frame(as.list(result))
 		return(result)
