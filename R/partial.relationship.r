@@ -166,6 +166,27 @@ partial.relationship$methods(
 		grid <- .self$filter.result(grid)
 		# Run calculation.
 		# 計算実行
+		result <- .self$calculate.relationship(grid)
+		return(result)
+	}
+)
+
+
+#------------------------------------------------------------------------------
+#	予測値を計算する関数。
+#	偏残差の計算にも使う必要があるので
+#	partial.relationship.internalから分離して関数にした。
+#------------------------------------------------------------------------------
+partial.relationship$methods(
+	calculate.relationship = function(grid) {
+		"
+		Calculate partial relationship.
+		\\describe{
+			\\item{\\code{grid}}{
+				explanatory variables where predicted values are calculated.
+			}
+		}
+		"
 		result <- settings$cluster.apply(
 			X = 1:nrow(grid), FUN = .self$predict.stats,
 			newdata = settings$data, predict.fun = settings$adapter$predict,
