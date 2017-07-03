@@ -1,4 +1,11 @@
 #------------------------------------------------------------------------------
+# The threshold value of nuber of rows by which calculate.residual() method
+# separates large and small dataset.
+#------------------------------------------------------------------------------
+THRESHOLD_NROW_FOR_SMALL_DATASET = 1000
+
+
+#------------------------------------------------------------------------------
 #	偏残差を計算するクラス。
 #------------------------------------------------------------------------------
 #'	(Internal) A reference class calculate partial residuals.
@@ -89,6 +96,17 @@ partial.residual$methods(
 #	currently partial residual for MCMCglmm (and models compatible with
 #	lsmeans) are calculated by special method.
 #
+#	For non-linear models with interaction such as Random Forest, population
+#	predicted values for given value of focal explanatory variable cannot be
+#	calculated by fixing values of other explanatory variables to their
+#	mean/median.
+#	Therefore, the predicted values for given set of values of focal
+#	explanatory variable are calculated using all dataset as similar way to
+#	calculate partial relationship.
+#
+#	For performance issue, this method change the method used for calculating
+#	fitted value. For small dataset, get.fit.for.small.data() method is called.
+#	For large dataset, get.fit.for.large.data() method is called.
 #------------------------------------------------------------------------------
 partial.residual$methods(
 	calculate.residuals = function() {
@@ -96,18 +114,24 @@ partial.residual$methods(
 		Calculate partial residuals.
 		"
 		# Prepare data for partial residual.
-		newdata <- settings$data
-		for (i in settings$adapter$x.names(type = "base")) {
-			if (is.numeric(newdata[[i]]) & !i %in% settings$x.names.numeric) {
-				# Set median for other numeric parameters.
-				newdata[[i]] <- median(newdata[[i]], na.rm = TRUE)
-			}
+		newdata <- lapply(
+			1:nrow(settings$data), "[.data.frame", x = settings$data,
+		)
+		# Change calculation method based on the sample size.
+		if (nrow(settings$data) < THRESHOLD_NROW_FOR_SMALL_DATASET) {
+			fit <- .self$settings$cluster.apply(
+				newdata, .self$get.fit.for.small.data
+			)
+		} else {
+			relationship <- .self$extended.partial.relationship()
+			fit <- .self$settings$cluster.apply(
+				newdata, .self$get.fit.for.large.data, relationship
+			)
 		}
-		# Calculate partial residual.
-		pred <- settings$adapter$predict(newdata = newdata, type = "link")
-		residual <- pred$fit[, "fit"] + settings$adapter$residuals("link")
-		if (settings$type == "response") {
-			residual <- settings$adapter$linkinv(residual)
+		fit <- unlist(fit)
+		residual <- fit + settings$adapter$residuals(settings$type)
+		if (.self$settings$type == "response") {
+			residual <- .self$settings$adapter$linkinv(residual)
 		}
 		.self$data <- residual
 	}
@@ -115,13 +139,111 @@ partial.residual$methods(
 
 
 #------------------------------------------------------------------------------
-#	偏残差を計算する。
+#	１つの観測値に対して偏残差を計算する。
+#	それぞれの観測値に対してpredictを呼ぶ。
 #------------------------------------------------------------------------------
+partial.residual$methods(
+	get.fit.for.small.data = function(x) {
+		"
+		Calculate fitted value for a observation.
 
+		\\describe{
+			\\item{x}{a data.frame of one row representing one observation.}
+		}
+		"
+		newdata <- .self$settings$data
+		for (i in .self$settings$x.names) {
+			newdata[[i]] <- x[[i]]
+		}
+		fit <- .self$settings$adapter$predict(newdata = newdata, type = "link")
+		fit <- mean(fit$fit[, "fit"])
+		return(fit)
+	}
+)
+
+
+#------------------------------------------------------------------------------
+#	１つの観測値に対して偏残差を計算する。
+# あらかじめ計算しておいた偏依存性の線から残差を計算。
+#------------------------------------------------------------------------------
+partial.residual$methods(
+	get.fit.for.large.data = function(x, relationship) {
+		"
+		Calculate fitted value for a observation.
+
+		This function uses approximation using estimated relationship
+		for calculating fitted value.
+
+		\\describe{
+			\\item{x}{a data.frame of one row representing one observation.}
+			\\item{relationship}{a data.frame having predicted relationship.}
+		}
+		"
+		for (i in .self$settings$x.names.factor) {
+			relationship <- relationship[relationship[[i]] == x[[i]], ]
+		}
+		index <- relationship[.self$settings$x.names.numeric]
+		for (i in .self$settings$x.names.numeric) {
+			index[[i]] <- index[[i]] > x[[i]]
+		}
+		index <- Position(function(x) x, apply(index, 1, all))
+		if (length(settings$x.names.numeric) == 1) {
+			f <- as.formula(sprintf("fit ~ %s", settings$x.names.numeric))
+			d <- relationship[c(index - 1, index),]
+		} else {
+			x.names <- paste(settings$x.names.numeric, collapse = "+")
+			f <- as.formula(sprintf("fit ~ %s", x.names))
+			res <- settings$resolution
+			d <- relationship[c(index, index - 1, index - res, index - res - 1),]
+		}
+		r <- lm(f, data = d)
+		fit <- predict(r, newdata = x)
+		return(fit)
+	}
+)
+
+
+#------------------------------------------------------------------------------
+#	偏残差計算用に推定された関係を１間隔分拡張する。
+#------------------------------------------------------------------------------
+partial.residual$methods(
+	extended.partial.relationship = function() {
+		sequences <- .self$extend.sequences(.self$settings$numeric.sequences)
+		grid <- do.call(
+			expand.grid, c(sequences, .self$settings$factor.levels)
+		)
+		new.settings <- .self$settings$copy()
+		pr <- partial.relationship(new.settings)
+		result <- pr$calculate.relationship(grid)
+		return(result)
+	}
+)
+
+
+#------------------------------------------------------------------------------
+#	pp.settingsのnumeric.sequencesを１つ分拡張したデータを作成する。
+#------------------------------------------------------------------------------
+partial.residual$methods(
+	extend.sequences = function(sequences) {
+		"
+		Return extended 'numeric.sequences' of pp.settings.
+		"
+		for (i in names(sequences)) {
+			len <- length(sequences[[i]])
+			new.value <-  2 * sequences[[i]][len] - sequences[[i]][len - 1]
+			sequences[[i]] <- c(sequences[[i]], new.value)
+		}
+		return(sequences)
+	}
+)
+
+#------------------------------------------------------------------------------
+#	lsmeansの結果に合わせた偏残差を計算する。
+#------------------------------------------------------------------------------
 partial.residual$methods(
 	calculate.residuals.lsmeans = function() {
 		"
-		Calculate partial residuals.
+		Calculate partial residuals for lsmeans compatible models.
 		"
 		# Prepare names of numeric variables.
 		# 数値型変数の変数名を用意。
@@ -159,4 +281,3 @@ partial.residual$methods(
 		.self$data <- result
 	}
 )
-
