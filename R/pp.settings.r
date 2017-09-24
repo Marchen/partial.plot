@@ -115,6 +115,9 @@ if (require(rgl)) {
 #'		a logical representing that partial.plot draws intervals of predicted
 #'		relationships.
 #'
+#'	@field draw.hist
+#'		a logical specifying whether a histogram should be added to the graph.
+#'
 #'	@field interval.levels
 #'		numeric vector indicating confidence level or quantiles for
 #'		predicted relationships.
@@ -192,6 +195,7 @@ pp.settings <- setRefClass(
 		draw.residual = "logical",
 		draw.relationship = "logical",
 		draw.interval = "logical",
+		draw.hist = "logical",
 		interval.levels = "numeric",
 		resolution = "ANY",
 		col = "ANY",
@@ -221,9 +225,10 @@ pp.settings$methods(
 	initialize = function(
 		model, x.names, data = NULL, type = "response", fun.3d = persp,
 		draw.residual = TRUE, draw.relationship = TRUE,
-		draw.interval = TRUE, interval.levels = 0.95, resolution = NULL,
-		col = gg.colors, xlab = NULL, ylab = NULL, zlab = NULL, add = FALSE,
-		sep = " - ", extraporate = FALSE, n.cores = NULL, ...
+		draw.interval = TRUE, draw.hist = FALSE, interval.levels = 0.95,
+		resolution = NULL, col = gg.colors, xlab = NULL, ylab = NULL,
+		zlab = NULL, add = FALSE, sep = " - ", extraporate = FALSE,
+		n.cores = NULL, ...
 	) {
 		"
 		Initialize pp.settings object.
@@ -254,6 +259,9 @@ pp.settings$methods(
 			}
 			\\item{\\code{draw.interval}}{
 				whetehr partial.plot draws interval of predicted relationships.
+			}
+			\\item{\\code{draw.hist}}{
+				whetehr partial.plot draws a histogram of explanatory variable.
 			}
 			\\item{\\code{interval.levels}}{
 				numeric vector specifying level of confidence
@@ -305,8 +313,8 @@ pp.settings$methods(
 			type = type, fun.3d = fun.3d, model = model, x.names = x.names,
 			draw.residual = draw.residual,
 			draw.relationship = draw.relationship,
-			draw.interval = draw.interval, interval.levels = interval.levels,
-			resolution = resolution,
+			draw.interval = draw.interval, draw.hist = draw.hist,
+			interval.levels = interval.levels, resolution = resolution,
 			col = col, xlab = xlab, ylab = ylab, zlab = zlab, add = add,
 			sep = sep, extraporate = extraporate, n.cores = n.cores,
 			other.pars = list(...), has.relationship = FALSE,
@@ -332,7 +340,7 @@ pp.settings$methods(
 #------------------------------------------------------------------------------
 pp.settings$methods(
 	update.pars = function(
-		fun.3d, draw.residual, draw.relationship, draw.interval,
+		fun.3d, draw.residual, draw.relationship, draw.interval, draw.hist,
 		col, xlab, ylab, zlab, ...
 	) {
 		"
@@ -344,8 +352,9 @@ pp.settings$methods(
 		initFields(
 			fun.3d = fun.3d, draw.residual = draw.residual,
 			draw.relationship = draw.relationship,
-			draw.interval = draw.interval, col = col, xlab = xlab,
-			ylab = ylab, zlab = zlab, other.pars = list(...)
+			draw.interval = draw.interval, draw.hist = draw.hist,
+			col = col, xlab = xlab, ylab = ylab, zlab = zlab,
+			other.pars = list(...)
 		)
 		.self$check.params()
 		.self$init.labels()

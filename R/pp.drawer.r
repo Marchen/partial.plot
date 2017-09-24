@@ -92,6 +92,9 @@ pp.drawer$methods(
 		"
 		if (settings$plot.type == "2D") {
 			.self$open.plot.window()
+			if (settings$draw.hist) {
+				.self$draw.hist()
+			}
 		}
 		if (settings$draw.interval & settings$has.relationship) {
 			.self$draw.interval()
@@ -206,6 +209,7 @@ pp.drawer$methods(
 	}
 )
 
+
 #------------------------------------------------------------------------------
 #	二次元偏依存性の線を描画する。
 #------------------------------------------------------------------------------
@@ -295,5 +299,29 @@ pp.drawer$methods(
 		Draw 3D interval of partial relationship (not implimented).
 		"
 		#####   DO NOTHING   #####
+	}
+)
+
+
+#------------------------------------------------------------------------------
+#	三次元偏依存性グラフの信頼区間を描画する。
+#------------------------------------------------------------------------------
+pp.drawer$methods(
+	draw.hist = function() {
+		"
+		Draw histogram of explanatory variable.
+		"
+		x.data <- .self$settings$data[[.self$settings$x.names.numeric]]
+		h <- hist(x.data, plot = FALSE)
+		h$counts <- h$counts / sum(h$counts)
+		usr.hist <- old.usr <- par("usr")
+		usr.hist[3:4] <- c(0, 1)
+		par(usr = usr.hist)
+		plot(
+			h, col = "gray90", border = "gray90", ylim = c(0, 1), main = "",
+			xaxt = "n", xlab = "", ylab = "", yaxt = "n", add = TRUE
+		)
+		par(usr = old.usr)
+		box()
 	}
 )

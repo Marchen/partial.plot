@@ -220,23 +220,24 @@ combine.columns <- function(data, sep) {
 partial.plot <- function(
 	model, x.names, data = NULL, type = "response", fun.3d = persp,
 	draw.residual = TRUE, draw.relationship = TRUE, draw.interval = TRUE,
-	interval.levels = 0.95, resolution = NULL, col = gg.colors,
-	xlab = NULL, ylab = NULL, zlab = NULL, add = FALSE, sep = " - ",
-	extraporate = FALSE, n.cores = NULL, ...
+	draw.hist = FALSE, interval.levels = 0.95, resolution = NULL,
+	col = gg.colors, xlab = NULL, ylab = NULL, zlab = NULL, add = FALSE,
+	sep = " - ", extraporate = FALSE, n.cores = NULL, ...
 ) {
 	# Initialize setting object.
 	# 設定オブジェクトの初期化。
 	if (is(model, "pp.settings")) {
 		settings <- model$copy()
 		settings$update.pars(
-			fun.3d, draw.residual, draw.relationship, draw.interval,
+			fun.3d, draw.residual, draw.relationship, draw.interval, draw.hist,
 			col, xlab, ylab, zlab, ...
 		)
 	} else {
 		settings <- pp.settings(
 			model, x.names, data, type, fun.3d, draw.residual,
-			draw.relationship, draw.interval, interval.levels, resolution, col,
-			xlab, ylab, zlab, add, sep, extraporate, n.cores, ...
+			draw.relationship, draw.interval, draw.hist, interval.levels,
+			resolution, col, xlab, ylab, zlab, add, sep, extraporate,
+			n.cores, ...
 		)
 		# Calculate required data.
 		partial.relationship(settings)
