@@ -686,7 +686,7 @@ pp.settings$methods(
 				cl, library, package = .self$adapter$package.name,
 				character.only = TRUE
 			)
-			return(clusterApply(cl, x = X, fun = FUN, ...))
+			return(parLapply(cl, x = X, fun = FUN, ...))
 		}
 	}
 )
