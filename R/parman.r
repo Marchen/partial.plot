@@ -28,9 +28,7 @@ par.manager <- setRefClass(
 #------------------------------------------------------------------------------
 par.manager$methods(
 	initialize = function(group, col, lty, lwd, pch, ...) {
-		"
-		Initialize class and set group field.
-		"
+		"Initialize class and set group field."
 		# Initialize fields.
 		if (missing(group)) {
 			return()
@@ -58,9 +56,7 @@ par.manager$methods(
 #------------------------------------------------------------------------------
 par.manager$methods(
 	par.group = function(group.name = NULL) {
-		"
-		Make a list of graphic parameters for each group.
-		"
+		"Make a list of graphic parameters for each group."
 		pars <- list()
 		for (i in .self$par.names()) {
 			pars[[i]] <- switch.par(
@@ -80,9 +76,7 @@ par.manager$methods(
 #------------------------------------------------------------------------------
 par.manager$methods(
 	par.obs = function() {
-		"
-		Make a list of graphic parameters for each observation.
-		"
+		"Make a list of graphic parameters for each observation."
 		pars <- list()
 		for (i in .self$par.names()) {
 			pars[[i]] <- switch.par(.self$group, pal = .self[[i]])
@@ -124,9 +118,7 @@ par.manager$methods(
 #------------------------------------------------------------------------------
 par.manager$methods(
 	legend.pars = function() {
-		"
-		Prepare pars for \\code{\\link{pp.legend}} function.
-		"
+		"Prepare pars for \\code{\\link{pp.legend}} function."
 		pars <- .self$par.group()
 		pars$legend = names(pars$col)
 		return(pars)

@@ -106,14 +106,8 @@ combine.columns <- function(data, sep) {
 #'		a functions or vectors representing graphic parameters.
 #'		For the detail, see pal option of \code{\link{color.ramp}} function.
 #'
-#'	@param xlab
-#'		label of X axis.
-#'
-#'	@param ylab
-#'		label of Y axis.
-#'
-#'	@param zlab
-#'		label of Z axis.
+#'	@param xlab,ylab,zlab
+#'		label of X, Y and Z axis.
 #'
 #'	@param add
 #'		add graphic element to existing plot if TRUE.
