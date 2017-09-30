@@ -650,7 +650,7 @@ pp.settings$methods(
 		"
 		Initialize colors.
 		"
-		brewer = pp.colors(.self)
+		brewer = par.manager(.self)
 		.self$group.colors <- brewer$colors.for.groups()
 		.self$obs.colors <- brewer$colors.for.observations()
 	}

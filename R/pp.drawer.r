@@ -269,7 +269,7 @@ pp.drawer$methods(
 		if (identical(.self$settings$fun.3d, image)) {
 			col <- color.ramp(z.matrix, .self$settings$col, unique.pal = TRUE)
 		} else if (identical(.self$settings$fun.3d, persp)) {
-			col <- pp.colors(.self$settings)$colors.for.persp(z.matrix)
+			col <- par.manager(.self$settings)$colors.for.persp(z.matrix)
 		} else {
 			col <- color.ramp(z.matrix, .self$settings$col)
 		}

@@ -1,7 +1,7 @@
 #------------------------------------------------------------------------------
-#	プロットに使う色を制御するクラス。
+#	グラフィックパラメーター制御するクラス。
 #------------------------------------------------------------------------------
-#'	(Internal) A reference class to handle colors used for plotting.
+#'	(Internal) A reference class to handle graphic pars used for plotting.
 #'
 #'	@field settings
 #'		a \code{\link{pp.settings}} object to keep settings of the function.
@@ -12,16 +12,16 @@
 #'
 #'	@include pp.settings.r
 #------------------------------------------------------------------------------
-pp.colors <- setRefClass(
-	"pp.colors",
+par.manager <- setRefClass(
+	"par.manager",
 	fields = list(settings = "pp.settings", group = "character")
 )
 
 
 #------------------------------------------------------------------------------
-#	色管理クラスの初期化。
+#	グラフィックパラメーター管理クラスの初期化。
 #------------------------------------------------------------------------------
-pp.colors$methods(
+par.manager$methods(
 	initialize = function(settings) {
 		"
 		Initialize class and set group field.
@@ -46,7 +46,7 @@ pp.colors$methods(
 #------------------------------------------------------------------------------
 #	各グループ用の色パレットを作成する。
 #------------------------------------------------------------------------------
-pp.colors$methods(
+par.manager$methods(
 	colors.for.groups = function() {
 		"
 		Make color vector for each group.
@@ -60,7 +60,7 @@ pp.colors$methods(
 #------------------------------------------------------------------------------
 #	各観測値ごとの色を作成する。
 #------------------------------------------------------------------------------
-pp.colors$methods(
+par.manager$methods(
 	colors.for.observations = function() {
 		"
 		Make color vector for each observation.
@@ -74,7 +74,7 @@ pp.colors$methods(
 #------------------------------------------------------------------------------
 #	perspに使われる色を作成する。
 #------------------------------------------------------------------------------
-pp.colors$methods(
+par.manager$methods(
 	colors.for.persp = function(z.matrix) {
 		"
 		Make color vector used for \\code{\\link[graphics]{persp}} funciton.
