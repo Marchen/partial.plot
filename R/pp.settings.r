@@ -69,6 +69,9 @@ if (require(rgl)) {
 #'	@field model
 #'		a supported model object used for plotting.
 #'
+#'	@field parman
+#'		an object of \code{\link{par.manager}} class.
+#'
 #'	@field x.names
 #'		a character vector representing names of explanatory variables used
 #'		for plotting.
@@ -136,17 +139,6 @@ if (require(rgl)) {
 #'		an integer specifying resolution of lines, polygons, wireframes,
 #'		and images of numeric variables.
 #'
-#'	@param col
-#'		a function or named character vector representing color of the graph
-#'		object.
-#'		For the detail, see pal option of \code{\link{color.ramp}} function.
-#'
-#'	@param group.colors
-#'		colors for each group.
-#'
-#'	@param obs.colors
-#'		colors for each observation.
-#'
 #'	@field xlab
 #'		a character or expression specifying used for label of X axis.
 #'
@@ -193,6 +185,7 @@ pp.settings <- setRefClass(
 	fields = list(
 		adapter = "ANY",
 		model = "ANY",
+		parman = "ANY",
 		x.names = "character",
 		x.names.factor = "character",
 		x.names.numeric = "character",
@@ -209,9 +202,6 @@ pp.settings <- setRefClass(
 		draw.hist = "logical",
 		interval.levels = "numeric",
 		resolution = "ANY",
-		col = "ANY",
-		group.colors = "ANY",
-		obs.colors = "ANY",
 		xlab = "ANY",
 		ylab = "ANY",
 		zlab = "ANY",
@@ -237,7 +227,7 @@ pp.settings$methods(
 		model, x.names, data = NULL, type = "response", positive.class = "",
 		fun.3d = persp, draw.residual = TRUE, draw.relationship = TRUE,
 		draw.interval = TRUE, draw.hist = FALSE, interval.levels = 0.95,
-		resolution = NULL, col = gg.colors, xlab = NULL, ylab = NULL,
+		resolution = NULL, xlab = NULL, ylab = NULL,
 		zlab = NULL, add = FALSE, sep = " - ", extraporate = FALSE,
 		n.cores = NULL, ...
 	) {
@@ -246,7 +236,7 @@ pp.settings$methods(
 		\\describe{
 			\\item{\\code{model}}{
 				a supported model object used for plotting.
-				}
+			}
 			\\item{\\code{x.names}}{
 				a character vector representing names of explanatory variables
 				used for plotting.
@@ -286,9 +276,6 @@ pp.settings$methods(
 			\\item{\\code{resolution}}{
 				an integer specifying resolution of lines, polygons,
 				wireframes, and images of numeric variables.
-			}
-			\\item{\\code{col}}{
-				color vector or color producing function.
 			}
 			\\item{\\code{xlab}, \\code{ylab}, \\code{zlab}}{
 				a character specifying used for label of X/Y/Z axis.
@@ -331,8 +318,8 @@ pp.settings$methods(
 			draw.relationship = draw.relationship,
 			draw.interval = draw.interval, draw.hist = draw.hist,
 			interval.levels = interval.levels, resolution = resolution,
-			col = col, xlab = xlab, ylab = ylab, zlab = zlab, add = add,
-			sep = sep, extraporate = extraporate, n.cores = n.cores,
+			xlab = xlab, ylab = ylab, zlab = zlab, add = add, sep = sep,
+			extraporate = extraporate, n.cores = n.cores,
 			other.pars = list(...), has.relationship = FALSE,
 			has.residual = FALSE
 		)
@@ -342,7 +329,6 @@ pp.settings$methods(
 		.self$init.x.names()
 		.self$init.plot.type()
 		.self$init.labels()
-		.self$init.colors()
 		.self$init.intervals()
 		.self$init.resolution()
 		.self$init.factor.levels()
@@ -358,24 +344,22 @@ pp.settings$methods(
 pp.settings$methods(
 	update.pars = function(
 		fun.3d, draw.residual, draw.relationship, draw.interval, draw.hist,
-		col, xlab, ylab, zlab, ...
+		xlab, ylab, zlab, ...
 	) {
 		"
 		Update settings of (mainly) graphic parameters for data reusing.
 		\\code{fun.3d}, \\code{draw.residual}, \\code{draw.relationship},
-		\\code{draw.interval}, \\code{col}, \\code{xlab}, \\code{ylab},
+		\\code{draw.interval}, \\code{xlab}, \\code{ylab},
 		\\code{zlab} and \\code{...} can be set.
 		"
 		initFields(
 			fun.3d = fun.3d, draw.residual = draw.residual,
 			draw.relationship = draw.relationship,
 			draw.interval = draw.interval, draw.hist = draw.hist,
-			col = col, xlab = xlab, ylab = ylab, zlab = zlab,
-			other.pars = list(...)
+			xlab = xlab, ylab = ylab, zlab = zlab, other.pars = list(...)
 		)
 		.self$check.params()
 		.self$init.labels()
-		.self$init.colors()
 	}
 )
 
@@ -638,21 +622,6 @@ pp.settings$methods(
 		if (is.null(.self$zlab) & .self$plot.type == "3D") {
 			.self$zlab <- .self$adapter$y.names()
 		}
-	}
-)
-
-
-#------------------------------------------------------------------------------
-#	色ベクトルを初期化する。
-#------------------------------------------------------------------------------
-pp.settings$methods(
-	init.colors = function() {
-		"
-		Initialize colors.
-		"
-		brewer = par.manager(.self)
-		.self$group.colors <- brewer$colors.for.groups()
-		.self$obs.colors <- brewer$colors.for.observations()
 	}
 )
 

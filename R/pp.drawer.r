@@ -138,7 +138,8 @@ pp.drawer$methods(
 		"
 		args <- list(
 			x = .self$settings$data[[.self$settings$x.names.numeric]],
-			y = .self$settings$residual, col = .self$settings$obs.colors
+			y = .self$settings$residual,
+			col = .self$settings$parman$colors.for.observations()
 		)
 		args <- .self$settings$set.function.args(args, points)
 		do.call(points, args)
@@ -215,14 +216,15 @@ pp.drawer$methods(
 #------------------------------------------------------------------------------
 pp.drawer$methods(
 	draw.relationship.2d = function() {
-		for (i in names(.self$settings$group.colors)) {
+		group.colors <- .self$settings$parman$colors.for.groups()
+		for (i in names(group.colors)) {
 			"
 			Draw partial relationship lines in 2D graph.
 			"
 			current.data <- .self$settings$relationship.split[[i]]
 			args <- list(
 				x = current.data[[.self$settings$x.names.numeric]],
-				y = current.data$fit, col = .self$settings$group.colors[i]
+				y = current.data$fit, col = group.colors[i]
 			)
 			args <- .self$settings$set.function.args(args, lines)
 			do.call(lines, args)
@@ -239,14 +241,15 @@ pp.drawer$methods(
 		"
 		Draw intervals of partial.relationship in 2D graph.
 		"
-		for (i in names(.self$settings$group.colors)) {
+		group.colors <- .self$settings$parman$colors.for.groups()
+		for (i in names(group.colors)) {
 			current.data <- .self$settings$relationship.split[[i]]
 			x <- current.data[[.self$settings$x.names.numeric]]
 			x <- c(x, rev(x))
 			y <- c(current.data$lower, rev(current.data$upper))
 			polygon(
 				x, y, border = NA,
-				col = trans.color(.self$settings$group.colors[i])
+				col = trans.color(group.colors[i])
 			)
 		}
 	}
@@ -267,11 +270,13 @@ pp.drawer$methods(
 			.self$settings$relationship$fit, nrow = .self$settings$resolution
 		)
 		if (identical(.self$settings$fun.3d, image)) {
-			col <- color.ramp(z.matrix, .self$settings$col, unique.pal = TRUE)
+			col <- color.ramp(
+				z.matrix, .self$settings$parman$col, unique.pal = TRUE
+			)
 		} else if (identical(.self$settings$fun.3d, persp)) {
-			col <- par.manager(.self$settings)$colors.for.persp(z.matrix)
+			col <- .self$settings$parman$colors.for.persp(z.matrix)
 		} else {
-			col <- color.ramp(z.matrix, .self$settings$col)
+			col <- color.ramp(z.matrix, .self$settings$parman$col)
 		}
 		args <- list(
 			z = z.matrix,

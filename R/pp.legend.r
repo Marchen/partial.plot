@@ -67,8 +67,9 @@ pp.legend <- function(settings, x, ...) {
 prepare.args.for.legend = function(settings, legend.args) {
 	# Override arguments of legend() that users did not specify manually.
 	# ユーザーが指定しなかったlegend()関数の引数を上書き。
+	group.colors <- settings$parman$colors.for.groups()
 	args.to.overwrite <- list(
-		col = settings$group.colors, legend = names(settings$group.colors),
+		col = group.colors, legend = names(group.colors),
 		title = paste0(settings$x.names.factor, collapse = settings$sep)
 	)
 	args.to.overwrite <- c(args.to.overwrite, settings$other.pars)

@@ -230,8 +230,9 @@ partial.plot <- function(
 	model, x.names, data = NULL, type = "response", positive.class = "",
 	fun.3d = persp, draw.residual = TRUE, draw.relationship = TRUE,
 	draw.interval = TRUE, draw.hist = FALSE, interval.levels = 0.95,
-	resolution = NULL, col = gg.colors, xlab = NULL, ylab = NULL, zlab = NULL,
-	add = FALSE, sep = " - ", extraporate = FALSE, n.cores = NULL, ...
+	resolution = NULL, col = gg.colors, lty = "solid", pch = 16, xlab = NULL,
+	ylab = NULL, zlab = NULL, add = FALSE, sep = " - ", extraporate = FALSE,
+	n.cores = NULL, ...
 ) {
 	# Initialize setting object.
 	# 設定オブジェクトの初期化。
@@ -239,15 +240,17 @@ partial.plot <- function(
 		settings <- model$copy()
 		settings$update.pars(
 			fun.3d, draw.residual, draw.relationship, draw.interval, draw.hist,
-			col, xlab, ylab, zlab, ...
+			xlab, ylab, zlab, ...
 		)
+		settings$parman$col <- col
 	} else {
 		settings <- pp.settings(
-			model, x.names, data, type, positive.class, fun.3d, draw.residual,
-			draw.relationship, draw.interval, draw.hist, interval.levels,
-			resolution, col, xlab, ylab, zlab, add, sep, extraporate,
-			n.cores, ...
+			model, x.names, data, type, positive.class, fun.3d,
+			draw.residual, draw.relationship, draw.interval, draw.hist,
+			interval.levels, resolution, xlab, ylab, zlab, add, sep,
+			extraporate, n.cores, ...
 		)
+		settings$parman <- par.manager(settings, col, lty, pch)
 		# Calculate required data.
 		partial.relationship(settings)
 		if (settings$type != "prob") {
