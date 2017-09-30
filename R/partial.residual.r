@@ -151,6 +151,7 @@ partial.residual$methods(
 			\\item{x}{a data.frame of one row representing one observation.}
 		}
 		"
+		on.exit(gc())
 		newdata <- .self$settings$data
 		for (i in .self$settings$x.names) {
 			newdata[[i]] <- x[[i]]
@@ -179,6 +180,7 @@ partial.residual$methods(
 			\\item{relationship}{a data.frame having predicted relationship.}
 		}
 		"
+		on.exit(gc())
 		for (i in .self$settings$x.names.factor) {
 			relationship <- relationship[relationship[[i]] == x[[i]], ]
 		}

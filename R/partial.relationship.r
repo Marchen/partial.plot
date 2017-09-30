@@ -133,6 +133,7 @@ partial.relationship$methods(
 			\\item{\\code{levels}}{levels of quantiles.}
 		}
 		"
+		on.exit(gc())
 		# Make data for prediction.
 		# 予測用データを作成。
 		replace.values <- new.value.grid[index, ]
