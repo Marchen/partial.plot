@@ -138,9 +138,9 @@ pp.drawer$methods(
 		"
 		args <- list(
 			x = .self$settings$data[[.self$settings$x.names.numeric]],
-			y = .self$settings$residual,
-			col = .self$settings$parman$colors.for.observations()
+			y = .self$settings$residual
 		)
+		args <- c(args, .self$settings$parman$par.obs())
 		args <- .self$settings$set.function.args(args, points)
 		do.call(points, args)
 	}

@@ -72,15 +72,18 @@ par.manager$methods(
 
 
 #------------------------------------------------------------------------------
-#	各観測値ごとの色を作成する。
+#	各観測値ごとのグラフィックパラメーターを作成する。
 #------------------------------------------------------------------------------
 par.manager$methods(
-	colors.for.observations = function() {
+	par.obs = function() {
 		"
-		Make color vector for each observation.
+		Make a list of graphic parameters for each observation.
 		"
-		result <- color.ramp(group, pal = .self$col, unique.pal = FALSE)
-		return(result)
+		pars <- list()
+		for (i in c("col", "lty", "pch")) {
+			pars[[i]] <- switch.par(.self$group, pal = .self[[i]])
+		}
+		return(pars)
 	}
 )
 
