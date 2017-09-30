@@ -103,72 +103,74 @@ make.palette.function <- function(pal, x, ...) {
 
 
 #------------------------------------------------------------------------------
-#	plotのラベルに色をつけられるように色のベクトルを返す。
+#	データに応じたグラフィックパラメーターを作成する。
 #
 #	Args:
 #		x:
 #			データ（今のところ、因子型と文字列型はうまく行くはず）。
 #			将来的には数値型に対応したい。
 #		pal:
-#			カラーパレットを生成する関数。
-#			もしくはカラーパレットを表す文字列ベクトル。
-#			文字列ベクトルの場合、xの種類と長さが一致する必要あり。
+#			グラフィックパラメーターを生成する関数。
+#			もしくはグラフィックパラメーターを表す文字列ベクトル。
+#			文字列ベクトルの場合、xの種類数と長さが一致する必要あり。
 #		...:
-#			色生成関数に渡される引数。
+#			グラフィックパラメーター生成関数に渡される引数。
 #		unique.pal:
-#			これがTRUEなら色一覧を、FALSEならxと同じ長さの色のベクトルを返す。
+#			これがTRUEならグラフィックパラメーター一覧を、
+#			FALSEならxと同じ長さのグラフィックパラメーターのベクトルを返す。
 #------------------------------------------------------------------------------
-#'	Make a color vector based on data.
+#'	Make a vector of graphic parameters based on data.
+#'
+#'	\code{color.ramp} is an alias of \code{switch.par}, which having different
+#'	default value for \code{pal} and may enhance readability in some cases.
 #'
 #'	@param x
 #'		a vector of character or factor.
-#'		Based on this vector, color vector is generated.
-#'
-#'	@param factor.names
-#'		a character vector specifying names of factors by which colors are made.
-#'		If missing or length of factor.names is 0, all character variables and
-#'		factors are used for making colors.
+#'		Based on this vector, the vector of graphic parameteres is generated.
+#'		Making colors for numeric mode of \code{x} is experimentally supported.
 #'
 #'	@param pal
-#'		a function or character vector.
-#'		If a function is specified for \code{pal}, \code{color.ramp} assumes
+#'		a function or vector.
+#'		If a function is specified for \code{pal}, this function assumes
 #'		that the function accepts number of params for the first argument
-#'		 (\code{n}) and produces a charactor vector representing colors.
+#'		 (\code{n}) and produces a vector of graphic parameter.
 #'		e.g. \code{\link{gg.colors}}, \code{\link[grDevices]{rainbow}},
 #'		\code{\link[grDevices]{terrain.colors}}, and
 #'		\code{\link[grDevices]{topo.colors}} can be used.
-#'		If a character vector of length 1 is specified for \code{pal},
-#'		\code{color.ramp} produces color vector with the single color.
-#'		If a character vector of length equal to the number of unique values
-#'		of x is specified, this function assigns each color for each value of
-#'		\code{x}.
+#'		If a vector of length 1 is specified for \code{pal}, this function
+#'		produces vector of graphic parameters consists of same values.
+#'		If a vector of length equal to the number of unique values of \code{x}
+#'		is specified, this function assigns each value of grpahic parameter for
+#'		each value of \code{x}.
 #'
 #'	@param unique.pal
-#'		a logical determining return value of the function.
+#'		a logical determines return value of the function.
 #'
 #'	@return
-#'		If \code{unique.pal} is TRUE, unique named character vector of colors.
-#'		For this case, this function returns non-named color vector of
-#'		length 1 if \code{x} is NULL,
-#'		If \code{unique.pal} is FALSE, character vector representing colors
-#'		with length equal to the length of \code{x}. For this case, the
-#'		character vector has "palette" attribute which contains named vector
-#'		of colors used for the result.
+#'		If \code{unique.pal} is TRUE, this function returns unique named vector
+#'		of graphic parameters. For this case, this function returns non-named
+#'		vector of graphic parameter with length 1 if \code{x} is NULL.
+#'		If \code{unique.pal} is FALSE, this function returns vector of graphic
+#'		parameters with length equal to the length of \code{x}. For this case,
+#'		the vector has "palette" attribute which contains named vector
+#'		of graphic parameters used for the result.
 #'
 #'	@export
 #'
 #'	@examples
 #'	#---------------------------------------------------------------------------
-#'	# Example 1: set point color based on a character vector.
+#'	# Example 1: set point color and character based on a character vector.
 #'	#---------------------------------------------------------------------------
 #'	data(iris)
 #'	plot(
-#'		Sepal.Length ~ Petal.Length, data = iris, pch = 16,
-#'		col = color.ramp(Species)
+#'		Sepal.Length ~ Petal.Length, data = iris,
+#'		col = color.ramp(Species),
+#'		pch = switch.par(Species)
 #'	)
 #'	# Add a legend
 #'	col <- color.ramp(iris$Species, unique.pal = TRUE)
-#'	legend("topleft", legend = names(col), col = col, pch = 16, cex = 1)
+#'	pch <- switch.par(iris$Species, unique.pal = TRUE)
+#'	legend("topleft", legend = names(col), col = col, pch = pch, cex = 1)
 #'
 #'
 #'	#---------------------------------------------------------------------------
@@ -206,17 +208,30 @@ make.palette.function <- function(pal, x, ...) {
 #'	col <- color.ramp(iris2, unique.pal = TRUE)
 #'	legend("topleft", legend = names(col), col = col, pch = 16, cex = 1)
 #------------------------------------------------------------------------------
+switch.par <- function(
+	x, pal = function(n, ...) 1:n, ..., unique.pal = FALSE
+) {
+	UseMethod("switch.par")
+}
+
+#------------------------------------------------------------------------------
+#	switch.parのエイリアス。
+#------------------------------------------------------------------------------
+#'	@describeIn switch.par alias of \code{switch.par}.
+#'	@export
+#------------------------------------------------------------------------------
 color.ramp <- function(x, pal = gg.colors, ..., unique.pal = FALSE) {
-	UseMethod("color.ramp")
+	switch.par(x = x, pal = pal, ..., unique.pal = unique.pal)
 }
 
 
 #------------------------------------------------------------------------------
-#'	@describeIn color.ramp
-#'	default S3 method.
+#'	@describeIn switch.par default S3 method.
 #'	@export
 #------------------------------------------------------------------------------
-color.ramp.default <- function(x, pal = gg.colors, ..., unique.pal = FALSE){
+switch.par.default <- function(
+	x, pal = function(n, ...) 1:n, ..., unique.pal = FALSE
+) {
 	palette <- make.palette(pal, x, ...)
 	if (unique.pal){
 		return(palette)
@@ -233,17 +248,17 @@ color.ramp.default <- function(x, pal = gg.colors, ..., unique.pal = FALSE){
 
 
 #------------------------------------------------------------------------------
-#'	@describeIn color.ramp
-#'	method for numeric.
+#'	@describeIn switch.par method for numeric.
+#'
 #'	@param n.class
-#'		number of colors. If NULL, n.class become number of unique values
+#'		number of groups. If NULL, n.class become number of unique values
 #'		in x.
-#'	@param method method of grouping. Currently, only "quantile! is supported.
+#'	@param method method of grouping. Currently, only "quantile" is supported.
 #'	@export
 #------------------------------------------------------------------------------
-color.ramp.numeric <- function(
-	x, pal = gg.colors, n.class = NULL, method = "quantile", ...,
-	unique.pal = FALSE
+switch.par.numeric <- function(
+	x, pal = gg.colors, n.class = NULL,
+	method = "quantile", ..., unique.pal = FALSE
 ) {
 	# If pal is not a function, make color making function.
 	if (!is.function(pal)) {
