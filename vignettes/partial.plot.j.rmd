@@ -9,6 +9,9 @@ output:
         fig_retina: 2
         dpi: 300
         dev.args: list(dpi = 300)
+        toc: true
+        toc_depth: 2
+        md_extensions: -ascii_identifiers
 vignette: >
     %\VignetteIndexEntry{Quick start guid for partial.plot (Japanese).}
     %\VignetteEngine{knitr::rmarkdown}
@@ -16,43 +19,13 @@ vignette: >
 ---
 
 
+--------------------------------------------------------------------------------
+[English](partial.plot.html)
+--------------------------------------------------------------------------------
+
+# はじめに
 
 このパッケージは多変量分析の結果を見やすく作図するためのパッケージです。
-
-[English](partial.plot.html)
-
---------------------------------------------------------------------------------
-
-# <a id = "index">目次</a>
-
-* [はじめに](#introduction)
-* [インストールとアップデート](#installation)
-* [クイックスタート（R魔法使い用）](#quickstart)
-* [基本的なつかいかた](#basic_usage)
-	* [データの準備とモデルの作成](#preparation)
-	* [モデルの予測結果の作図](#partial_plot)
-	* [凡例の追加](#legend)
-* [もう少し複雑なモデルの可視化](#basic_usage2)
-* [三次元プロット](#3d_plot)
-* [グラフの見た目の変更](#advanced_settings)
-	* [作図する要素の変更](#remove_objects)
-	* [色の変更](#change_colors)
-	* [ラベル区切り文字の変更](#sep)
-	* [信頼区間の変更](#interval_levels)
-	* [リンク関数](#link_function)
-	* [その他の設定](#other_settings)
-* [結果の再利用](#reuse_result)
-* [対応モデル](#supported_models)
-* [既知の問題](#known_issues)
-* [おまけ](#value_add)
-	* [color.ramp](#color_ramp)
-	* [gg.colors](#gg_colors)
-* [更新履歴](#version_history)
-
---------------------------------------------------------------------------------
-
-# <a id = "introduction">はじめに</a>
-
 とりあえず、このパッケージはまだまだ開発中です。
 バグは残っているでしょうし、足りない機能もたくさんあると思います。
 一応注意はしていますが、もしかすると、研究をめちゃめちゃするような間違いがあるかもしれません。
@@ -63,16 +36,17 @@ vignette: >
 
 --------------------------------------------------------------------------------
 
-# <a id = "installation">インストールとアップデート</a>
+# インストールとアップデート
 
 以下のコマンドをRにコピー＆ペーストすれば
 必要なパッケージ一式をインストールできるはずです。
 
 ```{R, message = FALSE, warning = FALSE, eval = FALSE}
-install.packages(c("testthat","lsmeans"))
 install.packages(
 	c("model.adapter", "partial.plot"),
-	repos = "http://hostgk3.biology.tohoku.ac.jp/marchen/R/repos"
+	repos = c(
+		"http://hostgk3.biology.tohoku.ac.jp/marchen/R/repos", options()$repos
+	)
 )
 ```
 
@@ -98,7 +72,7 @@ update.packages(
 
 --------------------------------------------------------------------------------
 
-# <a id = "quickstart">クイックスタート（R魔法使い用）</a>
+# クイックスタート（R魔法使い用）
 
 まー、魔法使いの人は見ればわかるでしょう。
 
@@ -135,9 +109,9 @@ info <- partial.plot(
 
 --------------------------------------------------------------------------------
 
-# <a id = "basic_usage">基本的なつかいかた</a>
+# 基本的なつかいかた
 
-## <a id = "preparation">データの準備とモデルの作成</a>
+## データの準備とモデルの作成
 
 今回はテスト用のデータにお約束のFisherのIrisデータを使います。
 このデータは３種のアヤメ（setosa, versicolor, virginica）の萼片の長さ（Sepal.Length）、萼片の幅（Sepal.Width）、花弁の長さ（Petal.Length）、花弁の幅（Petal.Width）のデータが含まれています。
@@ -187,7 +161,7 @@ summary(model)
 
 予測結果を見ると、Sepal.Length:Speciesversicolor、Sepal.Length:Speciesvirginica、Petal.Width:Speciesversicolorの推定値のP値が0.05以下なので、どうやら種によって萼片の長さと花弁の長さの関係、花弁の幅と花弁の長さの関係が異なっているようです。
 
-## <a id = "partial_plot">モデルの予測結果の作図</a>
+## モデルの予測結果の作図
 
 上の結果を眺めていても、予測結果がどのような感じなのか、なかなかわかりません。
 そこで、できあがったモデルを使ってモデルの予測結果を作図してみます。
@@ -226,7 +200,7 @@ partial.plot(model, c("Petal.Width", "Species"), pch = 16)
 この場合、線は種ごとの花弁の幅と花弁の長さの関係式を、色の付いた部分は関係式の信頼区間を、点は偏残差を表します。
 
 
-### <a id = "legend">凡例の追加</a>
+### 凡例の追加
 
 ただ線や信頼区間、偏残差をプロットするだけでは色と種の対応関係がわかりません。
 `partial.plot`の凡例追加機能を使って、凡例を追加することができます。
@@ -254,7 +228,7 @@ pp.legend(info, "topleft")
 
 --------------------------------------------------------------------------------
 
-# <a id = "basic_usage2">もう少し複雑なモデルの可視化</a>
+# もう少し複雑なモデルの可視化
 
 `partial.plot()`を使って、もう少し複雑なグラフを書くこともできます。
 今度はRに含まれている`CO2`データセットを使います。
@@ -315,7 +289,7 @@ pp.legend(info, "bottomright")
 
 --------------------------------------------------------------------------------
 
-# <a id = "3d_plot">三次元プロット</a>
+# 三次元プロット
 
 これまでの例ではモデルの予測結果を二次元に表していましたが、`partial.plot()`は三次元のプロットを描画することも可能です。
 ここでも先ほどのFisherのIrisデータを使います。
@@ -374,12 +348,12 @@ partial.plot(
 
 --------------------------------------------------------------------------------
 
-# <a id = "advanced_settings">グラフの見た目の変更</a>
+# グラフの見た目の変更
 
 いくつかの設定を変えることで、グラフの見た目を変えることができます。
 
 
-## <a id = "remove_objects">作図する要素の変更</a>
+## 作図する要素の変更
 
 `draw.residual`引数を`FALSE`にすると、残差のシンボルを描画しないことができます。
 ```{R, message = FALSE, echo = FALSE}
@@ -422,7 +396,7 @@ info <- partial.plot(
 pp.legend(info, "topleft")
 ```
 
-## <a id = "change_colors">色の変更</a>
+## 色の変更
 
 `rainbow()`関数や`heat.colors()`関数など、一番目の引数に色の数を渡すと色を返す関数を使ってグラフの色を変えることができます。
 ?rainbowで出てくるヘルプに載っている関数などが使えます。
@@ -452,8 +426,47 @@ info <- partial.plot(
 pp.legend(info, "topleft")
 ```
 
+## プロットのシンボル、線の種類、線の太さの変更
 
-## <a id = "sep">ラベル区切り文字の変更</a>
+色の指定と同じ方法で、プロットのシンボル、線の種類、線の太さを変更することができます。
+
+### シンボルの変更
+```{R}
+info <- partial.plot(
+	model, c("Sepal.Length", "Species"), pch = 16:18, col = rainbow
+)
+pp.legend(info, "topleft")
+```
+
+### 線の種類の変更
+```{R}
+info <- partial.plot(
+	model, c("Sepal.Length", "Species"), lty = c("solid", "dashed", "dotted"),
+	col = "black"
+)
+pp.legend(info, "topleft")
+```
+
+### 線の太さの変更
+```{R}
+info <- partial.plot(
+	model, c("Sepal.Length", "Species"), lwd = c(1, 4, 8), col = "black"
+)
+pp.legend(info, "topleft")
+```
+
+## グラフの上書き
+
+`add = TRUE`を指定すると、既存のグラフの上にグラフを上書きすることができます。
+```{R}
+model <- glm(
+	Petal.Length ~ (Sepal.Length + Petal.Width) * Species, data = iris
+)
+plot(Petal.Length ~ Sepal.Length, data = iris, pch = 16)
+partial.plot(model, c("Sepal.Length", "Species"), add = TRUE)
+```
+
+## ラベル区切り文字の変更
 
 複数の因子型説明変数を描画するとき、レジェンドで因子名の間を区切る文字を変えることができます。
 
@@ -466,7 +479,7 @@ pp.legend(info, "bottomright")
 ```
 
 
-## <a id = "interval_levels">信頼区間の変更</a>
+## 信頼区間の変更
 
 線の周りに描画される信頼区間はデフォルトでは95%信頼区間になっています。
 `interval.levels`引数に0から1の値を与えることで、この値も変更することが可能です。
@@ -499,7 +512,7 @@ par(mfrow = c(1, 1))
 ```
 
 
-## <a id = "link_function">リンク関数</a>
+## リンク関数
 
 GLMやGLMMなどのモデルを用いると、リンク関数が適用された応答変数に対して、線形モデルの当てはめが行われます。
 GLM全般を説明するのは大変なので、詳細はGoogle先生に聞いてみて下さい。
@@ -534,19 +547,53 @@ partial.plot(
 ```
 
 
-## <a id = "other_settings">その他の設定</a>
+## 識別モデルの作図。
+
+`partial.plot`を用いると、応答変数が連続値の回帰モデルだけではなく、識別モデルの予測確率も作図することができます。
+識別モデルの予測値を計算するには、今のところ`type = "prob"`を指定する必要があります。
+将来的には自動でモデルの種類を判定して作図するようにする予定です。
+また、識別モデルでは残差の作図はサポートされていません。
+
+```{R}
+library(randomForest)
+model <- randomForest(Species ~ ., data = iris)
+partial.plot(
+	model, "Petal.Length", positive.class = "setosa", type = "prob",
+	col = "red", resolution = 20, draw.residual = FALSE
+)
+partial.plot(
+	model, "Petal.Length", positive.class = "versicolor", add = TRUE,
+	type = "prob", col = "blue", resolution = 20, draw.residual = FALSE
+)
+partial.plot(
+	model, "Petal.Length", positive.class = "virginica", add = TRUE,
+	type = "prob", col = "green", resolution = 20, draw.residual = FALSE
+)
+```
+
+
+## ヒストグラムの追加
+
+試験的に説明変数のヒストグラムを描く機能を追加してあります。
+```{R}
+model <- glm(Petal.Length ~ ., data = iris)
+info <- partial.plot(
+	model, c("Sepal.Length", "Species"), draw.hist = TRUE
+)
+```
+
+## その他の設定
 
 `partial.plot()`関数は普通の`plot()`関数と同じように、グラフィックパラメーターを変えて、グラフの見た目を変えることができます。
-上の例では`pch = 16`を指定してシンボルを●に変えましたが、他のグラフィックパラメーターも変えることができます。
 
 ```{R}
 # モデル作成
 model <- glm(
 	Petal.Length ~ (Sepal.Length + Petal.Width) * Species, data = iris
 )
-# 作図、シンボルのサイズ、軸ラベルも変えてみる。
+# シンボルのサイズ、軸ラベルも変えてみる。
 info <- partial.plot(
-	model, c("Sepal.Length", "Species"), pch = 16, cex = 1.5,
+	model, c("Sepal.Length", "Species"), cex = 1.5,
 	xlab = "Sepal length (mm)", ylab = "Petal Length"
 )
 pp.legend(info, "topleft")
@@ -555,7 +602,7 @@ pp.legend(info, "topleft")
 
 --------------------------------------------------------------------------------
 
-# <a id = "reuse_result">結果の再利用</a>
+# 結果の再利用
 
 モデルによっては予測値を計算するのに計算時間がかかることがあります。
 `partial.plot()`は結果に計算済みの関係式や偏残差情報を記憶しているので描画の設定だけを変えて、グラフを書き直すことができます。
@@ -595,32 +642,30 @@ par(mfrow = c(1, 1))
 
 --------------------------------------------------------------------------------
 
-# <a id = "supported_models">対応しているモデル</a>
+# 対応しているモデル
 
-今のところ、`lm()`、`glm()`、`lme()`、`MCMCglmm()`、`cforest()`、`ctree()`、`svm()`、`randomForest()`に対応しています（たぶん）。
+今のところ、`lm()`、`glm()`、`lme()`、`lmer()`、`glmer()`、`glmmadmb()`、`MCMCglmm()`、`cforest()`、`ctree()`、`svm()`、`randomForest()`、`ranger()`、`rpart()`、`tree()`に対応しています（たぶん）。
 各モデルへの対応は`model.adapter`パッケージに依存しているので、
 将来的には`model.adapter`パッケージが対応する他のモデルにも対応する予定です。
-`glmmadmb()`も作図可能ですが、`model.adapter`パッケージの対応が不完全なので、完全に動作しているのか不明です。
 
 
 --------------------------------------------------------------------------------
 
-# <a id = "known_issues">既知の問題</a>
+# 既知の問題
 
 今のところ、以下の問題があることがわかっています。
 
-* 並列計算がうまくいかない。そのうち直します。
 * 作図時に最低１つ以上の連続変数を入れる必要がある。将来的には因子型だけでの作図にも対応する予定。
 * データにNAが含まれていると停止する。
 
 
 --------------------------------------------------------------------------------
 
-# <a id = "value_add">おまけ</a>
+# おまけ
 
 作図に使っている以下の関数も何かの役立つかもしれません。
 
-## <a id = "color_ramp">color.ramp()</a>
+## color.ramp()
 
 `color.ramp()`関数は因子型変数から色を表す文字列ベクトルを生成します。
 以下の例のように使います。
@@ -652,7 +697,14 @@ plot(
 )
 ```
 
-## <a id = "gg_colors">gg.colors()</a>
+## switch.par()
+
+`color.ramp()`と同じようにグラフィックパラメーターを変更することができます。
+```{R}
+plot(Petal.Length~Sepal.Length, data = iris, pch = switch.par(Species, 16:18))
+```
+
+## gg.colors()
 
 `ggplot()`と似たような色を生成します。
 
@@ -663,7 +715,17 @@ barplot(1:10, col = gg.colors(10))
 
 --------------------------------------------------------------------------------
 
-# <a id = "version_history">更新履歴</a>
+# 更新履歴
+* 2017.10.01: 0.2.0
+	* `lmer()`、`glmer()`、`glmmadmb()`、`glmmML()`、`ranger()`、`rpart()`、`tree()`への対応。
+	* `add`オプションの追加。
+	* 三次元プロットに残差描画機能を追加。
+	* lsmeansが対応していないモデルの計算アルゴリズムを変更。
+	* 説明変数のヒストグラムを描く機能を試験的に追加。
+	* 識別モデルの確率描画機能の追加。
+	* 論理型変数をグループ分けに使えるようにした。
+	* グループごとに`lty`、`lwd`、`pch`を変えられるようにした。
+	* いろいろなバグの修正、パフォーマンス改善。
 * 2016.01.11: 0.1.0
 	* 三次元プロット機能に対応。
 	* `color.ramp.data.frame()`メソッドの削除。
