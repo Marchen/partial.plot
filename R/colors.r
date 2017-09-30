@@ -21,18 +21,22 @@ gg.colors <- function(n){
 
 
 #------------------------------------------------------------------------------
-#	カラーパレットを作成する。
+#	グラフィックパラメーターのパレットを作成する。
 #------------------------------------------------------------------------------
-#'	(Internal) Make color palette.
+#'	(Internal) Make palette of a graphic parameter.
 #'
-#'	@param pal a color making function or character vector.
-#'	@param x a vector of values that colors are made based on it.
-#'	@param ... other parameters passed to color function.
+#'	@param pal
+#'		a graphic parameter making function or character vector.
+#'	@param x
+#'		a vector of values that the parameter is made based on it.
+#'	@param ...
+#'		other parameters passed to the graphic parameter making function.
 #'
 #'	@return
-#'		If \code{x} is NULL, a non-named character vector of length 1.
-#'		Otherwise, a named vector of colors with unique values in \code{x} for
-#'		the name of it.
+#'		If \code{x} is NULL, a non-named vector of the graphic parameter of
+#'		length 1.
+#'		Otherwise, a named vector of graphic parameters with unique values in
+#'		\code{x} for the name of it.
 #------------------------------------------------------------------------------
 make.palette <- function(pal, x, ...) {
 	UseMethod("make.palette")
@@ -45,7 +49,7 @@ make.palette <- function(pal, x, ...) {
 #'	@method make.palette default
 #------------------------------------------------------------------------------
 make.palette.default <- function(pal, x, ...) {
-	# If x is NULL, return not named vector of color palette
+	# If x is NULL, return not named vector of the graphic parameter.
 	if (is.null(x)) {
 		if (length(pal) == 1) {
 			names(pal) <- NULL
@@ -63,10 +67,12 @@ make.palette.default <- function(pal, x, ...) {
 		return(pal)
 	}
 	if (length(pal) == 1) {
-		# If pal is a non-named vector of length 1, repeat same color.
+		# If pal is a non-named vector of length 1,
+		# repeat same graphic parameter.
 		pal <- rep(pal, length(get.unique(x)))
 	} else {
-		# If pal is a non-named vector of length > 1, use first colors.
+		# If pal is a non-named vector of length > 1,
+		# use the first graphic parameter.
 		if (length(pal) < length(get.unique(x))) {
 			stop("'pal' should have larger length than length of unique values in 'x'")
 		}
@@ -83,13 +89,13 @@ make.palette.default <- function(pal, x, ...) {
 #'	@method make.palette function
 #------------------------------------------------------------------------------
 make.palette.function <- function(pal, x, ...) {
-	# If x is NULL, return not named vector of color palette
+	# If x is NULL, return not named vector of the grpahic parameter
 	if (is.null(x)) {
 		return(pal(1, ...))
 	}
 	# Define function retrieving unique values.
 	get.unique <- if (is.factor(x)) levels else unique
-	# If pal is a function, apply pal to make colors.
+	# If pal is a function, apply pal to make vector of graphic parameters.
 	pal <- pal(length(sort(get.unique(x))), ...)
 	names(pal) <- sort(get.unique(x))
 	return(pal)
