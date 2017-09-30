@@ -84,8 +84,18 @@ if (require(rgl)) {
 #'	@field type
 #'		a character literal indicating type of scale for plotting.
 #'		This is similar to type argument of many predict methods.
-#'		Possible values are "response", "link".
-#'		"prob" will be implimented in future.
+#'		Possible values are "response", "link" and "prob".
+#'		If "link" is specified, partial relationship and residuals are
+#'		drawn in the scale of the linear predictor.
+#'		On the other hand, partial relationship and residuals are drawn
+#'		in the scale of the response variable if "response" is specified.
+#'		For classification models, only "prob", which calculate probability of
+#'		a specific class, can be used.
+#'
+#'	@field positive.class
+#'		a class for which predicted probability is calculated.
+#'		If not specified, first class of the factor or first unique value of
+#'		the response variable is used.
 #'
 #'	@field plot.type
 #'		a character literal to indicate plot type. Possible values are
@@ -187,6 +197,7 @@ pp.settings <- setRefClass(
 		x.names.factor = "character",
 		x.names.numeric = "character",
 		type = "character",
+		positive.class = "character",
 		plot.type = "character",
 		factor.levels = "list",
 		numeric.sequences = "list",
@@ -223,8 +234,8 @@ pp.settings <- setRefClass(
 #------------------------------------------------------------------------------
 pp.settings$methods(
 	initialize = function(
-		model, x.names, data = NULL, type = "response", fun.3d = persp,
-		draw.residual = TRUE, draw.relationship = TRUE,
+		model, x.names, data = NULL, type = "response", positive.class = "",
+		fun.3d = persp, draw.residual = TRUE, draw.relationship = TRUE,
 		draw.interval = TRUE, draw.hist = FALSE, interval.levels = 0.95,
 		resolution = NULL, col = gg.colors, xlab = NULL, ylab = NULL,
 		zlab = NULL, add = FALSE, sep = " - ", extraporate = FALSE,
@@ -245,7 +256,12 @@ pp.settings$methods(
 			}
 			\\item{\\code{type}}{
 				type of relationship to draw.
-				Possible values are 'response' and 'link'.
+				Possible values are 'response', 'link' and 'prob'.
+			}
+			\\item{\\code{positive.class}}{
+				class label for which probability is calculated.
+				By default, partial.plot calculate probabilities for first
+				class of the factor.
 			}
 			\\item{\\code{fun.3d}}{
 				the function used for drawing 3D relationship graphs.
@@ -310,8 +326,8 @@ pp.settings$methods(
 			adapter = model.adapter(
 				model, data = data, envir = parent.frame(5L)
 			),
-			type = type, fun.3d = fun.3d, model = model, x.names = x.names,
-			draw.residual = draw.residual,
+			type = type, positive.class = positive.class, fun.3d = fun.3d,
+			model = model, x.names = x.names, draw.residual = draw.residual,
 			draw.relationship = draw.relationship,
 			draw.interval = draw.interval, draw.hist = draw.hist,
 			interval.levels = interval.levels, resolution = resolution,
@@ -331,6 +347,7 @@ pp.settings$methods(
 		.self$init.resolution()
 		.self$init.factor.levels()
 		.self$init.numeric.sequences()
+		.self$init.positive.class()
 	}
 )
 
@@ -477,8 +494,34 @@ pp.settings$methods(
 		if (length(type) != 1) {
 			stop("'type' should be a character of length 1.")
 		}
-		if (!type %in% c("response", "link")) {
-			stop("'type' should be one of 'response' and 'link'.")
+		if (!type %in% c("response", "link", "prob")) {
+			stop("'type' should be one of 'response', 'link' and 'prob'.")
+		}
+		if (type == "prob" & draw.residual) {
+			warning(
+				"Drawing residuals for classification model is not supported."
+			)
+			.self$draw.residual <- FALSE
+		}
+	}
+)
+
+
+#------------------------------------------------------------------------------
+#	確率を計算するクラスが正しいかを確認する。
+#------------------------------------------------------------------------------
+pp.settings$methods(
+	check.positive.class = function() {
+		"
+		Check whether specified positive class is in response variable.
+		"
+		if (.self$positive.class != "") {
+			l <- levels(.self$data[[.self$adapter$y.names()]])
+			if (!.self$positive.class %in% l) {
+				stop(
+					"The class indicated by 'positive.class'is not in the response variable."
+				)
+			}
 		}
 	}
 )
@@ -498,6 +541,7 @@ pp.settings$methods(
 		.self$check.resolution()
 		.self$check.labels()
 		.self$check.type()
+		.self$check.positive.class()
 	}
 )
 
@@ -673,6 +717,29 @@ pp.settings$methods(
 			)
 		}
 		.self$numeric.sequences <- result
+	}
+)
+
+
+#------------------------------------------------------------------------------
+#	確率を計算する対象のクラスを初期化する。
+#------------------------------------------------------------------------------
+pp.settings$methods(
+	init.positive.class = function() {
+		"
+		Initialize positive class.
+		"
+		if (.self$type == "prob") {
+			if (.self$positive.class == "") {
+				response <- .self$data[[.self$adapter$y.names()]]
+				if (is.factor(response)) {
+					classes <- levels(response)
+				} else {
+					classes <- unique(response)
+				}
+				.self$positive.class <- classes[1]
+			}
+		}
 	}
 )
 

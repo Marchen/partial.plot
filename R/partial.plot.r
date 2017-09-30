@@ -46,12 +46,19 @@ combine.columns <- function(data, sep) {
 #'	@param type
 #'		a character literal indicating type of scale of plotting.
 #'		This is similar to type argument of many predict methods.
-#'		Possible values are "response", "link".
+#'		Possible values are "response", "link" and "prob".
 #'		If "link" is specified, partial relationship and residuals are
 #'		drawn in the scale of the linear predictor.
 #'		On the other hand, partial relationship and residuals are drawn
 #'		in the scale of the response variable if "response" is specified.
-#'		"prob" may be implimented in the future.
+#'		For classification models, only "prob", which calculate probability of
+#'		a specific class, can be used. Future version will automatically
+#'		change \code{type} to "prob" for classification models.
+#'
+#'	@param positive.class
+#'		a class for which predicted probability is calculated.
+#'		If not specified, first class of the factor or first unique value of
+#'		the response variable is used.
 #'
 #'	@param fun.3d
 #'		a function to produce 3d graph. Currently
@@ -61,6 +68,8 @@ combine.columns <- function(data, sep) {
 #'
 #'	@param draw.residual
 #'		a logical. If TRUE, points representing partial residual are drawn.
+#'		When \code{'prob'} is specified for \code{type}, draw.residual is set to
+#'		FALSE.
 #'
 #'	@param draw.relationship
 #'		a logical. If TRUE, partial relationships between focal explanatory
@@ -218,11 +227,11 @@ combine.columns <- function(data, sep) {
 #'	@export
 #------------------------------------------------------------------------------
 partial.plot <- function(
-	model, x.names, data = NULL, type = "response", fun.3d = persp,
-	draw.residual = TRUE, draw.relationship = TRUE, draw.interval = TRUE,
-	draw.hist = FALSE, interval.levels = 0.95, resolution = NULL,
-	col = gg.colors, xlab = NULL, ylab = NULL, zlab = NULL, add = FALSE,
-	sep = " - ", extraporate = FALSE, n.cores = NULL, ...
+	model, x.names, data = NULL, type = "response", positive.class = "",
+	fun.3d = persp, draw.residual = TRUE, draw.relationship = TRUE,
+	draw.interval = TRUE, draw.hist = FALSE, interval.levels = 0.95,
+	resolution = NULL, col = gg.colors, xlab = NULL, ylab = NULL, zlab = NULL,
+	add = FALSE, sep = " - ", extraporate = FALSE, n.cores = NULL, ...
 ) {
 	# Initialize setting object.
 	# 設定オブジェクトの初期化。
@@ -234,14 +243,16 @@ partial.plot <- function(
 		)
 	} else {
 		settings <- pp.settings(
-			model, x.names, data, type, fun.3d, draw.residual,
+			model, x.names, data, type, positive.class, fun.3d, draw.residual,
 			draw.relationship, draw.interval, draw.hist, interval.levels,
 			resolution, col, xlab, ylab, zlab, add, sep, extraporate,
 			n.cores, ...
 		)
 		# Calculate required data.
 		partial.relationship(settings)
-		partial.residual(settings)
+		if (settings$type != "prob") {
+			partial.residual(settings)
+		}
 	}
 	# Draw
 	drawer <- pp.drawer(settings)

@@ -140,6 +140,9 @@ partial.relationship$methods(
 		newdata[param.names] <- replace.values
 		# Make prediction.
 		prediction <- predict.fun(newdata = newdata, type = type)
+		if (type == "prob") {
+			prediction$fit <- prediction$fit[, settings$positive.class]
+		}
 		quantiles <- quantile(prediction$fit, probs = levels, na.rm = TRUE)
 		result <- c(fit = mean(prediction$fit), quantiles, replace.values)
 		names(result) <- c("fit", "lower", "upper", param.names)
@@ -191,7 +194,7 @@ partial.relationship$methods(
 			X = 1:nrow(grid), FUN = .self$predict.stats,
 			newdata = settings$data, predict.fun = settings$adapter$predict,
 			new.value.grid = grid, levels = settings$interval.levels,
-			type = "link"
+			type = ifelse(settings$type == "prob", "prob", "link")
 		)
 		result <- do.call(rbind, result)
 		if (settings$type == "response") {
