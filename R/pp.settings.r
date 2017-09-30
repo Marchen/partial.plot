@@ -107,6 +107,12 @@ if (require(rgl)) {
 #'	@field factor.levels
 #'		a list having levels of factors specified by x.names.
 #'
+#'	@field group
+#'		a vector of grouping levels.
+#'
+#'	@field unique.group
+#'		a vector of unique grouping levels.
+#'
 #'	@field numeric.sequences
 #'		a list having sequences of numeric variables specified by x.names.
 #'
@@ -193,6 +199,8 @@ pp.settings <- setRefClass(
 		positive.class = "character",
 		plot.type = "character",
 		factor.levels = "list",
+		group = "ANY",
+		unique.group = "ANY",
 		numeric.sequences = "list",
 		data = "data.frame",
 		fun.3d = "function",
@@ -332,6 +340,7 @@ pp.settings$methods(
 		.self$init.intervals()
 		.self$init.resolution()
 		.self$init.factor.levels()
+		.self$init.group()
 		.self$init.numeric.sequences()
 		.self$init.positive.class()
 	}
@@ -681,6 +690,27 @@ pp.settings$methods(
 			result[[name]] <- unique(.self$data[[name]])
 		}
 		.self$factor.levels <- result
+	}
+)
+
+
+#------------------------------------------------------------------------------
+#	データの分割を表すグループデータを作成する。
+#------------------------------------------------------------------------------
+pp.settings$methods(
+	init.group = function() {
+		"
+		Initialize a vector representing data splitting group.
+		"
+		if (!length(.self$x.names.factor) == 0) {
+			.self$group <- combine.columns(
+				.self$data[.self$x.names.factor], .self$sep
+			)
+		} else {
+			.self$group <- rep("all", nrow(.self$data))
+		}
+		get.unique <- if (is.factor(.self$group)) levels else unique
+		.self$unique.group <- get.unique(.self$group)
 	}
 )
 

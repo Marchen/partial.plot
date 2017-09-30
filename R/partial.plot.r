@@ -250,7 +250,7 @@ partial.plot <- function(
 			interval.levels, resolution, xlab, ylab, zlab, add, sep,
 			extraporate, n.cores, ...
 		)
-		settings$parman <- par.manager(settings, col, lty, pch)
+		settings$parman <- par.manager(settings$group, col, lty, pch)
 		# Calculate required data.
 		partial.relationship(settings)
 		if (settings$type != "prob") {

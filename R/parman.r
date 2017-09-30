@@ -3,9 +3,6 @@
 #------------------------------------------------------------------------------
 #'	(Internal) A reference class to handle graphic pars used for plotting.
 #'
-#'	@field settings
-#'		a \code{\link{pp.settings}} object to keep settings of the function.
-#'
 #'	@field group
 #'		a character vector of group names made from factors specified by
 #'		x.names.
@@ -19,7 +16,6 @@
 #'		a vector of the line types or a function generate line types.
 #'		For the detail, see \code{\link{switch.par}}.
 #'
-#'	@include pp.settings.r
 #------------------------------------------------------------------------------
 par.manager <- setRefClass(
 	"par.manager",
@@ -36,23 +32,15 @@ par.manager <- setRefClass(
 #	グラフィックパラメーター管理クラスの初期化。
 #------------------------------------------------------------------------------
 par.manager$methods(
-	initialize = function(settings, col, lty, pch, ...) {
+	initialize = function(group, col, lty, pch, ...) {
 		"
 		Initialize class and set group field.
 		"
 		# Initialize fields.
-		if (missing(settings)) {
+		if (missing(group)) {
 			return()
 		}
-		initFields(col = col, lty = lty, pch = pch)
-		# Make group depending on number of factor variables.
-		if (!length(settings$x.names.factor) == 0) {
-			.self$group <- combine.columns(
-				settings$data[settings$x.names.factor], settings$sep
-			)
-		} else {
-			.self$group <- rep("all", nrow(settings$data))
-		}
+		initFields(group = group, col = col, lty = lty, pch = pch)
 	}
 )
 
