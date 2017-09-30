@@ -291,7 +291,7 @@ switch.par <- function(
 #------------------------------------------------------------------------------
 #	switch.parのエイリアス。
 #------------------------------------------------------------------------------
-#'	@describeIn switch.par alias of \code{switch.par}.
+#'	Alias of \code{switch.par}.
 #'	@export
 #------------------------------------------------------------------------------
 color.ramp <- function(x, pal = gg.colors, ..., unique.pal = FALSE) {
