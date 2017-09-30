@@ -578,6 +578,7 @@ pp.settings$methods(
 		.self$x.names.factor <- x.names[
 			sapply(data[x.names], is.factor)
 			| sapply(data[x.names], is.character)
+			| sapply(data[x.names], is.logical)
 		]
 		.self$x.names.numeric <- x.names[sapply(data[x.names], is.numeric)]
 	}
