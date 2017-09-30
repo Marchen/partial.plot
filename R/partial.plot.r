@@ -102,8 +102,8 @@ combine.columns <- function(data, sep) {
 #'		can affect computation time so that higher resolution require
 #'		more times to draw the graph.
 #'
-#'	@param col
-#'		a function or named vector representing color of the graph object.
+#'	@param col,lty,lwd,pch
+#'		a functions or vectors representing graphic parameters.
 #'		For the detail, see pal option of \code{\link{color.ramp}} function.
 #'
 #'	@param xlab
@@ -230,9 +230,9 @@ partial.plot <- function(
 	model, x.names, data = NULL, type = "response", positive.class = "",
 	fun.3d = persp, draw.residual = TRUE, draw.relationship = TRUE,
 	draw.interval = TRUE, draw.hist = FALSE, interval.levels = 0.95,
-	resolution = NULL, col = gg.colors, lty = "solid", pch = 16, xlab = NULL,
-	ylab = NULL, zlab = NULL, add = FALSE, sep = " - ", extraporate = FALSE,
-	n.cores = NULL, ...
+	resolution = NULL, col = gg.colors, lty = "solid", lwd = 1, pch = 16,
+	xlab = NULL, ylab = NULL, zlab = NULL, add = FALSE, sep = " - ",
+	extraporate = FALSE, n.cores = NULL, ...
 ) {
 	# Initialize setting object.
 	# 設定オブジェクトの初期化。
@@ -250,7 +250,7 @@ partial.plot <- function(
 			interval.levels, resolution, xlab, ylab, zlab, add, sep,
 			extraporate, n.cores, ...
 		)
-		settings$parman <- par.manager(settings$group, col, lty, pch)
+		settings$parman <- par.manager(settings$group, col, lty, lwd, pch)
 		# Calculate required data.
 		partial.relationship(settings)
 		if (settings$type != "prob") {

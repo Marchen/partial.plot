@@ -7,15 +7,9 @@
 #'		a character vector of group names made from factors specified by
 #'		x.names.
 #'
-#'	@field col
-#'		a function or named character vector representing color of the graph
-#'		object.
-#'		For the detail, see pal option of \code{\link{switch.par}} function.
-#'
-#'	@field lty
-#'		a vector of the line types or a function generate line types.
-#'		For the detail, see \code{\link{switch.par}}.
-#'
+#'	@field col,lty,lwd,pch
+#'		a vector of graphic parameters or a function generate graphic
+#'		parameters. For the detail, see \code{\link{switch.par}}.
 #------------------------------------------------------------------------------
 par.manager <- setRefClass(
 	"par.manager",
@@ -23,6 +17,7 @@ par.manager <- setRefClass(
 		group = "character",
 		col = "ANY",
 		lty = "ANY",
+		lwd = "numeric",
 		pch = "ANY"
 	)
 )
@@ -32,7 +27,7 @@ par.manager <- setRefClass(
 #	グラフィックパラメーター管理クラスの初期化。
 #------------------------------------------------------------------------------
 par.manager$methods(
-	initialize = function(group, col, lty, pch, ...) {
+	initialize = function(group, col, lty, lwd, pch, ...) {
 		"
 		Initialize class and set group field.
 		"
@@ -40,7 +35,20 @@ par.manager$methods(
 		if (missing(group)) {
 			return()
 		}
-		initFields(group = group, col = col, lty = lty, pch = pch)
+		initFields(group = group, col = col, lty = lty, lwd = lwd, pch = pch)
+	}
+)
+
+
+#------------------------------------------------------------------------------
+#	実装されているパラメーターの名前を取得する。
+#------------------------------------------------------------------------------
+par.manager$methods(
+	par.names = function() {
+		"Returns implimented par names"
+		pars <- names(as.list(args(.self$initialize)))
+		pars <- pars[!pars %in% c("group", "...", "")]
+		return(pars)
 	}
 )
 
@@ -54,7 +62,7 @@ par.manager$methods(
 		Make a list of graphic parameters for each group.
 		"
 		pars <- list()
-		for (i in c("col", "lty", "pch")) {
+		for (i in .self$par.names()) {
 			pars[[i]] <- switch.par(
 				.self$group, pal = .self[[i]], unique.pal = TRUE
 			)
@@ -76,7 +84,7 @@ par.manager$methods(
 		Make a list of graphic parameters for each observation.
 		"
 		pars <- list()
-		for (i in c("col", "lty", "pch")) {
+		for (i in .self$par.names()) {
 			pars[[i]] <- switch.par(.self$group, pal = .self[[i]])
 		}
 		return(pars)
