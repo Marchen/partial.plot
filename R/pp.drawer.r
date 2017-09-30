@@ -38,9 +38,9 @@ pp.drawer$methods(
 		"
 		Find possible x and y values.
 		"
-		x.name <- settings$x.names.numeric[1]
-		if (settings$draw.relationship) {
-			relationship <- settings$relationship
+		x.name <- .self$settings$x.names.numeric[1]
+		if (.self$settings$draw.relationship) {
+			relationship <- .self$settings$relationship
 			if (is.null(relationship$upper)) {
 				x <- relationship[[x.name]]
 				y <- relationship$fit
@@ -51,9 +51,9 @@ pp.drawer$methods(
 		} else {
 			x <- y <- numeric()
 		}
-		if (settings$draw.residual & settings$has.residual) {
-			x <- c(x, settings$data[[x.name]])
-			y <- c(y, settings$residual)
+		if (.self$settings$draw.residual & .self$settings$has.residual) {
+			x <- c(x, .self$settings$data[[x.name]])
+			y <- c(y, .self$settings$residual)
 		}
 		return(data.frame(x = x, y = y))
 	}
@@ -69,14 +69,15 @@ pp.drawer$methods(
 		Open new plot window.
 		"
 		# Open plot window.
-		if (settings$add) {
+		if (.self$settings$add) {
 			return()
 		}
 		xy <- .self$xy.values()
 		args <- list(
-			xy$x, xy$y, type = "n", xlab = settings$xlab, ylab = settings$ylab
+			xy$x, xy$y, type = "n", xlab = .self$settings$xlab,
+			ylab = .self$settings$ylab
 		)
-		args <- c(args, settings$other.pars)
+		args <- c(args, .self$settings$other.pars)
 		do.call(plot, args)
 	}
 )
@@ -90,19 +91,21 @@ pp.drawer$methods(
 		"
 		Draw graph.
 		"
-		if (settings$plot.type == "2D") {
+		if (.self$settings$plot.type == "2D") {
 			.self$open.plot.window()
-			if (settings$draw.hist) {
+			if (.self$settings$draw.hist) {
 				.self$draw.hist()
 			}
 		}
-		if (settings$draw.interval & settings$has.relationship) {
+		if (.self$settings$draw.interval & .self$settings$has.relationship) {
 			.self$draw.interval()
 		}
-		if (settings$draw.relationship & settings$has.relationship) {
+		if (
+			.self$settings$draw.relationship & .self$settings$has.relationship
+		) {
 			.self$draw.relationship()
 		}
-		if (settings$draw.residual & settings$has.residual) {
+		if (.self$settings$draw.residual & .self$settings$has.residual) {
 			.self$draw.residual()
 		}
 	}
@@ -116,7 +119,7 @@ pp.drawer$methods(
 		"
 		Draw partial residuals.
 		"
-		if (settings$plot.type == "2D") {
+		if (.self$settings$plot.type == "2D") {
 			.self$draw.residual.2d()
 		} else {
 			.self$draw.residual.3d()
@@ -134,10 +137,10 @@ pp.drawer$methods(
 		Draw 2D residuals.
 		"
 		args <- list(
-			x = settings$data[[settings$x.names.numeric]],
-			y = settings$residual, col = settings$obs.colors
+			x = .self$settings$data[[.self$settings$x.names.numeric]],
+			y = .self$settings$residual, col = .self$settings$obs.colors
 		)
-		args <- settings$set.function.args(args, points)
+		args <- .self$settings$set.function.args(args, points)
 		do.call(points, args)
 	}
 )
@@ -151,26 +154,23 @@ pp.drawer$methods(
 		"
 		Draw 3D residuals.
 		"
-		if (identical(settings$fun.3d, image)) {
+		dat <- .self$settings$data
+		x.names <- .self$settings$x.names.numeric
+		fun.3d <- .self$settings$fun.3d
+		resid <- .self$settings$residual
+		if (identical(fun.3d, image)) {
 			points(
-				settings$data[[settings$x.names.numeric[1]]],
-				settings$data[[settings$x.names.numeric[2]]],
-				pch = 16, col = "white"
+				dat[[x.names[1]]], dat[[x.names[2]]], pch = 16, col = "white"
 			)
-		} else if (identical(settings$fun.3d, persp)) {
+		} else if (identical(fun.3d, persp)) {
 			xy <- trans3d(
-				settings$data[[settings$x.names.numeric[1]]],
-				settings$data[[settings$x.names.numeric[2]]],
-				settings$residual, .self$vt
+				dat[[x.names[1]]], dat[[x.names[2]]], resid, .self$vt
 			)
 			args <- list(x = xy$x, y = xy$y)
-			args <- settings$set.function.args(args, points)
+			args <- .self$settings$set.function.args(args, points)
 			do.call(points, args)
-		} else if (identical(settings$fun.3d, rgl::persp3d)) {
-			rgl::points3d(settings$data[[settings$x.names.numeric[1]]],
-				settings$data[[settings$x.names.numeric[2]]],
-				settings$residual
-			)
+		} else if (identical(fun.3d, rgl::persp3d)) {
+			rgl::points3d(dat[[x.names[1]]], dat[[x.names[2]]], resid)
 		}
 	}
 )
@@ -184,7 +184,7 @@ pp.drawer$methods(
 		"
 		Draw partial relationships.
 		"
-		if (settings$plot.type == "2D") {
+		if (.self$settings$plot.type == "2D") {
 			.self$draw.relationship.2d()
 		} else {
 			.self$draw.relationship.3d()
@@ -201,7 +201,7 @@ pp.drawer$methods(
 		"
 		Draw intervals of partial relationships.
 		"
-		if (settings$plot.type == "2D") {
+		if (.self$settings$plot.type == "2D") {
 			.self$draw.interval.2d()
 		} else {
 			.self$draw.interval.3d()
@@ -215,16 +215,16 @@ pp.drawer$methods(
 #------------------------------------------------------------------------------
 pp.drawer$methods(
 	draw.relationship.2d = function() {
-		for (i in names(settings$group.colors)) {
+		for (i in names(.self$settings$group.colors)) {
 			"
 			Draw partial relationship lines in 2D graph.
 			"
-			current.data <- settings$relationship.split[[i]]
+			current.data <- .self$settings$relationship.split[[i]]
 			args <- list(
-				x = current.data[[settings$x.names.numeric]],
-				y = current.data$fit, col = settings$group.colors[i]
+				x = current.data[[.self$settings$x.names.numeric]],
+				y = current.data$fit, col = .self$settings$group.colors[i]
 			)
-			args <- settings$set.function.args(args, lines)
+			args <- .self$settings$set.function.args(args, lines)
 			do.call(lines, args)
 		}
 	}
@@ -239,14 +239,14 @@ pp.drawer$methods(
 		"
 		Draw intervals of partial.relationship in 2D graph.
 		"
-		for (i in names(settings$group.colors)) {
-			current.data <- settings$relationship.split[[i]]
-			x <- current.data[[settings$x.names.numeric]]
+		for (i in names(.self$settings$group.colors)) {
+			current.data <- .self$settings$relationship.split[[i]]
+			x <- current.data[[.self$settings$x.names.numeric]]
 			x <- c(x, rev(x))
 			y <- c(current.data$lower, rev(current.data$upper))
 			polygon(
 				x, y, border = NA,
-				col = trans.color(settings$group.colors[i])
+				col = trans.color(.self$settings$group.colors[i])
 			)
 		}
 	}
@@ -261,29 +261,31 @@ pp.drawer$methods(
 		"
 		Draw 3D partial relationship.
 		"
+		relationship <- .self$settings$relationship
+		x.names <- .self$settings$x.names
 		z.matrix <- matrix(
-			settings$relationship$fit, nrow = settings$resolution
+			.self$settings$relationship$fit, nrow = .self$settings$resolution
 		)
-		if (identical(settings$fun.3d, image)) {
-			col <- color.ramp(z.matrix, settings$col, unique.pal = TRUE)
-		} else if (identical(settings$fun.3d, persp)) {
-			col <- pp.colors(settings)$colors.for.persp(z.matrix)
+		if (identical(.self$settings$fun.3d, image)) {
+			col <- color.ramp(z.matrix, .self$settings$col, unique.pal = TRUE)
+		} else if (identical(.self$settings$fun.3d, persp)) {
+			col <- pp.colors(.self$settings)$colors.for.persp(z.matrix)
 		} else {
-			col <- color.ramp(z.matrix, settings$col)
+			col <- color.ramp(z.matrix, .self$settings$col)
 		}
 		args <- list(
 			z = z.matrix,
-			x = unique(settings$relationship[[settings$x.names[1]]]),
-			y = unique(settings$relationship[[settings$x.names[2]]]),
-			xlab = settings$xlab, ylab = settings$ylab, zlab = settings$zlab,
-			col = col
+			x = unique(relationship[[x.names[1]]]),
+			y = unique(relationship[[x.names[2]]]),
+			xlab = .self$settings$xlab, ylab = .self$settings$ylab,
+			zlab = .self$settings$zlab, col = col
 		)
-		args <- settings$set.function.args(args)
-		if (identical(settings$fun.3d, persp)) {
+		args <- .self$settings$set.function.args(args)
+		if (identical(.self$settings$fun.3d, persp)) {
 			args$zlim <- range(.self$xy.values()$y)
 		}
-		result <- do.call(settings$fun.3d, args)
-		if (identical(settings$fun.3d, persp)) {
+		result <- do.call(.self$settings$fun.3d, args)
+		if (identical(.self$settings$fun.3d, persp)) {
 			.self$vt <- result
 		}
 	}

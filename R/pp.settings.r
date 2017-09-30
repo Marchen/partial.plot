@@ -336,7 +336,7 @@ pp.settings$methods(
 			other.pars = list(...), has.relationship = FALSE,
 			has.residual = FALSE
 		)
-		initFields(data = adapter$data)
+		initFields(data = .self$adapter$data)
 		.self$check.params()
 		.self$init.multiprocessing()
 		.self$init.x.names()
@@ -388,8 +388,11 @@ pp.settings$methods(
 		"
 		Check availability of data.
 		"
-		if (!adapter$has.data()) {
-			stop("'model' object does not have original data. Please specify 'data' argument.")
+		if (!.self$adapter$has.data()) {
+			stop(
+				"'model' object does not have original data.
+				Please specify 'data' argument."
+			)
 		}
 	}
 )
@@ -406,18 +409,24 @@ pp.settings$methods(
 		# Check variables in x.names are used in model and exist in data.
 		# x.namesで指定されたデータがモデルに使われていて、
 		# データにも存在するかをチェック
-		if (!all(x.names %in% colnames(adapter$data))) {
-			error <- x.names[!x.names %in% colnames(adapter$data)]
+		if (!all(.self$x.names %in% colnames(.self$adapter$data))) {
+			error <- .self$x.names[
+				!.self$x.names %in% colnames(.self$adapter$data)
+			]
 			stop(sprintf("\n Column '%s' is not found in data.", error))
 		}
-		if (!all(x.names %in% adapter$x.names(type = "base"))) {
-			error <- x.names[!x.names %in% adapter$x.names(type = "base")]
+		if (!all(.self$x.names %in% .self$adapter$x.names(type = "base"))) {
+			error <- .self$x.names[
+				!.self$x.names %in% .self$adapter$x.names(type = "base")
+			]
 			template <- "\n '%s' is not found in explanatory variables."
 			stop(sprintf(template, error))
 		}
 		# Check number of continuous explanatory variables
 		# 連続値の説明変数の数チェック
-		var.types <- sapply(adapter$data[, x.names, drop = FALSE], class)
+		var.types <- sapply(
+			.self$adapter$data[, .self$x.names, drop = FALSE], class
+		)
 		n.continuous <- sum(var.types == "numeric")
 		if (n.continuous > 2) {
 			message <- paste(
@@ -438,7 +447,7 @@ pp.settings$methods(
 		"
 		Check interval of predicted relationships.
 		"
-		if (all(interval.levels < 0 | interval.levels > 1)) {
+		if (all(.self$interval.levels < 0 | .self$interval.levels > 1)) {
 			stop("'interval.levels' should be 0 <= interval.levels <= 1")
 		}
 	}
@@ -470,13 +479,16 @@ pp.settings$methods(
 		"
 		Test correctness of xlab and ylab.
 		"
-		if (!is.null(xlab) & !is.character(xlab) & !is.expression(xlab)) {
+		is.error <- function(x) {
+			return(!is.null(x) & !is.character(x) & !is.expression(x))
+		}
+		if (is.error(.self$xlab)) {
 			stop("'xlab' should be NULL/character/expression.")
 		}
-		if (!is.null(ylab) & !is.character(ylab) & !is.expression(ylab)) {
+		if (is.error(.self$ylab)) {
 			stop("'ylab' should be NULL/character/expression.")
 		}
-		if (!is.null(zlab) & !is.character(zlab) & !is.expression(zlab)) {
+		if (is.error(.self$zlab)) {
 			stop("'zlab' should be NULL/character/expression.")
 		}
 	}
@@ -491,13 +503,13 @@ pp.settings$methods(
 		"
 		Check specified type.
 		"
-		if (length(type) != 1) {
+		if (length(.self$type) != 1) {
 			stop("'type' should be a character of length 1.")
 		}
-		if (!type %in% c("response", "link", "prob")) {
+		if (!.self$type %in% c("response", "link", "prob")) {
 			stop("'type' should be one of 'response', 'link' and 'prob'.")
 		}
-		if (type == "prob" & draw.residual) {
+		if (.self$type == "prob" & .self$draw.residual) {
 			warning(
 				"Drawing residuals for classification model is not supported."
 			)
@@ -575,12 +587,15 @@ pp.settings$methods(
 		"
 		Initialize names of factor and numeric explanatory variables.
 		"
-		.self$x.names.factor <- x.names[
-			sapply(data[x.names], is.factor)
-			| sapply(data[x.names], is.character)
-			| sapply(data[x.names], is.logical)
+		can.be.group.var <- function(x) {
+			return(is.factor(x) | is.character(x) | is.logical(x))
+		}
+		.self$x.names.factor <- .self$x.names[
+			sapply(.self$data[.self$x.names], can.be.group.var)
 		]
-		.self$x.names.numeric <- x.names[sapply(data[x.names], is.numeric)]
+		.self$x.names.numeric <- .self$x.names[
+			sapply(.self$data[.self$x.names], is.numeric)
+		]
 	}
 )
 
@@ -610,17 +625,17 @@ pp.settings$methods(
 		"
 		Set xlab, ylab and zlab for 2D & 3D plot.
 		"
-		if (is.null(xlab)) {
-			.self$xlab <- x.names.numeric[1]
+		if (is.null(.self$xlab)) {
+			.self$xlab <- .self$x.names.numeric[1]
 		}
-		if (is.null(ylab)) {
+		if (is.null(.self$ylab)) {
 			if (.self$plot.type == "2D") {
 				.self$ylab <- .self$adapter$y.names()
 			} else {
-				.self$ylab <- x.names.numeric[2]
+				.self$ylab <- .self$x.names.numeric[2]
 			}
 		}
-		if (is.null(zlab) & .self$plot.type == "3D") {
+		if (is.null(.self$zlab) & .self$plot.type == "3D") {
 			.self$zlab <- .self$adapter$y.names()
 		}
 	}
@@ -825,7 +840,10 @@ pp.settings$methods(
 			\\item{fun}{target function to be call.}
 		}
 		"
-		pars <- c(list(xlab = xlab, ylab = ylab, zlab = zlab), other.pars)
+		pars <- c(
+			list(xlab = .self$xlab, ylab = .self$ylab, zlab = .self$zlab),
+			other.pars
+		)
 		# Copy pars if it's not in function.args.
 		for (i in names(pars)) {
 			if (!i %in% names(function.args)) {

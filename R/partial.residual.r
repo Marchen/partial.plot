@@ -115,10 +115,11 @@ partial.residual$methods(
 		"
 		# Prepare data for partial residual.
 		newdata <- lapply(
-			1:nrow(settings$data), "[.data.frame", x = settings$data,
+			1:nrow(.self$settings$data), "[.data.frame",
+			x = .self$settings$data,
 		)
 		# Change calculation method based on the sample size.
-		if (nrow(settings$data) < THRESHOLD_NROW_FOR_SMALL_DATASET) {
+		if (nrow(.self$settings$data) < THRESHOLD_NROW_FOR_SMALL_DATASET) {
 			fit <- .self$settings$cluster.apply(
 				newdata, .self$get.fit.for.small.data
 			)
@@ -129,7 +130,7 @@ partial.residual$methods(
 			)
 		}
 		fit <- unlist(fit)
-		residual <- fit + settings$adapter$residuals(settings$type)
+		residual <- fit + .self$settings$adapter$residuals(.self$settings$type)
 		if (.self$settings$type == "response") {
 			residual <- .self$settings$adapter$linkinv(residual)
 		}
@@ -190,13 +191,15 @@ partial.residual$methods(
 		}
 		index <- Position(function(x) x, apply(index, 1, all))
 		if (length(settings$x.names.numeric) == 1) {
-			f <- as.formula(sprintf("fit ~ %s", settings$x.names.numeric))
+			f <- as.formula(sprintf("fit ~ %s", .self$settings$x.names.numeric))
 			d <- relationship[c(index - 1, index),]
 		} else {
-			x.names <- paste(settings$x.names.numeric, collapse = "+")
+			x.names <- paste(.self$settings$x.names.numeric, collapse = "+")
 			f <- as.formula(sprintf("fit ~ %s", x.names))
-			res <- settings$resolution
-			d <- relationship[c(index, index - 1, index - res, index - res - 1),]
+			res <- .self$settings$resolution
+			d <- relationship[
+				c(index, index - 1, index - res, index - res - 1),
+			]
 		}
 		r <- lm(f, data = d)
 		fit <- predict(r, newdata = x)
@@ -249,36 +252,38 @@ partial.residual$methods(
 		"
 		# Prepare names of numeric variables.
 		# 数値型変数の変数名を用意。
-		all.numerics <- settings$adapter$x.names(type = "base")
+		all.numerics <- .self$settings$adapter$x.names(type = "base")
 		all.numerics <- all.numerics[
-			sapply(settings$data[all.numerics], is.numeric)
+			sapply(.self$settings$data[all.numerics], is.numeric)
 		]
 		other.numerics <- all.numerics[
-			!all.numerics %in% settings$x.names.numeric
+			!all.numerics %in% .self$settings$x.names.numeric
 		]
 		# Calculate prediction 1.
 		# 予測値１を計算。
-		data1 <- settings$data
+		data1 <- .self$settings$data
 		for (i in other.numerics) {
 			data1[[i]] <- data1[[i]] - mean(data1[[i]])
 		}
-		data1[settings$x.names.numeric] <- 0
-		pred1 <- settings$adapter$predict(newdata = data1, type = "link")
+		data1[.self$settings$x.names.numeric] <- 0
+		pred1 <- .self$settings$adapter$predict(newdata = data1, type = "link")
 		pred1 <- pred1$fit[, "fit"]
 		# Calculate prediction 2.
 		# 予測値２を計算。
-		data2 <- settings$data
+		data2 <- .self$settings$data
 		data2[all.numerics] <- 0
-		pred2 <- settings$adapter$predict(newdata = data2, type = "link")
+		pred2 <- .self$settings$adapter$predict(newdata = data2, type = "link")
 		pred2 <- pred2$fit[, "fit"]
 		# Calculate partial residual.
 		# 偏残差を計算。
 		result <- (
-			settings$adapter$link(settings$data[[settings$adapter$y.names()]])
+			.self$settings$adapter$link(
+				.self$settings$data[[.self$settings$adapter$y.names()]]
+			)
 			- (pred1 - pred2)
 		)
-		if (settings$type == "response") {
-			result <- settings$adapter$linkinv(result)
+		if (.self$settings$type == "response") {
+			result <- .self$settings$adapter$linkinv(result)
 		}
 		.self$data <- result
 	}

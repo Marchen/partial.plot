@@ -88,13 +88,14 @@ partial.relationship$methods(
 		"
 		# calculate prediction.
 		# 予測値を計算。
-		at <- c(settings$numeric.sequences, settings$factor.levels)
+		at <- c(.self$settings$numeric.sequences, .self$settings$factor.levels)
 		rg <- ref.grid(
-			settings$model, at, data = settings$data, type = settings$type
+			.self$settings$model, at, data = .self$settings$data,
+			type = .self$settings$type
 		)
 		lsm <- summary(
-			lsmeans::lsmeans(rg, settings$x.names),
-			level = settings$interval.levels
+			lsmeans::lsmeans(rg, .self$settings$x.names),
+			level = .self$settings$interval.levels
 		)
 		colnames(lsm) <- gsub(
 			"^lsmean$|^response$|^prob$|^rate$", "fit", colnames(lsm)
@@ -142,7 +143,7 @@ partial.relationship$methods(
 		# Make prediction.
 		prediction <- predict.fun(newdata = newdata, type = type)
 		if (type == "prob") {
-			prediction$fit <- prediction$fit[, settings$positive.class]
+			prediction$fit <- prediction$fit[, .self$settings$positive.class]
 		}
 		quantiles <- quantile(prediction$fit, probs = levels, na.rm = TRUE)
 		result <- c(fit = mean(prediction$fit), quantiles, replace.values)
@@ -165,7 +166,8 @@ partial.relationship$methods(
 		# prepare combinations of x variables.
 		# 説明変数の組み合わせを用意。
 		grid <- do.call(
-			expand.grid, c(settings$numeric.sequences, settings$factor.levels)
+			expand.grid,
+			c(.self$settings$numeric.sequences, .self$settings$factor.levels)
 		)
 		grid <- .self$filter.result(grid)
 		# Run calculation.
@@ -193,14 +195,15 @@ partial.relationship$methods(
 		"
 		result <- settings$cluster.apply(
 			X = 1:nrow(grid), FUN = .self$predict.stats,
-			newdata = settings$data, predict.fun = settings$adapter$predict,
-			new.value.grid = grid, levels = settings$interval.levels,
-			type = ifelse(settings$type == "prob", "prob", "link")
+			newdata = .self$settings$data,
+			predict.fun = .self$settings$adapter$predict,
+			new.value.grid = grid, levels = .self$settings$interval.levels,
+			type = ifelse(.self$settings$type == "prob", "prob", "link")
 		)
 		result <- do.call(rbind, result)
-		if (settings$type == "response") {
+		if (.self$settings$type == "response") {
 			for (i in c("fit", "lower", "upper")) {
-				result[[i]] <- settings$adapter$linkinv(result[[i]])
+				result[[i]] <- .self$settings$adapter$linkinv(result[[i]])
 			}
 		}
 		return(result)
@@ -225,18 +228,21 @@ partial.relationship$methods(
 			\\item{prediction}{result of lsmeans.}
 		}
 		"
-		if (length(settings$factor.levels) == 0 | settings$extraporate) {
+		if (
+			length(.self$settings$factor.levels) == 0
+			| .self$settings$extraporate
+		) {
 			return(prediction)
 		}
 		# Get list of unique factors.
 		# 因子の一覧を作成。
-		factors <- expand.grid(settings$factor.levels)
+		factors <- expand.grid(.self$settings$factor.levels)
 		# Split data and prediction for each factor group.
 		# データを因子のグループごとに分割。
-		sep = settings$sep
+		sep = .self$settings$sep
 		pred.split <- split(prediction, prediction[names(factors)], sep = sep)
 		orig.data.split <- split(
-			settings$data, settings$data[names(factors)], sep = sep
+			.self$settings$data, .self$settings$data[names(factors)], sep = sep
 		)
 		# Filter out out-ranged numeric values.
 		# 範囲外の数値を削除。
@@ -247,7 +253,7 @@ partial.relationship$methods(
 			)
 			current.pred <- pred.split[[split.name]]
 			current.data <- orig.data.split[[split.name]]
-			for (numeric.name in settings$x.names.numeric) {
+			for (numeric.name in .self$settings$x.names.numeric) {
 				var.range <- range(current.data[[numeric.name]])
 				filter <- current.pred[[numeric.name]] >= var.range[1]
 				filter <- filter & current.pred[[numeric.name]] <= var.range[2]
@@ -259,4 +265,3 @@ partial.relationship$methods(
 		return(result)
 	}
 )
-
