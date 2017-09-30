@@ -111,3 +111,22 @@ par.manager$methods(
 	}
 )
 
+
+#------------------------------------------------------------------------------
+#	pp.legendに使われる引数を用意する。
+#------------------------------------------------------------------------------
+par.manager$methods(
+	legend.pars = function() {
+		"
+		Prepare pars for \\code{\\link{pp.legend}} function.
+		"
+		pars <- list()
+		for (i in c("col", "lty", "pch")) {
+			pars[[i]] <- switch.par(
+				.self$group, pal = .self[[i]], unique.pal = TRUE
+			)
+		}
+		pars$legend = names(pars$col)
+		return(pars)
+	}
+)
