@@ -49,12 +49,20 @@ par.manager$methods(
 #	各グループ用の色パレットを作成する。
 #------------------------------------------------------------------------------
 par.manager$methods(
-	colors.for.groups = function() {
+	par.group = function(group.name = NULL) {
 		"
-		Make color vector for each group.
+		Make a list of graphic parameters for each group.
 		"
-		result <- color.ramp(group, pal = .self$col, unique.pal = TRUE)
-		return(result)
+		pars <- list()
+		for (i in c("col", "lty", "pch")) {
+			pars[[i]] <- switch.par(
+				.self$group, pal = .self[[i]], unique.pal = TRUE
+			)
+		}
+		if (!is.null(group.name)) {
+			pars <- lapply(pars, function(x) x[group.name])
+		}
+		return(pars)
 	}
 )
 
@@ -111,12 +119,7 @@ par.manager$methods(
 		"
 		Prepare pars for \\code{\\link{pp.legend}} function.
 		"
-		pars <- list()
-		for (i in c("col", "lty", "pch")) {
-			pars[[i]] <- switch.par(
-				.self$group, pal = .self[[i]], unique.pal = TRUE
-			)
-		}
+		pars <- .self$par.group()
 		pars$legend = names(pars$col)
 		return(pars)
 	}

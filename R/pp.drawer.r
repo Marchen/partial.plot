@@ -216,16 +216,16 @@ pp.drawer$methods(
 #------------------------------------------------------------------------------
 pp.drawer$methods(
 	draw.relationship.2d = function() {
-		group.colors <- .self$settings$parman$colors.for.groups()
-		for (i in names(group.colors)) {
+		for (i in .self$settings$unique.group) {
 			"
 			Draw partial relationship lines in 2D graph.
 			"
 			current.data <- .self$settings$relationship.split[[i]]
 			args <- list(
 				x = current.data[[.self$settings$x.names.numeric]],
-				y = current.data$fit, col = group.colors[i]
+				y = current.data$fit
 			)
+			args <- c(args, .self$settings$parman$par.group(i))
 			args <- .self$settings$set.function.args(args, lines)
 			do.call(lines, args)
 		}
@@ -241,15 +241,14 @@ pp.drawer$methods(
 		"
 		Draw intervals of partial.relationship in 2D graph.
 		"
-		group.colors <- .self$settings$parman$colors.for.groups()
-		for (i in names(group.colors)) {
+		for (i in .self$settings$unique.group) {
 			current.data <- .self$settings$relationship.split[[i]]
 			x <- current.data[[.self$settings$x.names.numeric]]
 			x <- c(x, rev(x))
 			y <- c(current.data$lower, rev(current.data$upper))
 			polygon(
 				x, y, border = NA,
-				col = trans.color(group.colors[i])
+				col = trans.color(.self$settings$parman$par.group(i)$col)
 			)
 		}
 	}
