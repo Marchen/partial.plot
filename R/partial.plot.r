@@ -234,9 +234,8 @@ partial.plot <- function(
 		settings <- model$copy()
 		settings$update.pars(
 			fun.3d, draw.residual, draw.relationship, draw.interval, draw.hist,
-			xlab, ylab, zlab, ...
+			xlab, ylab, zlab, col, lty, lwd, pch, ...
 		)
-		settings$parman$col <- col
 	} else {
 		settings <- pp.settings(
 			model, x.names, data, type, positive.class, fun.3d,

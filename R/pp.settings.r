@@ -353,13 +353,14 @@ pp.settings$methods(
 pp.settings$methods(
 	update.pars = function(
 		fun.3d, draw.residual, draw.relationship, draw.interval, draw.hist,
-		xlab, ylab, zlab, ...
+		xlab, ylab, zlab, col, lty, lwd, pch, ...
 	) {
 		"
 		Update settings of (mainly) graphic parameters for data reusing.
 		\\code{fun.3d}, \\code{draw.residual}, \\code{draw.relationship},
 		\\code{draw.interval}, \\code{xlab}, \\code{ylab},
-		\\code{zlab} and \\code{...} can be set.
+		\\code{zlab}, \\code{col}, \\code{lty}, \\code{lwd}, \\code{pch}
+		and \\code{...} can be set.
 		"
 		initFields(
 			fun.3d = fun.3d, draw.residual = draw.residual,
@@ -367,6 +368,18 @@ pp.settings$methods(
 			draw.interval = draw.interval, draw.hist = draw.hist,
 			xlab = xlab, ylab = ylab, zlab = zlab, other.pars = list(...)
 		)
+		if (!identical(col, gg.colors)) {
+			.self$parman$col <- col
+		}
+		if (!identical(lty, "solid")) {
+			.self$parman$lty <- lty
+		}
+		if (!identical(lwd, 1)) {
+			.self$parman$lwd <- lwd
+		}
+		if (!identical(pch, 16)) {
+			.self$parman$pch <- pch
+		}
 		.self$check.params()
 		.self$init.labels()
 	}
