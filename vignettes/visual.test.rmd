@@ -54,8 +54,8 @@ info <- partial.plot(model, c("Sepal.Length", "Species"), pch = 16)
 pp.legend(info, "topleft")
 ```
 
-## Link function.
-```{R linkfun}
+## Type of prediction.
+```{R type}
 # Test using iris.
 model <- glm(Petal.Length ~ Sepal.Length + Petal.Width, data = iris)
 info <- partial.plot(model, "Sepal.Length", pch = 16)
@@ -75,13 +75,29 @@ info <- partial.plot(model, c("Time", "Diet"), pch = 16, type = "response")
 points(ChickWeight$Time, ChickWeight$weight, col = "black", pch = 16)
 info <- partial.plot(model, c("Time", "Diet"), pch = 16, type = "link")
 
-# Test from glmmML
+# Test from glmmML example.
 id <- factor(rep(1:20, rep(5, 20)))
 y <- rbinom(100, prob = rep(runif(20), rep(5, 20)), size = 1)
 x <- rnorm(100)
 dat <- data.frame(y = y, x = x, id = id)
 model <- glm(y ~ x + id, data = dat, family = binomial)
 partial.plot(model, c("x", "id"))
+
+# Test probability
+library(randomForest)
+model <- randomForest(Species ~ ., data = iris)
+partial.plot(
+	model, "Petal.Length", positive.class = "setosa", type = "prob",
+	col = "red", resolution = 20, draw.residual = FALSE
+)
+partial.plot(
+	model, "Petal.Length", positive.class = "versicolor", add = TRUE,
+	type = "prob", col = "blue", resolution = 20, draw.residual = FALSE
+)
+partial.plot(
+	model, "Petal.Length", positive.class = "virginica", add = TRUE,
+	type = "prob", col = "green", resolution = 20, draw.residual = FALSE
+)
 ```
 
 ## Hide points.
@@ -110,6 +126,15 @@ info <- partial.plot(
 )
 pp.legend(info, "topleft")
 ```
+
+## Draw histogram.
+```{R hist}
+info <- partial.plot(
+	model, c("Sepal.Length", "Species"), pch = 16, draw.hist = TRUE
+)
+pp.legend(info, "topleft")
+```
+
 
 ## Draw extraporation.
 ```{R draw_extraporation}
@@ -155,6 +180,33 @@ pp.legend(info, "topleft", cex = 0.7)
 par(mfrow = c(1, 1))
 ```
 
+## Change line width.
+```{R change_lwd}
+info <- partial.plot(
+	model, c("Sepal.Length", "Species"), lwd = c(1, 4, 8),
+	main = "col = 'black'", col = "black"
+)
+pp.legend(info, "topleft")
+```
+
+## Change line type.
+```{R change_lty}
+info <- partial.plot(
+	model, c("Sepal.Length", "Species"), lty = c("solid", "dashed", "dotted"),
+	main = "col = 'black'", col = "black", lwd = 2
+)
+pp.legend(info, "topleft")
+```
+
+## Change plot character.
+```{R change_pch}
+info <- partial.plot(
+	model, c("Sepal.Length", "Species"), pch = 16:18,
+	main = "col = 'black'", col = "black", lwd = 2
+)
+pp.legend(info, "topleft")
+```
+
 ## Change intervals.
 ```{R change_intervals}
 par(mfrow = c(2, 2))
@@ -196,6 +248,16 @@ info <- partial.plot(info, col = heat.colors, draw.residual = FALSE)
 pp.legend(info, "topleft", cex = 0.5)
 
 par(mfrow = c(1, 1))
+```
+
+## Use function with package name.
+
+```{R use_colon}
+model <- stats::glm(
+	Petal.Length ~ (Sepal.Length + Petal.Width) * Species, data = iris
+)
+info <- partial.plot(model, c("Sepal.Length", "Species"), pch = 16)
+pp.legend(info, "topleft")
 ```
 
 
@@ -309,7 +371,7 @@ Waiting for the support of `model.adapter`.
 #model <- gam(
 	#Petal.Length ~ (Sepal.Length + Petal.Width) * Species, data = iris
 #)
-#info <- partial.plot(model, c("Sepal.Length", "Species"), pch = 16)
+#info <- partial.plot(model, c("Sepal.Length", "Species"), pch = 16, n.cores = 1)
 #pp.legend(info, "topleft")
 #info <- partial.plot(
 	#model, c("Sepal.Length", "Petal.Width"), pch = 16, col = viridis,
@@ -337,7 +399,7 @@ Waiting for the support of `model.adapter`.
 ```{R gamm}
 #library(mgcv)
 #model <- gamm(
-	#Petal.Length ~ (Sepal.Length + Petal.Width) * Species, data = iris
+	#Petal.Length ~ Sepal.Length * Species + s(Petal.Width), data = iris
 #)
 #info <- partial.plot(model, c("Sepal.Length", "Species"), pch = 16)
 #pp.legend(info, "topleft")
@@ -348,11 +410,12 @@ Waiting for the support of `model.adapter`.
 ```
 
 ## Test _gbm()_
-Waiting for the support of `model.adapter`.
+Need some tricks to control n.tree of predict method...
 ```{R gbm}
 #library(gbm)
 #model <- gbm(
-	#Petal.Length ~ (Sepal.Length + Petal.Width) * Species, data = iris
+	#Petal.Length ~ Sepal.Length + Petal.Width + Species, data = iris,
+	#n.trees = 100
 #)
 #info <- partial.plot(model, c("Sepal.Length", "Species"), pch = 16, n.cores = 1)
 #pp.legend(info, "topleft")
@@ -402,11 +465,10 @@ info <- partial.plot(
 ```
 
 ## Test _glmmML()_
-Waiting for the support of `model.adapter`.
 ```{R glmmML}
 library(party)
 library(glmmML)
-
+library(viridis)
 model <- glmmML(
 	age ~ (shoeSize + score) * nativeSpeaker, cluster = 1:200,
 	data = readingSkills, family = poisson
