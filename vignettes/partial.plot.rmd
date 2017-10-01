@@ -119,6 +119,12 @@ info <- partial.plot(model, c("Sepal.Length", "Species"), pch = 16)
 # Add a legend.
 pp.legend(info, "topleft")
 
+# Draw 3D plot.
+info <- partial.plot(
+	model, c("Sepal.Length", "Petal.Width"), col = terrain.colors,
+    theta = 20
+)
+
 ```
 
 
@@ -239,6 +245,14 @@ The first argument is result of `partial.plot`, and other arguments are passed
 to `legend` function.
 
 --------------------------------------------------------------------------------
+
+# <a id = "basic_usage2">Visualizing slighly complicated models</a>
+
+`partial.plot()` can visualize more complicated models.
+In this time, we use `CO2` dataset in `dataset` package of R.
+THis dataset having CO<sub>2</sub> assimilation rate of plants collected
+from Quebec and Mississippi in several CO<sub>2</sub> concentraitons
+after the chilling experiment.
 
 --------------------------------------------------------------------------------
 
