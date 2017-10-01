@@ -1,6 +1,15 @@
-﻿2017-04-xx: 0.1.1
+﻿2017-10-01: 0.2.0
 - Add 'extraporate' option to extend predicted relationship of all groups to range
   of x axis.
+- Add 'add' option which controls adding graph elements to existing plot.
+- Support draw 3D residuals.
+- Changed algorithm to calculate partial relationship for models not supported
+  by lsmeans.
+- Experimental: partial.plot can draw histogram of the explanatory variable.
+- Support drawing probability of classification models.
+- Support using logicals for grouping variable.
+- Support different lty, lwd and pch for each group.
+- Support lmer(), glmer(), glmmadmb(), glmmML(), ranger(), rpart() and tree().
 
 2017-01-11: 0.1.0
 - Removed color.ramp.data.frame() method.

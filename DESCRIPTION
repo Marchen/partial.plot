@@ -1,12 +1,13 @@
 Package: partial.plot
-Version: 0.1.0
+Version: 0.2.0
 Title: Partial dependence plot for statistical/machine learning models.
 Author: Michio Oguro <mogu@biology.tohoku.ac.jp>
 Maintainer: Michio Oguro <mogu@biology.tohoku.ac.jp>
 Description: This package provides standard way to plot partial dependence plot
-    for statistical/machine learning models. By the virtue of model.adapter package,
-    currently, cforest, ctree, glm, glmmadmb, lm, lme, MCMCglmm, svm are supported.
-License: BSD
+    for statistical/machine learning models. By the virtue of model.adapter
+    package, currently, cforest, ctree, glm, glmer, glmmadmb, glmmML, lm, lme,
+    lmer, MCMCglmm, svm, tree, rpart and ranger are supported.
+License: MIT
 Depends:
     R (>= 3.0.0),
     base,
@@ -15,7 +16,7 @@ Depends:
     grDevices,
     parallel,
     lsmeans,
-    model.adapter
+    model.adapter (>= 0.0.9)
 Imports:
     base,
     stats,
@@ -40,13 +41,13 @@ Suggests:
     viridis,
     rgl
 VignetteBuilder: knitr
-RoxygenNote: 5.0.1
+RoxygenNote: 6.0.1
 Collate:
-    'colors.r'
+    'parman.r'
     'partial.plot.r'
     'pp.settings.r'
     'partial.relationship.r'
     'partial.residual.r'
-    'pp.colors.r'
     'pp.drawer.r'
     'pp.legend.r'
+    'switch.par.r'
