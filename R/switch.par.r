@@ -138,7 +138,7 @@ make.palette.default <- function(pal, x, ...) {
 		if (!identical(sort(names(pal)), sort(get.unique(x)))) {
 			stop("'pal' should have values for all unique values in x")
 		}
-		return(pal)
+		return(pal[sort(names(pal))])
 	}
 	if (length(pal) == 1) {
 		# If pal is a non-named vector of length 1,
