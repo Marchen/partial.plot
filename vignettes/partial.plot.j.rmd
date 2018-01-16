@@ -53,7 +53,7 @@ install.packages(
 もし、うまく行かない場合は以下のコマンドを試してください。
 
 ```{R, message = FALSE, warning = FALSE, eval = FALSE}
-install.packages(c("testthat","lsmeans"))
+install.packages(c("testthat","emmeans"))
 install.packages(
 	c("model.adapter", "partial.plot"),
 	repos = "http://hostgk3.biology.tohoku.ac.jp/marchen/R/repos",
@@ -716,6 +716,8 @@ barplot(1:10, col = gg.colors(10))
 --------------------------------------------------------------------------------
 
 # 更新履歴
+* 2018.01.07: 0.2.1
+    * `lsmeans`パッケージの開発が止まったので、`emmeans`パッケージを使うように変更。
 * 2017.10.01: 0.2.0
 	* `lmer()`、`glmer()`、`glmmadmb()`、`glmmML()`、`ranger()`、`rpart()`、`tree()`への対応。
 	* `add`オプションの追加。
