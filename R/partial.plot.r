@@ -84,7 +84,7 @@ combine.columns <- function(data, sep) {
 #'	@param interval.levels
 #'		values between 0 <= levels <= 1 indicating level(s) of interval.
 #'
-#'		For the models supported by \code{\link[lsmeans]{lsmeans}},
+#'		For the models supported by \code{\link[emmeans]{lsmeans}},
 #'		this can be a value indicating confidence interval. Only the first
 #'		element of the numeric vector is used for confidence intervals.
 #'
@@ -178,7 +178,7 @@ combine.columns <- function(data, sep) {
 #'		will be used for drawing legend.
 #'
 #'	@details
-#'		For models supported by \code{\link[lsmeans]{lsmeans}}, this function
+#'		For models supported by \code{\link[emmeans]{lsmeans}}, this function
 #'		calculate partial dependence using \code{lsmeans} and adjusted partial
 #'		residual to match result of \code{lsmeans}.
 #'		For models having complicated interactions such as machine learning

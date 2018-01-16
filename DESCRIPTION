@@ -15,7 +15,7 @@ Depends:
     methods,
     grDevices,
     parallel,
-    lsmeans,
+    emmeans,
     model.adapter (>= 0.0.9)
 Imports:
     base,
@@ -23,7 +23,7 @@ Imports:
     methods,
     grDevices,
     parallel,
-    lsmeans,
+    emmeans,
     model.adapter
 Suggests:
     randomForest,

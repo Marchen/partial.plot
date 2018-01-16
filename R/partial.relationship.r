@@ -84,17 +84,17 @@ partial.relationship$methods(
 		Calculate partial regression lines and intervals.
 
 		This function calculates data for regression lines and intervals using
-		\\code{\\link[lsmeans]{lsmeans}} function and returns a data.frame.
+		\\code{\\link[emmeans]{lsmeans}} function and returns a data.frame.
 		"
 		# calculate prediction.
 		# 予測値を計算。
 		at <- c(.self$settings$numeric.sequences, .self$settings$factor.levels)
-		rg <- ref.grid(
+		rg <- ref_grid(
 			.self$settings$model, at, data = .self$settings$data,
 			type = .self$settings$type
 		)
 		lsm <- summary(
-			lsmeans::lsmeans(rg, .self$settings$x.names),
+			lsmeans(rg, .self$settings$x.names),
 			level = .self$settings$interval.levels
 		)
 		colnames(lsm) <- gsub(
