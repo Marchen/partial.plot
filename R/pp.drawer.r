@@ -226,8 +226,8 @@ pp.drawer$methods(
 				y = current.data$fit
 			)
 			args <- c(args, .self$settings$parman$par.group(i))
-			args <- .self$settings$set.function.args(args, lines)
-			do.call(lines, args)
+			args <- .self$settings$set.function.args(args, graphics::lines)
+			do.call(graphics::lines, args)
 		}
 	}
 )
