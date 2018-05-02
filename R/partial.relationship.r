@@ -93,19 +93,72 @@ partial.relationship$methods(
 			.self$settings$model, at, data = .self$settings$data,
 			type = .self$settings$type
 		)
-		lsm <- summary(
-			lsmeans(rg, .self$settings$x.names),
-			level = .self$settings$interval.levels
-		)
-		colnames(lsm) <- gsub(
-			"^lsmean$|^response$|^prob$|^rate$", "fit", colnames(lsm)
-		)
-		colnames(lsm) <- gsub("^lower.CL$|^asymp.LCL$", "lower", colnames(lsm))
-		colnames(lsm) <- gsub("^upper.CL$|^asymp.UCL$", "upper", colnames(lsm))
+		lsm <- .self$summarize.ref.grid(rg)
 		# Remove predictions with out-ranged explanatory variable for each group.
 		# 各グループの説明変数の範囲を外れた予測値を削除。
 		lsm <- .self$filter.result(lsm)
 		return(as.data.frame(lsm))
+	}
+)
+
+
+#------------------------------------------------------------------------------
+#	mcmcを使わずにlsmeansを使って予測値と信頼区間を計算する。
+#------------------------------------------------------------------------------
+partial.relationship$methods(
+	summarize.ref.grid.without.mcmc = function(lsm) {
+		result <- summary(lsm, level = .self$settings$interval.levels)
+		colnames(result) <- gsub(
+			"^lsmean$|^response$|^prob$|^rate$", "fit", colnames(result)
+		)
+		colnames(result) <- gsub(
+			"^lower.CL$|^asymp.LCL$", "lower", colnames(result)
+		)
+		colnames(result) <- gsub(
+			"^upper.CL$|^asymp.UCL$", "upper", colnames(result)
+		)
+		return(result)
+	}
+)
+
+
+#------------------------------------------------------------------------------
+#	mcmcとlsmeansを使って予測値と信頼区間を計算する。
+#------------------------------------------------------------------------------
+partial.relationship$methods(
+	summarize.ref.grid.with.mcmc = function(lsm) {
+		lsm.mcmc <- as.mcmc(lsm)
+		m <- apply(lsm.mcmc, 2, mean)
+		interval.levels <- c(
+			.self$settings$interval.levels, 1 - .self$settings$interval.levels
+		)
+		q <- t(apply(lsm.mcmc, 2, quantile, prob = sort(interval.levels)))
+		colnames(q) <- c("lower", "upper")
+		result <- suppressMessages(
+			summary(lsm, level = .self$settings$interval.levels)
+		)
+		result <- result[.self$settings$x.names]
+		result$fit <- m
+		result <- cbind(result, q)
+		return(result)
+	}
+)
+
+
+#------------------------------------------------------------------------------
+#	lsmeansを使って予測値と信頼区間を計算する。
+#------------------------------------------------------------------------------
+partial.relationship$methods(
+	summarize.ref.grid = function(rg) {
+		lsm <- lsmeans(rg, .self$settings$x.names)
+		if (length(lsm@post.beta) == 1 & all(is.na(lsm@post.beta))) {
+			return(.self$summarize.ref.grid.without.mcmc(lsm))
+		}
+		coda.available <- require(coda)
+		if (coda.available) {
+			return(.self$summarize.ref.grid.with.mcmc(lsm))
+		}
+		return(.self$summarize.ref.grid.without.mcmc(lsm))
 	}
 )
 
