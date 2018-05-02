@@ -255,5 +255,3 @@ partial.plot <- function(
 	drawer$draw()
 	invisible(settings)
 }
-
-
