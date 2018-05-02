@@ -425,6 +425,16 @@ Need some tricks to control n.tree of predict method...
 #)
 ```
 
+## Test _glm.nb()_
+```{R glm.nb}
+library(MASS)
+data(quine)
+temp <- quine
+temp$Age <- as.numeric(temp$Age)
+model <- glm.nb(Days ~ Sex * Age, data = temp)
+partial.plot(model, c("Age", "Sex"))
+```
+
 ## Test _glmer()_
 ```{R glmer}
 library(lme4)
@@ -445,6 +455,16 @@ info <- partial.plot(
 	model, c("Petal.Length", "Petal.Width"), pch = 16, col = viridis,
 	fun.3d = persp
 )
+```
+
+## Test _glmer.nb()_
+```{R glmer.nb}
+library(lme4)
+data(quine)
+temp <- quine
+temp$Age <- as.numeric(temp$Age)
+model <- glmer.nb(Days ~ Sex * Age + (1 | Eth), data = temp)
+partial.plot(model, c("Age", "Sex"))
 ```
 
 ## Test _glmmadmb()_
