@@ -244,6 +244,7 @@ ModelManifest.xml
 # FAKE - F# Make
 .fake/
 man/
+NAMESPACE
 .RHistory
 inst/doc/
 vignettes/*.html
