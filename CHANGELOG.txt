@@ -1,4 +1,10 @@
-﻿2018-01-07: 0.2.1
+﻿2018-05-02: 0.2.2
+- Checked support for glm.nb() and glmer.nb() functions.
+- Support calculation of posterior mean and credible intervals for models
+  with MCMC estimation.
+- Minor bug fixes.
+
+2018-01-07: 0.2.1
 - Replaced dependency on lsmeans package to emmeans package.
 
 2017-10-01: 0.2.0
