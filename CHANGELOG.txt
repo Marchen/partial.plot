@@ -1,4 +1,6 @@
-﻿2018-05-02: 0.2.2
+- Support model.adapter > 0.1.0.
+
+2018-05-02: 0.2.2
 - Checked support for glm.nb() and glmer.nb() functions.
 - Support calculation of posterior mean and credible intervals for models
   with MCMC estimation.

@@ -17,7 +17,7 @@ Depends:
     grDevices,
     parallel,
     emmeans,
-    model.adapter (>= 0.0.9)
+    model.adapter (>= 0.1.0)
 Imports:
     base,
     stats,
@@ -25,7 +25,7 @@ Imports:
     grDevices,
     parallel,
     emmeans,
-    model.adapter
+    model.adapter (>= 0.1.0)
 Suggests:
     randomForest,
     party,

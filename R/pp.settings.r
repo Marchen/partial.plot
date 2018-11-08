@@ -318,7 +318,7 @@ pp.settings$methods(
 			return()
 		}
 		initFields(
-			adapter = model.adapter(
+			adapter = model.adapter$new(
 				model, data = data, envir = parent.frame(5L)
 			),
 			type = type, positive.class = positive.class, fun.3d = fun.3d,
@@ -394,7 +394,7 @@ pp.settings$methods(
 		"
 		Check availability of data.
 		"
-		if (!.self$adapter$has.data()) {
+		if (is.null(.self$adapter$data)) {
 			stop(
 				"'model' object does not have original data.
 				Please specify 'data' argument."
