@@ -115,8 +115,8 @@ combine.columns <- function(data, sep) {
 #'	@param sep
 #'		a character used for separator of factor levels.
 #'
-#'	@param extraporate
-#'		a logical indicating whether extraporation is allowed for predicted
+#'	@param extrapolate
+#'		a logical indicating whether extrapolation is allowed for predicted
 #'		relationships.
 #'
 #'	@param n.cores
@@ -226,8 +226,16 @@ partial.plot <- function(
 	draw.interval = TRUE, draw.hist = FALSE, interval.levels = 0.95,
 	resolution = NULL, col = gg.colors, lty = "solid", lwd = 1, pch = 16,
 	xlab = NULL, ylab = NULL, zlab = NULL, add = FALSE, sep = " - ",
-	extraporate = FALSE, n.cores = NULL, ...
+	extrapolate = FALSE, n.cores = NULL, extraporate = extrapolate, ...
 ) {
+	# Warning for deprecation.
+	if (!missing(extraporate)) {
+		msg <- paste(
+			"'extraporate' argument is deprecated and removed in future.\n",
+			"Please use 'extrapolate' instead."
+		)
+		warning(msg)
+	}
 	# Initialize setting object.
 	# 設定オブジェクトの初期化。
 	if (is(model, "pp.settings")) {
@@ -241,7 +249,7 @@ partial.plot <- function(
 			model, x.names, data, type, positive.class, fun.3d,
 			draw.residual, draw.relationship, draw.interval, draw.hist,
 			interval.levels, resolution, xlab, ylab, zlab, add, sep,
-			extraporate, n.cores, ...
+			extrapolate, n.cores, ...
 		)
 		settings$parman <- par.manager(settings$group, col, lty, lwd, pch)
 		# Calculate required data.

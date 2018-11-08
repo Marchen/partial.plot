@@ -160,8 +160,8 @@ if (require(rgl)) {
 #'	@field sep
 #'		a character representing separator of grouping factor levels.
 #'
-#'	@field extraporate
-#'		a logical indicating whether extraporation is allowed for predicted
+#'	@field extrapolate
+#'		a logical indicating whether extrapolation is allowed for predicted
 #'		relationships.
 #'
 #'	@field other.pars
@@ -215,7 +215,7 @@ pp.settings <- setRefClass(
 		zlab = "ANY",
 		add = "logical",
 		sep = "character",
-		extraporate = "logical",
+		extrapolate = "logical",
 		other.pars = "list",
 		n.cores = "ANY",
 		relationship = "data.frame",
@@ -236,7 +236,7 @@ pp.settings$methods(
 		fun.3d = persp, draw.residual = TRUE, draw.relationship = TRUE,
 		draw.interval = TRUE, draw.hist = FALSE, interval.levels = 0.95,
 		resolution = NULL, xlab = NULL, ylab = NULL,
-		zlab = NULL, add = FALSE, sep = " - ", extraporate = FALSE,
+		zlab = NULL, add = FALSE, sep = " - ", extrapolate = FALSE,
 		n.cores = NULL, ...
 	) {
 		"
@@ -295,8 +295,8 @@ pp.settings$methods(
 			\\item{\\code{sep}}{
 				a character representing separator of grouping factor levels.
 			}
-			\\item{\\code{expraporate}}{
-				a logical indicating whether extraporation is allowed for
+			\\item{\\code{exprapolate}}{
+				a logical indicating whether extrapolation is allowed for
 				predicted relationships.
 			}
 			\\item{\\code{n.cores}}{
@@ -327,7 +327,7 @@ pp.settings$methods(
 			draw.interval = draw.interval, draw.hist = draw.hist,
 			interval.levels = interval.levels, resolution = resolution,
 			xlab = xlab, ylab = ylab, zlab = zlab, add = add, sep = sep,
-			extraporate = extraporate, n.cores = n.cores,
+			extrapolate = extrapolate, n.cores = n.cores,
 			other.pars = list(...), has.relationship = FALSE,
 			has.residual = FALSE
 		)

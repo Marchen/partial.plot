@@ -135,11 +135,11 @@ info <- partial.plot(
 pp.legend(info, "topleft")
 ```
 
+## Draw extrapolation
 
-## Draw extraporation.
-```{R draw_extraporation}
+```{R draw_extrapolation}
 info <- partial.plot(
-	model, c("Sepal.Length", "Species"), pch = 16, extraporate = TRUE
+    model, c("Sepal.Length", "Species"), pch = 16, extrapolate = TRUE
 )
 pp.legend(info, "topleft")
 ```

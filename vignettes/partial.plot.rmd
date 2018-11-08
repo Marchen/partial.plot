@@ -282,7 +282,7 @@ partial.plot(
 )
 ```
 
-By setting 'extraporate' to 'TRUE', predicted partial relationshiops are drawn
+By setting 'extrapolate' to 'TRUE', predicted partial relationshiops are drawn
 for range of the expranatory variable for all groups.
 ```{R}
 info <- partial.plot(

@@ -283,7 +283,7 @@ partial.relationship$methods(
 		"
 		if (
 			length(.self$settings$factor.levels) == 0
-			| .self$settings$extraporate
+			| .self$settings$extrapolate
 		) {
 			return(prediction)
 		}
