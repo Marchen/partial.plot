@@ -1,3 +1,4 @@
+﻿2018-11-09: 0.2.3
 - Support model.adapter > 0.1.0.
 - Changed the 'extraporate' argument to 'extrapolate'.
 
