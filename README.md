@@ -1,11 +1,22 @@
 # partial.plot: An R package to visualize partial relationships
 
-This package provides standard way to visualize partial predicted 
+This package provides standard way to visualize partial predicted
 relationship by several statistical/machine learning methods.
-Currently, `lm()`, `glm()`, `lme()` and `MCMCglmm()` are supported.
-Handling of models are based on 
+Currently, `lm()`, `glm()`, `glm.nb()`, `lme()`, `lmer()`, `glmer()`, `glmer.nb()`, `glmmadmb()`, `MCMCglmm()`, `cforest()`, `ctree()`, `svm()`, `randomForest()`, `ranger()`, `rpart()`, `tree()` are supported.
+Handling of models are based on
 [model.adapter](https://github.com/Marchen/model.adapter) class.
 
-For the details see 
-[Quick start guid (English)](https://github.com/Marchen/partial.plot/blob/master/vignettes/partial.plot.rmd) 
-or [Quick start guid (Japanese)](https://github.com/Marchen/partial.plot/blob/master/vignettes/partial.plot.j.rmd).
+To install the package, please copy&paste following code into your R terminal.
+
+```{r}
+install.packages(
+    c("model.adapter", "partial.plot"), type = "source",
+    repos = c(
+        "http://florivory.net/R/repos", options()$repos
+    )
+)
+```
+
+To build the package from source codes, use `source("build.r")`.
+
+For the details see Quick start guide ([English](http://florivory.net/R/partial.plot/partial.plot.html), [Source Code](https://github.com/Marchen/partial.plot/blob/master/vignettes/partial.plot.rmd)) or ([Japanese](http://florivory.net/R/partial.plot/partial.plot.j.html), [Source Code](https://github.com/Marchen/partial.plot/blob/master/vignettes/partial.plot.j.rmd)).

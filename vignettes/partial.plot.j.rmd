@@ -1,6 +1,6 @@
 ---
 title: "partial.plot クイックスタートガイド"
-author: "Michio Oguro (email: 以下のコードをRにペースト：「rawToChar(as.raw(c(109, 111, 103, 64, 102, 102, 112, 114, 105, 46, 97, 102, 102, 114, 99, 46, 103, 111, 46, 106, 112)))」)"
+author: "Michio Oguro"
 date: "`r Sys.Date()`"
 output:
     html_document:
@@ -18,9 +18,10 @@ vignette: >
     \usepackage[utf8]{inputenc}
 ---
 
-
 --------------------------------------------------------------------------------
+
 [English](partial.plot.html)
+
 --------------------------------------------------------------------------------
 
 # はじめに
@@ -31,50 +32,30 @@ vignette: >
 一応注意はしていますが、もしかすると、研究をめちゃめちゃするような間違いがあるかもしれません。
 今使えている機能が将来のバージョンで削除されることもあるかもしれませんし、使い方が変わるかもしれません。
 と、いうことで、ご利用の際には注意してお使い下さい。
-もしバグを見つけたり、こういう機能が欲しい、と思うことがあったりしたら、
-ぜひぜひお知らせ下さい。
+もしバグを見つけたり、こういう機能が欲しい、と思うことがあったりしたら、メール（アドレスは以下のコードをRにペースト：「rawToChar(as.raw(c(109, 111, 103, 64, 102, 102, 112, 114, 105, 46, 97, 102, 102, 114, 99, 46, 103, 111, 46, 106, 112)))」）もしくは[GitHub](https://github.com/Marchen/partial.plot)にご連絡下さい。
 
 --------------------------------------------------------------------------------
 
-# インストールとアップデート
+# インストール
 
 以下のコマンドをRにコピー＆ペーストすれば
 必要なパッケージ一式をインストールできるはずです。
 
 ```{R, message = FALSE, warning = FALSE, eval = FALSE}
 install.packages(
-	c("model.adapter", "partial.plot"),
-	repos = c(
-		"http://hostgk3.biology.tohoku.ac.jp/marchen/R/repos", options()$repos
-	)
+    c("model.adapter", "partial.plot"), type = "source",
+    repos = c(
+        "http://florivory.net/R/repos", options()$repos
+    )
 )
 ```
-
-もし、うまく行かない場合は以下のコマンドを試してください。
-
-```{R, message = FALSE, warning = FALSE, eval = FALSE}
-install.packages(c("testthat","emmeans"))
-install.packages(
-	c("model.adapter", "partial.plot"),
-	repos = "http://hostgk3.biology.tohoku.ac.jp/marchen/R/repos",
-	type = "source"
-)
-```
-
-パッケージをアップデートするには、以下のコマンドを実行します。
-
-```{R, message = FALSE, warning = FALSE, eval = FALSE}
-update.packages(
-	repos = "http://hostgk3.biology.tohoku.ac.jp/marchen/R/repos"
-)
-```
-
 
 --------------------------------------------------------------------------------
 
 # クイックスタート（R魔法使い用）
 
 まー、魔法使いの人は見ればわかるでしょう。
+[実例集](visual.test.html)も参考にしてください。
 
 ```{R, echo = FALSE, message = FALSE}
 library(partial.plot)
@@ -86,7 +67,7 @@ data(iris)
 
 # 予測モデルの作成。
 model <- glm(
-	Petal.Length ~ (Sepal.Length + Petal.Width) * Species, data = iris
+    Petal.Length ~ (Sepal.Length + Petal.Width) * Species, data = iris
 )
 
 # ライブラリの読み込み。
@@ -100,12 +81,11 @@ pp.legend(info, "topleft")
 
 # 三次元プロット。
 info <- partial.plot(
-	model, c("Sepal.Length", "Petal.Width"), col = terrain.colors,
+    model, c("Sepal.Length", "Petal.Width"), col = terrain.colors,
     theta = 20
 )
 
 ```
-
 
 --------------------------------------------------------------------------------
 
@@ -130,16 +110,16 @@ str(iris)
 # データの可視化。
 par(mfrow = c(2, 2))
 plot(
-	Petal.Length ~ Sepal.Length, data = iris,
-	pch = as.numeric(Species) + 14, col = as.numeric(Species) + 1
+    Petal.Length ~ Sepal.Length, data = iris,
+    pch = as.numeric(Species) + 14, col = as.numeric(Species) + 1
 )
 plot(
-	Petal.Length ~ Sepal.Width, data = iris,
-	pch = as.numeric(Species) + 14, col = as.numeric(Species) + 1
+    Petal.Length ~ Sepal.Width, data = iris,
+    pch = as.numeric(Species) + 14, col = as.numeric(Species) + 1
 )
 plot(
-	Petal.Length ~ Petal.Width, data = iris,
-	pch = as.numeric(Species) + 14, col = as.numeric(Species) + 1
+    Petal.Length ~ Petal.Width, data = iris,
+    pch = as.numeric(Species) + 14, col = as.numeric(Species) + 1
 )
 ```
 
@@ -152,7 +132,7 @@ plot(
 ```{R}
 # 予測モデルの作成。
 model <- glm(
-	Petal.Length ~ (Sepal.Length + Petal.Width) * Species, data = iris
+    Petal.Length ~ (Sepal.Length + Petal.Width) * Species, data = iris
 )
 
 # 結果を確認します。
@@ -199,7 +179,6 @@ partial.plot(model, c("Petal.Width", "Species"), pch = 16)
 
 この場合、線は種ごとの花弁の幅と花弁の長さの関係式を、色の付いた部分は関係式の信頼区間を、点は偏残差を表します。
 
-
 ### 凡例の追加
 
 ただ線や信頼区間、偏残差をプロットするだけでは色と種の対応関係がわかりません。
@@ -245,19 +224,19 @@ class(CO2) <- "data.frame"
 
 # データの傾向を見てみる。
 plot(
-	uptake ~ conc, data = CO2,
+    uptake ~ conc, data = CO2,
     col = c("blue3", "red3")[as.numeric(CO2$Type)],
-	pch = c(16, 17)[as.numeric(CO2$Treatment)],
+    pch = c(16, 17)[as.numeric(CO2$Treatment)],
     ylim = c(0, 50)
 )
 legend(
-	"bottomright",
-	legend = c(
-		"Mississippi - Chilled", "Mississippi - Non-Chilled",
-		"Quebec - Chilled", "Quebec - Non-Chilled"
-	),
-	col = rep(c("blue3", "red3"), each = 2),
-	pch = c(16, 17, 16, 17)
+    "bottomright",
+    legend = c(
+        "Mississippi - Chilled", "Mississippi - Non-Chilled",
+        "Quebec - Chilled", "Quebec - Non-Chilled"
+    ),
+    col = rep(c("blue3", "red3"), each = 2),
+    pch = c(16, 17, 16, 17)
 )
 
 ```
@@ -278,14 +257,13 @@ summary(model)
 
 ```{R}
 info <- partial.plot(
-	model, c("conc", "Treatment", "Type"), data = CO2
+    model, c("conc", "Treatment", "Type"), data = CO2
 )
 pp.legend(info, "bottomright")
 ```
 
 `partial.plot()`は複数の因子型によりグループごとの作図に対応しています。
 ここではTreatmentとType、２つの因子型変数の組み合わせの４グループごとに作図を行いましたが、さらにたくさんの因子型引数でグループ分けすることも可能です。
-
 
 --------------------------------------------------------------------------------
 
@@ -301,7 +279,7 @@ data(iris)
 
 # 予測モデルの作成。
 model <- glm(
-	Petal.Length ~ Sepal.Length + Petal.Width, data = iris
+    Petal.Length ~ Sepal.Length + Petal.Width, data = iris
 )
 
 # 予測結果を見る。
@@ -313,7 +291,7 @@ summary(model)
 
 ```{R}
 partial.plot(
-	model, c("Sepal.Length", "Petal.Width"), col = terrain.colors, theta = 20
+    model, c("Sepal.Length", "Petal.Width"), col = terrain.colors, theta = 20
 )
 ```
 
@@ -323,11 +301,11 @@ partial.plot(
 
 ```{R}
 partial.plot(
-	model, c("Sepal.Length", "Petal.Width"), fun.3d = image,
-	col = terrain.colors
+    model, c("Sepal.Length", "Petal.Width"), fun.3d = image,
+    col = terrain.colors
 )
 partial.plot(
-	model, c("Sepal.Length", "Petal.Width"), fun.3d = contour, col = "black"
+    model, c("Sepal.Length", "Petal.Width"), fun.3d = contour, col = "black"
 )
 ```
 
@@ -340,11 +318,10 @@ install.packages("rgl")
 
 # 三次元プロット
 partial.plot(
-	model, c("Sepal.Length", "Petal.Width"), fun.3d = persp3d,
-	col = terrain.colors
+    model, c("Sepal.Length", "Petal.Width"), fun.3d = persp3d,
+    col = terrain.colors
 )
 ```
-
 
 --------------------------------------------------------------------------------
 
@@ -352,46 +329,49 @@ partial.plot(
 
 いくつかの設定を変えることで、グラフの見た目を変えることができます。
 
-
 ## 作図する要素の変更
 
 `draw.residual`引数を`FALSE`にすると、残差のシンボルを描画しないことができます。
+
 ```{R, message = FALSE, echo = FALSE}
 # 予測モデルの作成。
 model <- glm(
-	Petal.Length ~ (Sepal.Length + Petal.Width) * Species, data = iris
+    Petal.Length ~ (Sepal.Length + Petal.Width) * Species, data = iris
 )
 ```
 
 ```{R}
 info <- partial.plot(
-	model, c("Sepal.Length", "Species"), draw.residual = FALSE
+    model, c("Sepal.Length", "Species"), draw.residual = FALSE
 )
 pp.legend(info, "topleft")
 ```
 
 また、`draw.relationship`引数を`FALSE`にすると、モデルによって予測された関係を描画しないことができます。
+
 ```{R}
 info <- partial.plot(
-	model, c("Sepal.Length", "Species"), draw.relationship = FALSE,
-	pch = 16
+    model, c("Sepal.Length", "Species"), draw.relationship = FALSE,
+    pch = 16
 )
 pp.legend(info, "topleft")
 ```
 
 さらに、`draw.interval`引数を`FALSE`にすると、予測された関係の信頼区間を描画しないこともできます。
+
 ```{R}
 info <- partial.plot(
-	model, c("Sepal.Length", "Species"), draw.interval = FALSE,
-	pch = 16
+    model, c("Sepal.Length", "Species"), draw.interval = FALSE,
+    pch = 16
 )
 pp.legend(info, "topleft")
 ```
 
 `extrapolate`引数を`TRUE`にすると、説明変数の範囲外の値も含めた予測範囲を描画します。
+
 ```{R}
 info <- partial.plot(
-	model, c("Sepal.Length", "Species"), pch = 16, extraporate = TRUE
+    model, c("Sepal.Length", "Species"), pch = 16, extrapolate = TRUE
 )
 pp.legend(info, "topleft")
 ```
@@ -405,7 +385,7 @@ pp.legend(info, "topleft")
 ```{R}
 # グラフの色を変える。
 info <- partial.plot(
-	model, c("Sepal.Length", "Species"), pch = 16, col = rainbow
+    model, c("Sepal.Length", "Species"), pch = 16, col = rainbow
 )
 # 凡例の色も自動調節される。
 pp.legend(info, "topleft")
@@ -417,11 +397,11 @@ pp.legend(info, "topleft")
 ```{R}
 # 色ベクトルを用意。
 col <- c(
-	setosa = "darkgreen", versicolor = "blue", virginica = "orange2"
+    setosa = "darkgreen", versicolor = "blue", virginica = "orange2"
 )
 # 作図
 info <- partial.plot(
-	model, c("Sepal.Length", "Species"), pch = 16, col = col
+    model, c("Sepal.Length", "Species"), pch = 16, col = col
 )
 pp.legend(info, "topleft")
 ```
@@ -431,26 +411,29 @@ pp.legend(info, "topleft")
 色の指定と同じ方法で、プロットのシンボル、線の種類、線の太さを変更することができます。
 
 ### シンボルの変更
+
 ```{R}
 info <- partial.plot(
-	model, c("Sepal.Length", "Species"), pch = 16:18, col = rainbow
+    model, c("Sepal.Length", "Species"), pch = 16:18, col = rainbow
 )
 pp.legend(info, "topleft")
 ```
 
 ### 線の種類の変更
+
 ```{R}
 info <- partial.plot(
-	model, c("Sepal.Length", "Species"), lty = c("solid", "dashed", "dotted"),
-	col = "black"
+    model, c("Sepal.Length", "Species"), lty = c("solid", "dashed", "dotted"),
+    col = "black"
 )
 pp.legend(info, "topleft")
 ```
 
 ### 線の太さの変更
+
 ```{R}
 info <- partial.plot(
-	model, c("Sepal.Length", "Species"), lwd = c(1, 4, 8), col = "black"
+    model, c("Sepal.Length", "Species"), lwd = c(1, 4, 8), col = "black"
 )
 pp.legend(info, "topleft")
 ```
@@ -458,9 +441,10 @@ pp.legend(info, "topleft")
 ## グラフの上書き
 
 `add = TRUE`を指定すると、既存のグラフの上にグラフを上書きすることができます。
+
 ```{R}
 model <- glm(
-	Petal.Length ~ (Sepal.Length + Petal.Width) * Species, data = iris
+    Petal.Length ~ (Sepal.Length + Petal.Width) * Species, data = iris
 )
 plot(Petal.Length ~ Sepal.Length, data = iris, pch = 16)
 partial.plot(model, c("Sepal.Length", "Species"), add = TRUE)
@@ -473,11 +457,10 @@ partial.plot(model, c("Sepal.Length", "Species"), add = TRUE)
 ```{R}
 model <- glm(uptake ~ conc + I(conc^2) + Type * Treatment, data = CO2)
 info <- partial.plot(
-	model, c("conc", "Treatment", "Type"), data = CO2, sep = "/"
+    model, c("conc", "Treatment", "Type"), data = CO2, sep = "/"
 )
 pp.legend(info, "bottomright")
 ```
-
 
 ## 信頼区間の変更
 
@@ -489,28 +472,27 @@ par(mfrow = c(2, 2))
 model <- glm(uptake ~ conc + I(conc^2) + Type * Treatment, data = CO2)
 # 95%（デフォルト）
 info <- partial.plot(
-	model, c("conc", "Treatment", "Type"), data = CO2,
-	main = "interval.levels = 0.95"
+    model, c("conc", "Treatment", "Type"), data = CO2,
+    main = "interval.levels = 0.95"
 )
 # 80%
 info <- partial.plot(
-	model, c("conc", "Treatment", "Type"), data = CO2, interval.levels = 0.8,
-	main = "interval.levels = 0.8"
+    model, c("conc", "Treatment", "Type"), data = CO2, interval.levels = 0.8,
+    main = "interval.levels = 0.8"
 )
 # 70%
 info <- partial.plot(
-	model, c("conc", "Treatment", "Type"), data = CO2, interval.levels = 0.7,
-	main = "interval.levels = 0.7"
+    model, c("conc", "Treatment", "Type"), data = CO2, interval.levels = 0.7,
+    main = "interval.levels = 0.7"
 )
 # 60%
 info <- partial.plot(
-	model, c("conc", "Treatment", "Type"), data = CO2, interval.levels = 0.6,
-	main = "interval.levels = 0.6"
+    model, c("conc", "Treatment", "Type"), data = CO2, interval.levels = 0.6,
+    main = "interval.levels = 0.6"
 )
 par(mfrow = c(1, 1))
 
 ```
-
 
 ## リンク関数
 
@@ -524,8 +506,8 @@ $$
 
 ```{R}
 model <- glm(
-	Petal.Length ~ (Sepal.Length + Petal.Width), data = iris,
-	family = Gamma(log)
+    Petal.Length ~ (Sepal.Length + Petal.Width), data = iris,
+    family = Gamma(log)
 )
 summary(model)
 ```
@@ -537,15 +519,14 @@ summary(model)
 
 ```{R}
 partial.plot(
-	model, c("Sepal.Length", "Petal.Width"), type = "response",
+    model, c("Sepal.Length", "Petal.Width"), type = "response",
     col = terrain.colors, main = "response"
 )
 partial.plot(
-	model, c("Sepal.Length", "Petal.Width"), type = "link",
+    model, c("Sepal.Length", "Petal.Width"), type = "link",
     col = terrain.colors, main = "link"
 )
 ```
-
 
 ## 識別モデルの作図。
 
@@ -558,27 +539,27 @@ partial.plot(
 library(randomForest)
 model <- randomForest(Species ~ ., data = iris)
 partial.plot(
-	model, "Petal.Length", positive.class = "setosa", type = "prob",
-	col = "red", resolution = 20, draw.residual = FALSE
+    model, "Petal.Length", positive.class = "setosa", type = "prob",
+    col = "red", resolution = 20, draw.residual = FALSE
 )
 partial.plot(
-	model, "Petal.Length", positive.class = "versicolor", add = TRUE,
-	type = "prob", col = "blue", resolution = 20, draw.residual = FALSE
+    model, "Petal.Length", positive.class = "versicolor", add = TRUE,
+    type = "prob", col = "blue", resolution = 20, draw.residual = FALSE
 )
 partial.plot(
-	model, "Petal.Length", positive.class = "virginica", add = TRUE,
-	type = "prob", col = "green", resolution = 20, draw.residual = FALSE
+    model, "Petal.Length", positive.class = "virginica", add = TRUE,
+    type = "prob", col = "green", resolution = 20, draw.residual = FALSE
 )
 ```
-
 
 ## ヒストグラムの追加
 
 試験的に説明変数のヒストグラムを描く機能を追加してあります。
+
 ```{R}
 model <- glm(Petal.Length ~ ., data = iris)
 info <- partial.plot(
-	model, c("Sepal.Length", "Species"), draw.hist = TRUE
+    model, c("Sepal.Length", "Species"), draw.hist = TRUE
 )
 ```
 
@@ -589,16 +570,15 @@ info <- partial.plot(
 ```{R}
 # モデル作成
 model <- glm(
-	Petal.Length ~ (Sepal.Length + Petal.Width) * Species, data = iris
+    Petal.Length ~ (Sepal.Length + Petal.Width) * Species, data = iris
 )
 # シンボルのサイズ、軸ラベルも変えてみる。
 info <- partial.plot(
-	model, c("Sepal.Length", "Species"), cex = 1.5,
-	xlab = "Sepal length (mm)", ylab = "Petal Length"
+    model, c("Sepal.Length", "Species"), cex = 1.5,
+    xlab = "Sepal length (mm)", ylab = "Petal Length"
 )
 pp.legend(info, "topleft")
 ```
-
 
 --------------------------------------------------------------------------------
 
@@ -639,7 +619,6 @@ par(mfrow = c(1, 1))
 また、予測された関係式の信頼区間を指定する`interval.levels`も同様の理由により変更できません。
 こちらはどうしても再計算が必要なので、修正が難しいと思います。
 
-
 --------------------------------------------------------------------------------
 
 # 対応しているモデル
@@ -648,12 +627,12 @@ par(mfrow = c(1, 1))
 各モデルへの対応は`model.adapter`パッケージに依存しているので、
 将来的には`model.adapter`パッケージが対応する他のモデルにも対応する予定です。
 
-
 --------------------------------------------------------------------------------
 
 # モデルごとの注意点
 
 ## glmer.nb
+
 モデル式に関数（'offset()'や'log()'など）が含まれていると、データの取得がうまくいかないため、作図を行うことができないようです。
 このようなモデル式を用いた`glmer.nb`で作図を行う時には、`data`引数に解析に使ったデータを指定してください。
 
@@ -663,7 +642,6 @@ model <- glmer.nb(y ~ log(x) + (1 | random), data = dat)
 partial.plot(model, "x", data = dat)
 ```
 
-
 --------------------------------------------------------------------------------
 
 # 既知の問題
@@ -672,7 +650,6 @@ partial.plot(model, "x", data = dat)
 
 * 作図時に最低１つ以上の連続変数を入れる必要がある。将来的には因子型だけでの作図にも対応する予定。
 * データにNAが含まれていると停止する。
-
 
 --------------------------------------------------------------------------------
 
@@ -688,8 +665,8 @@ partial.plot(model, "x", data = dat)
 ```{R}
 library(partial.plot)
 plot(
-	Petal.Length ~ Sepal.Length, col = color.ramp(Species),
-	data = iris, pch = 16
+    Petal.Length ~ Sepal.Length, col = color.ramp(Species),
+    data = iris, pch = 16
 )
 ```
 
@@ -697,24 +674,25 @@ plot(
 
 ```{R}
 plot(
-	Petal.Length ~ Sepal.Length, col = color.ramp(Species, rainbow),
-	data = iris, pch = 16
+    Petal.Length ~ Sepal.Length, col = color.ramp(Species, rainbow),
+    data = iris, pch = 16
 )
 ```
 
 ```{R}
 col <- c(
-	setosa = "darkgreen", versicolor = "blue", virginica = "orange2"
+    setosa = "darkgreen", versicolor = "blue", virginica = "orange2"
 )
 plot(
-	Petal.Length ~ Sepal.Length, col = color.ramp(Species, col),
-	data = iris, pch = 16
+    Petal.Length ~ Sepal.Length, col = color.ramp(Species, col),
+    data = iris, pch = 16
 )
 ```
 
 ## switch.par()
 
 `color.ramp()`と同じようにグラフィックパラメーターを変更することができます。
+
 ```{R}
 plot(Petal.Length~Sepal.Length, data = iris, pch = switch.par(Species, 16:18))
 ```
@@ -727,40 +705,43 @@ plot(Petal.Length~Sepal.Length, data = iris, pch = switch.par(Species, 16:18))
 barplot(1:10, col = gg.colors(10))
 ```
 
-
 --------------------------------------------------------------------------------
 
 # 更新履歴
+
+* 2018.11.09: 0.2.3
+  * model.adapter > 0.1.0をサポート。
+  * `extraporate`引数を`extrapolate`に変更した。
 * 2018.05.02: 0.2.2
-	* 使用するモデルがmcmcで作成されているとき、`coda`パッケージを利用して、事後分布の平均や信用区間を使うようにした。
-	* `glm.nb`、`glmer.nb`に対応していることを確認した。
-	* 軽微なバグ修正。
+  * 使用するモデルがmcmcで作成されているとき、`coda`パッケージを利用して、事後分布の平均や信用区間を使うようにした。
+  * `glm.nb`、`glmer.nb`に対応していることを確認した。
+  * 軽微なバグ修正。
 * 2018.01.07: 0.2.1
-    * `lsmeans`パッケージの開発が止まったので、`emmeans`パッケージを使うように変更。
+  * `lsmeans`パッケージの開発が止まったので、`emmeans`パッケージを使うように変更。
 * 2017.10.01: 0.2.0
-	* `lmer()`、`glmer()`、`glmmadmb()`、`glmmML()`、`ranger()`、`rpart()`、`tree()`への対応。
-	* `add`オプションの追加。
-	* 三次元プロットに残差描画機能を追加。
-	* lsmeansが対応していないモデルの計算アルゴリズムを変更。
-	* 説明変数のヒストグラムを描く機能を試験的に追加。
-	* 識別モデルの確率描画機能の追加。
-	* 論理型変数をグループ分けに使えるようにした。
-	* グループごとに`lty`、`lwd`、`pch`を変えられるようにした。
-	* いろいろなバグの修正、パフォーマンス改善。
+  * `lmer()`、`glmer()`、`glmmadmb()`、`glmmML()`、`ranger()`、`rpart()`、`tree()`への対応。
+  * `add`オプションの追加。
+  * 三次元プロットに残差描画機能を追加。
+  * lsmeansが対応していないモデルの計算アルゴリズムを変更。
+  * 説明変数のヒストグラムを描く機能を試験的に追加。
+  * 識別モデルの確率描画機能の追加。
+  * 論理型変数をグループ分けに使えるようにした。
+  * グループごとに`lty`、`lwd`、`pch`を変えられるようにした。
+  * いろいろなバグの修正、パフォーマンス改善。
 * 2016.01.11: 0.1.0
-	* 三次元プロット機能に対応。
-	* `color.ramp.data.frame()`メソッドの削除。
-	* `color.ramp.numeric()`メソッドの追加。
-	* `cforest()`, `ctree()`, `randomForest()`, `svm()`へ対応。
-	* リンク関数の扱いの向上。
+  * 三次元プロット機能に対応。
+  * `color.ramp.data.frame()`メソッドの削除。
+  * `color.ramp.numeric()`メソッドの追加。
+  * `cforest()`、`ctree()`、`randomForest()`、`svm()`へ対応。
+  * リンク関数の扱いの向上。
 * 2016.12.31: 0.0.5
-	* グループ変数の区切り文字をコントロールする`sep`オプションを`partial.plot()`関数に追加。
+  * グループ変数の区切り文字をコントロールする`sep`オプションを`partial.plot()`関数に追加。
 * 2016.07.23: 0.0.4
-	* `partial.plot.legend()`関数を`pp.legend()`関数にリネーム。
-	* `pp.legend()`関数の引数の順番を変更。
+  * `partial.plot.legend()`関数を`pp.legend()`関数にリネーム。
+  * `pp.legend()`関数の引数の順番を変更。
 * 2016.07.14: 0.0.3
-	* `partial.plot()`関数がグラフィックパラメーター`log`をサポートするようにした。
+  * `partial.plot()`関数がグラフィックパラメーター`log`をサポートするようにした。
 * 2016.07.11: 0.0.2
-	* `partial.plot.legend()`関数がレジェンドのタイトルを描画するように修正。
+  * `partial.plot.legend()`関数がレジェンドのタイトルを描画するように修正。
 * 2016.06.27: 0.0.1
-	* 開発版リリース。
+  * 開発版リリース。

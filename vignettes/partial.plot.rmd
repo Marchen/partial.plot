@@ -9,93 +9,47 @@ output:
         fig_retina: 2
         dpi: 300
         dev.args: list(dpi = 300)
+        toc: true
+        toc_depth: 2
+        md_extensions: -ascii_identifiers
 vignette: >
     %\VignetteIndexEntry{Quick start guide for partial.plot.}
     %\VignetteEngine{knitr::rmarkdown}
     \usepackage[utf8]{inputenc}
 ---
 
-This package provides tools for visualizing a result of multivariate analyses.
-
 [Japanese](partial.plot.j.html)
 
---------------------------------------------------------------------------------
+# Introduction
 
-## <a id = "index">Table of Contents</a>
+*But current version of this document (in English) is not up to date due to my time limitation. For the current functionality of the package, please consult the manual of the `partial.plot` package in R. I hope I will update this document near future so please be patient. I'm sorry for your inconvenience*
 
-* [Introduction](#introduction)
-* [Installation and updating](#installation)
-* [Quick start (for professional users)](#quickstart)
-* [Quick start guide (for normal users)](#basic_usage)
-	* [Preparing dataset and an example model](#preparation)
-	* [Drawing prediction](#partial_plot)
-	* [Adding legend](#legend)
-* [Visualizing slighly complicated model](#basic_usage2)
-* [Controlling elements of graph](#advanced_settings)
-	* [Removing elements](#remove_elements)
-	* [Changing colors](#change_colors)
-	* [Other settings](#other_settings)
-* [Supported models](#supported_models)
-* [Known issues](#known_issues)
-* [Other functions](#value_add)
-	* [color.ramp](#color_ramp)
-	* [gg.colors](#gg_colors)
-* [Change log](#version_history)
+This package provides tools for visualizing a result of multivariate analyses.
+The goal of this package is providing a easy-to-use method to visualize results of many kinds of regression models.
+This package is still in development and may have bugs which can affect your interpretation of the results.
+Also I'm still designing the interface of the package so future version may lose some functionality in current version.
+If you find bugs or if you have any requests, please let me know by [GitHub](https://github.com/Marchen/partial.plot) or email: paste following code into R to get my address: rawToChar(as.raw(c(109, 111, 103, 64, 102, 102, 112, 114, 105, 46, 97, 102, 102, 114, 99, 46, 103, 111, 46, 106, 112))).
 
 --------------------------------------------------------------------------------
 
-## <a id = "introduction">Introduction</a>
-
-By recent active development of R and it's community, now ecologists have
-several kind of models to test and explain results and predict 
-
-First of all, this package is still in development.
-There may be bugs and missing functionalities, and parhaps serious bag which 
-can affect result of your study. So, use this program by your own risk.
-If you find a bug or have request for some functionality, 
-please feel free to contact me.
-
-For other things, I will write...
-
---------------------------------------------------------------------------------
-
-## <a id = "installation">Installing and updating</a>
+# Installation
 
 To install the package, just copy & paste following commands into the R console.
 
 ```{R, message = FALSE, warning = FALSE, eval = FALSE}
-install.packages(c("testthat","lsmeans"))
 install.packages(
-	c("model.adapter", "partial.plot"),
-	repos = "http://hostgk3.biology.tohoku.ac.jp/marchen/R/repos"
+    c("model.adapter", "partial.plot"), type = "source",
+    repos = c(
+        "http://florivory.net/R/repos", options()$repos
+    )
 )
 ```
-
-If the command above couldn't work, try this one.
-
-```{R, message = FALSE, warning = FALSE, eval = FALSE}
-install.packages(c("testthat","lsmeans"))
-install.packages(
-	c("model.adapter", "partial.plot"),
-	repos = "http://hostgk3.biology.tohoku.ac.jp/marchen/R/repos",
-	type = "source"
-)
-```
-
-To update the packages use following command.
-
-```{R, message = FALSE, warning = FALSE, eval = FALSE}
-update.packages(
-	repos = "http://hostgk3.biology.tohoku.ac.jp/marchen/R/repos"
-)
-```
-
 
 --------------------------------------------------------------------------------
 
-## <a id = "quickstart">Quick start (for R wizards)</a>
+# Quick start (for R wizards)
 
-Try this one!
+Try this one! You can also see the [examples](visual.test.html).
 
 ```{R, echo = FALSE, message = FALSE}
 library(partial.plot)
@@ -107,7 +61,7 @@ data(iris)
 
 # Create a prediction model by GLM.
 model <- glm(
-	Petal.Length ~ (Sepal.Length + Petal.Width) * Species, data = iris
+    Petal.Length ~ (Sepal.Length + Petal.Width) * Species, data = iris
 )
 
 # Load the library.
@@ -121,22 +75,20 @@ pp.legend(info, "topleft")
 
 # Draw 3D plot.
 info <- partial.plot(
-	model, c("Sepal.Length", "Petal.Width"), col = terrain.colors,
+    model, c("Sepal.Length", "Petal.Width"), col = terrain.colors,
     theta = 20
 )
-
 ```
-
 
 --------------------------------------------------------------------------------
 
-## <a id = "basic_usage">Quick start guild (for normal users)</a>
+# Quick start guild (for normal users)
 
-### <a id = "preparation">Preparing dataset and an example model</a>
+## Preparing dataset and an example model
 
 In this time, we use the Fisher's iris dataset.
 This dataset having petal length (Petal.Length), petal width (Petal.Width),
-sepal length (Sepal.Length) and sepal width (Sepal.Width) data of 3 species of 
+sepal length (Sepal.Length) and sepal width (Sepal.Width) data of 3 species of
 Iris (setosa, versicolor, and virginica).
 
 We can load the dataset and see structure of the data set by following code.
@@ -151,16 +103,16 @@ str(iris)
 # Visualize data.
 par(mfrow = c(2, 2))
 plot(
-	Petal.Length ~ Sepal.Length, data = iris,
-	pch = as.numeric(Species) + 14, col = as.numeric(Species) + 1
+    Petal.Length ~ Sepal.Length, data = iris,
+    pch = as.numeric(Species) + 14, col = as.numeric(Species) + 1
 )
 plot(
-	Petal.Length ~ Sepal.Width, data = iris,
-	pch = as.numeric(Species) + 14, col = as.numeric(Species) + 1
+    Petal.Length ~ Sepal.Width, data = iris,
+    pch = as.numeric(Species) + 14, col = as.numeric(Species) + 1
 )
 plot(
-	Petal.Length ~ Petal.Width, data = iris,
-	pch = as.numeric(Species) + 14, col = as.numeric(Species) + 1
+    Petal.Length ~ Petal.Width, data = iris,
+    pch = as.numeric(Species) + 14, col = as.numeric(Species) + 1
 )
 ```
 
@@ -175,15 +127,15 @@ petal length and between petal width and petal length differ between species.
 ```{R}
 # Make prediction model.
 model <- glm(
-	Petal.Length ~ (Sepal.Length + Petal.Width) * Species, data = iris
+    Petal.Length ~ (Sepal.Length + Petal.Width) * Species, data = iris
 )
 
 # Show summary of the model.
 summary(model)
 ```
 
+## Visualize prediction model
 
-### <a id = "partial_plot">Visualize prediction model</a>
 Now we are going to visualize the result of the GLM analysis with
 `partial.plot()`. Basic usage of `partial.plot()` function is as follow.
 The example below visualize predicted relationship between sepal length and
@@ -218,8 +170,7 @@ we can specify the arguments as follow.
 partial.plot(model, c("Petal.Width", "Species"), pch = 16)
 ```
 
-
-### <a id = "legend">Adding legend</a>
+## Adding legend
 
 `partial.plot()` returns information can be used to produce its legend.
 For example, if we write following command, information about the plot
@@ -233,7 +184,6 @@ info <- partial.plot(model, c("Sepal.Length", "Species"), pch = 16)
 By passing `info` to `pp.legend()` function, we can draw a legend using
 settings used for `partial.plot()`.
 
-
 ```{R}
 # Add legend.
 info <- partial.plot(model, c("Sepal.Length", "Species"), pch = 16)
@@ -246,53 +196,53 @@ to `legend` function.
 
 --------------------------------------------------------------------------------
 
-# <a id = "basic_usage2">Visualizing slighly complicated models</a>
+# Visualizing slightly complicated models
 
 `partial.plot()` can visualize more complicated models.
 In this time, we use `CO2` dataset in `dataset` package of R.
 THis dataset having CO<sub>2</sub> assimilation rate of plants collected
-from Quebec and Mississippi in several CO<sub>2</sub> concentraitons
+from Quebec and Mississippi in several CO<sub>2</sub> concentrations
 after the chilling experiment.
 
 --------------------------------------------------------------------------------
 
-## <a id = "advanced_settings">Controlling elements of graph</a>
+## Controlling elements of graph
 
 We can control some parameters of `partial.plot` to change appearance of the
 graph.
 
-
-### <a id = "remove_elements">Removing elements</a>
+### Removing elements
 
 We can suppress drawing symbols representing residuals by setting `FALSE`
 to `draw.residual` argument.
 
 ```{R}
 partial.plot(
-	model, c("Sepal.Length", "Species"), draw.residual = FALSE
+    model, c("Sepal.Length", "Species"), draw.residual = FALSE
 )
 ```
 
 Also, we can suppress drawing predicted partial relationship by specifying
 `FALSE` to `draw.relationship` argument.
+
 ```{R}
 partial.plot(
-	model, c("Sepal.Length", "Species"), draw.relationship = FALSE,
-	pch = 16
+    model, c("Sepal.Length", "Species"), draw.relationship = FALSE,
+    pch = 16
 )
 ```
 
-By setting 'extrapolate' to 'TRUE', predicted partial relationshiops are drawn
-for range of the expranatory variable for all groups.
+By setting 'extrapolate' to 'TRUE', predicted partial relationships are drawn
+for range of the explanatory variable for all groups.
+
 ```{R}
 info <- partial.plot(
-	model, c("Sepal.Length", "Species"), pch = 16, extraporate = TRUE
+    model, c("Sepal.Length", "Species"), pch = 16, extrapolate = TRUE
 )
 pp.legend(info, "topleft")
 ```
 
-
-### <a id = "change_colors">Changing colors</a>
+### Changing colors
 
 We can change colors of the graph by several ways.
 First way to change colors of the graph is passing `rainbow()` or
@@ -303,7 +253,7 @@ We can use functions that described in help page of `rainbow()` function
 ```{R}
 # Change colors of the graph.
 info <- partial.plot(
-	model, c("Sepal.Length", "Species"), pch = 16, col = rainbow
+    model, c("Sepal.Length", "Species"), pch = 16, col = rainbow
 )
 # Colors in the legend is automatically adjusted.
 pp.legend(info, "topleft")
@@ -315,17 +265,16 @@ for each factor levels and specify it for `col` argument.
 ```{R}
 # Prepare a named color vector.
 col <- c(
-	setosa = "darkgreen", versicolor = "blue", virginica = "orange2"
+    setosa = "darkgreen", versicolor = "blue", virginica = "orange2"
 )
 # Specify the vector for col argument.
 info <- partial.plot(
-	model, c("Sepal.Length", "Species"), pch = 16, col = col
+    model, c("Sepal.Length", "Species"), pch = 16, col = col
 )
 pp.legend(info, "topleft")
 ```
 
-
-### <a id = "other_settings">Other settings</a>
+### Other settings
 
 We can change other graphic parameters like `plot` function.
 We changed `pch` to set symbol of the in the example above.
@@ -334,49 +283,44 @@ But we also use other graphic parameters.
 ```{R}
 # Set other graphic parameters
 info <- partial.plot(
-	model, c("Sepal.Length", "Species"), pch = 16, cex = 1.5,
-	xlab = "Sepal length (mm)", ylab = "Petal Length"
+    model, c("Sepal.Length", "Species"), pch = 16, cex = 1.5,
+    xlab = "Sepal length (mm)", ylab = "Petal Length"
 )
 pp.legend(info, "topleft")
 ```
 
-
 --------------------------------------------------------------------------------
 
-## <a id = "supported_models">Supported models</a>
+# Supported models
 
-At this moment, (maybe) `lm()`, `glm()`, `lme()`, and `MCMCglmm()` are
-supported.
+At this moment, (maybe) `lm()`, `glm()`, `glm.nb()`, `lme()`, `lmer()`, `glmer()`, `glmer.nb()`, `glmmadmb()`, `MCMCglmm()`, `cforest()`, `ctree()`, `svm()`, `randomForest()`, `ranger()`, `rpart()`, `tree()` are supported.
 Support for the models are provided by the `model.adapter` package.
-Therefore machine learning models such as `randomForest` will be supported
-in near future.
-
 
 --------------------------------------------------------------------------------
 
-## <a id = "known_issues">Known issues</a>
+# Known issues
 
 * Drawing for only one continuous variable is supported.
 Two explanatory variables will be supported in future.
+
 * At least one continuous variable should be specified.
 Plotting only by factors will be supported in future.
 
-
 --------------------------------------------------------------------------------
 
-## <a id = "value_add">Other functions</a>
+# Other functions
 
 `partial.plot` package contains some functions which may be useful.
 
-### <a id = "color_ramp">color.ramp()</a>
+## color.ramp()
 
 `color.ramp` function creates color vector from factors.
 
 ```{R}
 library(partial.plot)
 plot(
-	Petal.Length ~ Sepal.Length, col = color.ramp(Species),
-	data = iris, pch = 16
+    Petal.Length ~ Sepal.Length, col = color.ramp(Species),
+    data = iris, pch = 16
 )
 ```
 
@@ -385,22 +329,22 @@ produced by `color.ramp`.
 
 ```{R}
 plot(
-	Petal.Length ~ Sepal.Length, col = color.ramp(Species, rainbow),
-	data = iris, pch = 16
+    Petal.Length ~ Sepal.Length, col = color.ramp(Species, rainbow),
+    data = iris, pch = 16
 )
 ```
 
 ```{R}
 col <- c(
-	setosa = "darkgreen", versicolor = "blue", virginica = "orange2"
+    setosa = "darkgreen", versicolor = "blue", virginica = "orange2"
 )
 plot(
-	Petal.Length ~ Sepal.Length, col = color.ramp(Species, col),
-	data = iris, pch = 16
+    Petal.Length ~ Sepal.Length, col = color.ramp(Species, col),
+    data = iris, pch = 16
 )
 ```
 
-### <a id = "gg_colors">gg.colors()</a>
+## gg.colors()
 
 `gg.colors` creates gg.plot like colors.
 
@@ -408,19 +352,44 @@ plot(
 barplot(1:10, col = gg.colors(10))
 ```
 
-
 --------------------------------------------------------------------------------
 
-## <a id = "version_history">Version history</a>
+# Version history
+
+* 2018.11.09: 0.2.3
+  * Support model.adapter > 0.1.0.
+  * Changed `extraporate` argument to `extrapolate`.
+* 2018.05.02: 0.2.2
+  * Changed behavior: the mean and credible internal are calculated using MCMC samples by `coda` package when the model used MCMC for estimation.
+  * Checked support for `glm.nb` and `glmer.nb`.
+  * Minor bug fixes.
+* 2018.01.07: 0.2.1
+  * Changed dependency on `lsmeans` to `emmeans` due to discontinuation of `lsmeans`.
+* 2017.10.01: 0.2.0
+  * Added support for`lmer()`, `glmer()`, `glmmadmb()`, `glmmML()`, `ranger()`, `rpart()` and `tree()`.
+  * Added `add` option.
+  * Added points representing residuals in 3D plots.
+  * Changed the algorithm for models which can't be handled by `lsmeans` package.
+  * Added functionality to draw a histogram for the explanatory variable.
+  * Added functionality to draw probability for classification models.
+  * Added support for logical variables for grouping factor.
+  * Added support for different `lty`, `lwd` and `pch` for groups.
+  * Bug fixes and performance improvement.
+* 2016.01.11: 0.1.0
+  * Implemented 3D plot.
+  * Deleted `color.ramp.data.frame()` method
+  * Added `color.ramp.numeric()` method
+  * Added support for `cforest()`, `ctree()`, `randomForest()` and `svm()`.
+  * Improved handling of link functions.
 * 2016.12.31: 0.0.5
-	* Added 'sep' option to partial.plot() which controls separator of factor levels.
-	* Refactoring and bug fixes.
+  * Added 'sep' option to partial.plot() which controls separator of factor levels.
+  * Refactoring and bug fixes.
 * 2016.07.23: 0.0.4
-	* Renamed partial.plot.legen() function to pp.legend().
-	* Changed order of arguments of pp.legend() function.
+  * Renamed partial.plot.legend() function to pp.legend().
+  * Changed order of arguments of pp.legend() function.
 * 2016.07.14: 0.0.3
-	* partial.plot() now supports 'log' graphic parameter.
+  * partial.plot() now supports 'log' graphic parameter.
 * 2016.07.11: 0.0.2
-	* partial.plot.legend() function now draws title of the legend.
+  * partial.plot.legend() function now draws title of the legend.
 * 2016.06.27: 0.0.1
-	* Initial release.
+  * Initial release.
