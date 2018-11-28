@@ -22,7 +22,7 @@ vignette: >
 
 # Introduction
 
-*But current version of this document (in English) is not up to date due to my time limitation. For the current functionality of the package, please consult the manual of the `partial.plot` package in R. I hope I will update this document near future so please be patient. I'm sorry for your inconvenience*
+*Current version of this document (in English) is not up to date due to my time limitation. For the current functionality of the package, please consult the manual of the `partial.plot` package in R. I hope I will update this document near future so please be patient. I'm sorry for your inconvenience*
 
 This package provides tools for visualizing a result of multivariate analyses.
 The goal of this package is providing a easy-to-use method to visualize results of many kinds of regression models.
@@ -298,10 +298,19 @@ Support for the models are provided by the `model.adapter` package.
 
 --------------------------------------------------------------------------------
 
-# Known issues
+# Details of the calculation
 
-* Drawing for only one continuous variable is supported.
-Two explanatory variables will be supported in future.
+For the estimation of the relationship between the explanatory and response variable, `partial.plot` depends on `emmeans` package.
+If the specified model is supported by `emmeans` package, the predicted relationship is calculated by `emmeans`.
+Currently, `emmeans` is used for `lm`, `glm`, `glm.nb`, `lme`, `lmer`, `glmer`, `glmer.nb`, `glmmadmb` and `MCMCglmm`.
+When the model is supported by `emmeans`, response variables other than focal response variable(s) are fixed at their mean and the relationship is estimated.
+
+When the model is not supported by `emmeans`, the relationship is calculated by `partial.plot`.
+In this case, conditional relationship on the dataset is calculated: for the values of response variables other than focal response variables(s), all values in the dataset is used and mean values of predicted response variable is used for the relationship.
+
+--------------------------------------------------------------------------------
+
+# Known issues
 
 * At least one continuous variable should be specified.
 Plotting only by factors will be supported in future.

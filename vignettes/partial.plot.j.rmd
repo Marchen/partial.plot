@@ -13,7 +13,7 @@ output:
         toc_depth: 2
         md_extensions: -ascii_identifiers
 vignette: >
-    %\VignetteIndexEntry{Quick start guid for partial.plot (Japanese).}
+    %\VignetteIndexEntry{Quick start guide for partial.plot (Japanese).}
     %\VignetteEngine{knitr::rmarkdown}
     \usepackage[utf8]{inputenc}
 ---
@@ -203,7 +203,6 @@ pp.legend(info, "topleft")
 `pp.legend()`関数の使い方は`legend()`関数とほとんど同じです。
 １番目の引数には`partial.plot()`の結果を指定します。
 ２番目以降に入力した引数は全て`legend()`関数にそのまま渡されます。
-
 
 --------------------------------------------------------------------------------
 
@@ -626,6 +625,18 @@ par(mfrow = c(1, 1))
 今のところ、`lm()`、`glm()`、`glm.nb()`、`lme()`、`lmer()`、`glmer()`、`glmer.nb()`、`glmmadmb()`、`MCMCglmm()`、`cforest()`、`ctree()`、`svm()`、`randomForest()`、`ranger()`、`rpart()`、`tree()`に対応しています（たぶん）。
 各モデルへの対応は`model.adapter`パッケージに依存しているので、
 将来的には`model.adapter`パッケージが対応する他のモデルにも対応する予定です。
+
+--------------------------------------------------------------------------------
+
+# 計算の詳細
+
+`partial.plot`では説明変数と応答変数の関係の推定に`emmeans`パッケージを使用しています。
+もし対象のモデルに`emmeans`パッケージが対応している場合、説明変数と応答変数の関係は`emmeans`で計算されます。
+今のところ、`lm`、`glm`、`glm.nb`、`lme`、`lmer`、`glmer`、`glmer.nb`、`glmmadmb`、`MCMCglmm`の計算に`emmeans`が使われます。
+モデルに`emmeans`が対応している場合、対象の説明変数以外の変数は平均値に固定され、予測値が計算されます。
+
+対象のモデルに`emmeans`が対応していない場合、計算は`partial.plot`によって行われます。
+この場合、対象の説明変数以外の説明変数の値には元のデータセット全体の値が使われ、予測値の平均値を用いて説明変数と応答変数の関係が描画されます。
 
 --------------------------------------------------------------------------------
 
