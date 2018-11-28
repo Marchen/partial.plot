@@ -6,16 +6,16 @@ require(rmarkdown)
 #	Change working directory to package directory
 #------------------------------------------------------------------------------
 get.this.file.dir <- function() {
-	cmdArgs <- commandArgs(trailingOnly = FALSE)
-	needle <- "--file="
-	match <- grep(needle, cmdArgs)
-	if (length(match) > 0) {
-		# Rscript
-		return(dirname(sub(needle, "", cmdArgs[match])))
+	args <- commandArgs()
+	with.file <- grepl("--file=", args)
+	if (any(with.file)) {
+		# The script was executed from Rscript.
+		file.path <- sub("--file=", "", args[with.file])
 	} else {
-		# 'source'd via R console
-		return(dirname(normalizePath(sys.frames()[[1]]$ofile)))
+		# The script was sourced from R.
+		file.path <- sys.frames()[[1]]$ofile
 	}
+	return(dirname(normalizePath(file.path)))
 }
 
 old.wd <- setwd(get.this.file.dir())
