@@ -1,0 +1,34 @@
+language: r
+r:
+  - oldrel
+  - release
+  - devel
+cache: packages
+r_binary_packages:
+  - R6
+  - randomForest
+  - party
+  - gbm
+  - lme4
+  - glmmML
+  - nlme
+  - tree
+  - rpart
+  - mgcv
+  - gam
+  - ranger
+  - MASS
+  - MCMCglmm
+r_github_packages:
+  - marchen/model.adapter
+repos:
+  CRAN: https://cloud.r-project.org
+  glmmadmb: http://glmmadmb.r-forge.r-project.org/repos
+before_script:
+  - rm .travis.yml
+  - rm .gitignore
+  - R -e 'install.packages("roxygen2")'
+  - R -e 'devtools::document()'
+  - R -e 'devtools::install()'
+sudo:
+  required
