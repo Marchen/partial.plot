@@ -1,34 +1,20 @@
+os:
+  - linux
+  - osx
 language: r
 r:
   - oldrel
   - release
   - devel
 cache: packages
-r_binary_packages:
-  - R6
-  - randomForest
-  - party
-  - gbm
-  - lme4
-  - glmmML
-  - nlme
-  - tree
-  - rpart
-  - mgcv
-  - gam
-  - ranger
-  - MASS
-  - MCMCglmm
-r_github_packages:
-  - marchen/model.adapter
 repos:
   CRAN: https://cloud.r-project.org
-  glmmadmb: http://glmmadmb.r-forge.r-project.org/repos
-before_script:
-  - rm .travis.yml
-  - rm .gitignore
+before_install:
+  - R -e 'install.packages("devtools")'
+  - R -e 'install.packages("R2admb")'
+  - R -e 'install.packages("glmmADMB", repos=c("http://glmmadmb.r-forge.r-project.org/repos", getOption("repos")), type="source")'
   - R -e 'install.packages("roxygen2")'
   - R -e 'devtools::document()'
-  - R -e 'devtools::install()'
-sudo:
-  required
+before_script:
+  - rm .travis.yml
+  - rm install.r
