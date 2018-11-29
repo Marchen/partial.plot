@@ -12,11 +12,11 @@ repos:
 r_github_packages:
   - marchen/model.adapter
 before_install:
-  - R -e 'install.packages("devtools")'
   - R -e 'install.packages("R2admb")'
   - R -e 'install.packages("glmmADMB", repos=c("http://glmmadmb.r-forge.r-project.org/repos", getOption("repos")), type="source")'
-  - R -e 'install.packages("roxygen2")'
-  - R -e 'devtools::document()'
 before_script:
   - rm .travis.yml
   - rm install.r
+  - R -e 'install.packages("devtools")'
+  - R -e 'install.packages("roxygen2")'
+  - R -e 'devtools::document()'
