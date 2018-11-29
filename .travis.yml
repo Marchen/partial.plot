@@ -9,6 +9,8 @@ r:
 cache: packages
 repos:
   CRAN: https://cloud.r-project.org
+r_github_packages:
+  - marchen/model.adapter
 before_install:
   - R -e 'install.packages("devtools")'
   - R -e 'install.packages("R2admb")'
