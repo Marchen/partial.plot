@@ -16,7 +16,6 @@ before_install:
   - R -e 'install.packages("glmmADMB", repos=c("http://glmmadmb.r-forge.r-project.org/repos", getOption("repos")), type="source")'
 before_script:
   - rm .travis.yml
-  - rm install.r
   - R -e 'install.packages("devtools")'
   - R -e 'install.packages("roxygen2")'
   - R -e 'devtools::document()'
