@@ -18,4 +18,5 @@ before_script:
   - rm .travis.yml
   - R -e 'install.packages("devtools")'
   - R -e 'install.packages("roxygen2")'
+  - R -e 'devtools::install()'
   - R -e 'devtools::document()'
