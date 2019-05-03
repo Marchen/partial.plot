@@ -252,9 +252,9 @@ partial.residual$methods(
 		"
 		# Prepare names of numeric variables.
 		# 数値型変数の変数名を用意。
-		all.numerics <- .self$settings$adapter$x.names(type = "base")
-		all.numerics <- all.numerics[
-			sapply(.self$settings$data[all.numerics], is.numeric)
+		x.names <- .self$settings$adapter$x.names(type = "base")
+		all.numerics <- x.names[
+			sapply(.self$settings$data[x.names], is.numeric)
 		]
 		other.numerics <- all.numerics[
 			!all.numerics %in% .self$settings$x.names.numeric
