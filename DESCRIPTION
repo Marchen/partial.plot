@@ -41,7 +41,9 @@ Suggests:
     rmarkdown,
     viridis,
     rgl,
-	coda
+	coda,
+    MASS,
+    utils
 VignetteBuilder: knitr
 RoxygenNote: 6.1.1
 Collate:

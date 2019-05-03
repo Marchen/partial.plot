@@ -310,6 +310,89 @@ In this case, conditional relationship on the dataset is calculated: for the val
 
 --------------------------------------------------------------------------------
 
+# Model specific information
+
+## glmer.nb
+
+When the formula of a model having functions such as `offset()` and `log()`, `partial.plot` stops because it can't obtain data from the model object. To avoid this problem, please specify original data used for the modeling to the `data` argument.
+
+```{R, eval = FALSE}
+# Example
+model <- glmer.nb(y ~ log(x) + (1 | random), data = dat)
+partial.plot(model, "x", data = dat)
+```
+
+## Models with offset term
+
+'partial.plot' treats offset term(s) as follows:
+
+Prediction and confidence intervals
+: Similar with explanatory variables, `partial.plot` uses mean value(s) for offset term(s) for prediction. For example, when the response variable of a model is a number of individuals and the offset term is study area, prediction and confidence interval are calculated using the mean value of study area.
+
+Partial residual
+: Original values of the variable used for the offset term during model construction are used for calculation of partial residuals.
+
+Due to these specification, prediction and partial residuals don't match each other in some situations. Two methods can solve the problem: 1) disabling partial residual and 2) prepare special dataset for plotting. An easier method is disabling plotting partial residuals by specifying `draw.residual = FALSE` to `partial.plot`. Of course this method is not a better way, but would be used for some situations. A better, but more complicated method is calculating response variable/offset term before running `partial.plot` as shown in the following example.
+
+```{R}
+#-----------------------------------------------------------------------------
+#   Prepare dataset and model.
+#-----------------------------------------------------------------------------
+
+# Load 'Insurance' data containing number of claims from MASS package.
+# For the details, see '?Insurance' after loading MASS package.
+utils::data(Insurance, package="MASS")
+
+# Convert age from factor to numeric.
+Insurance$Age.numeric <- c(25, 27, 32.5, 35)[as.numeric(Insurance$Age)]
+
+# Model the number of insurance claims by district, type of cars and age.
+# The number of policyholders is used for the offset term.
+model <- glm(
+    Claims ~ District + Group + Age.numeric + offset(log(Holders)),
+    data = Insurance, family = poisson
+)
+
+#-----------------------------------------------------------------------------
+#   Plotting 1: case of failure.
+#-----------------------------------------------------------------------------
+
+# Simply draw partial dependence plot.
+# Predicted relationship and partial residual don't match each other.
+pp <- partial.plot(model, c("Age.numeric", "Group"))
+pp.legend(pp, "topright")
+
+#-----------------------------------------------------------------------------
+#   Solution 1: disable drawing partial residual.
+#   In this case, predicted relationship with mean number of policyholders
+#   is drawn.
+#-----------------------------------------------------------------------------
+pp <- partial.plot(model, c("Age.numeric", "Group"), draw.residual = FALSE)
+pp.legend(pp, "topright")
+
+#-----------------------------------------------------------------------------
+#   Solution 2: use response variable/offset term.
+#   In this case, we calculate claims count/number of policyholders and set 1
+#   for number of policyholders of all records  before plotting.
+#-----------------------------------------------------------------------------
+
+# Create a copy of the dataset.
+Insurance2 <- Insurance
+
+# Convert the values of response variable from number of claims to number of
+# claims per number of policyholders.
+Insurance2$Claims <- Insurance2$Claims / Insurance2$Holders
+
+# Set 1 for number of policyholders of all records.
+Insurance2$Holders <- 1
+
+# Draw partial dependence plot for number of claims per number of policyholders.
+pp <- partial.plot(model, c("Age.numeric", "District"), data = Insurance2)
+pp.legend(pp, "topright")
+```
+
+--------------------------------------------------------------------------------
+
 # Known issues
 
 * At least one continuous variable should be specified.
