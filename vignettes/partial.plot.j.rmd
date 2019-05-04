@@ -73,6 +73,8 @@ model <- glm(
 # ライブラリの読み込み。
 library(partial.plot)
 
+str(partial.plot)
+
 # 萼片の長さと花弁の長さとの関係を作図。
 info <- partial.plot(model, c("Sepal.Length", "Species"), pch = 16)
 
