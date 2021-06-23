@@ -252,3 +252,4 @@ vignettes/*.R
 .Rapp.history
 test/*.html
 test/visual.test_files/
+.Rproj.user
