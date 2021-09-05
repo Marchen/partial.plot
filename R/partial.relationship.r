@@ -11,8 +11,7 @@ LSMEANS_INCOMPATIBLE_MODELS <- c(
 	"glmmML", "randomForest", "ranger", "rpart", "svm", "tree"
 )
 
-#------------------------------------------------------------------------------
-#	変依存性を計算するクラス。
+
 #------------------------------------------------------------------------------
 #'	(Internal) A reference class calculates partial relationship.
 #'
@@ -37,8 +36,6 @@ partial.relationship <- setRefClass(
 )
 
 
-#------------------------------------------------------------------------------
-#	クラスを初期化して偏依存性を計算する。
 #------------------------------------------------------------------------------
 partial.relationship$methods(
 	initialize = function(settings) {
@@ -76,8 +73,6 @@ partial.relationship$methods(
 
 
 #------------------------------------------------------------------------------
-#	lsmeansを使って予測値と信頼区間を計算する。
-#------------------------------------------------------------------------------
 partial.relationship$methods(
 	partial.relationship.lsmeans = function() {
 		"
@@ -87,7 +82,6 @@ partial.relationship$methods(
 		\\code{\\link[emmeans]{lsmeans}} function and returns a data.frame.
 		"
 		# calculate prediction.
-		# 予測値を計算。
 		at <- c(.self$settings$numeric.sequences, .self$settings$factor.levels)
 		rg <- ref_grid(
 			.self$settings$model, at, data = .self$settings$data,
@@ -95,7 +89,6 @@ partial.relationship$methods(
 		)
 		lsm <- .self$summarize.ref.grid(rg)
 		# Remove predictions with out-ranged explanatory variable for each group.
-		# 各グループの説明変数の範囲を外れた予測値を削除。
 		lsm <- .self$filter.result(lsm)
 		return(as.data.frame(lsm))
 	}
@@ -103,10 +96,9 @@ partial.relationship$methods(
 
 
 #------------------------------------------------------------------------------
-#	mcmcを使わずにlsmeansを使って予測値と信頼区間を計算する。
-#------------------------------------------------------------------------------
 partial.relationship$methods(
 	summarize.ref.grid.without.mcmc = function(lsm) {
+	  "Calculate predictions and intervals using lsmeans without mcmc."
 		result <- summary(lsm, level = .self$settings$interval.levels)
 		colnames(result) <- gsub(
 			"^lsmean$|^response$|^prob$|^rate$", "fit", colnames(result)
@@ -123,10 +115,9 @@ partial.relationship$methods(
 
 
 #------------------------------------------------------------------------------
-#	mcmcとlsmeansを使って予測値と信頼区間を計算する。
-#------------------------------------------------------------------------------
 partial.relationship$methods(
 	summarize.ref.grid.with.mcmc = function(lsm) {
+	  "Calculate predictions and intervals using lsmeans with mcmc."
 		lsm.mcmc <- as.mcmc(lsm)
 		m <- apply(lsm.mcmc, 2, mean)
 		interval.levels <- c(
@@ -146,11 +137,10 @@ partial.relationship$methods(
 
 
 #------------------------------------------------------------------------------
-#	lsmeansを使って予測値と信頼区間を計算する。
-#------------------------------------------------------------------------------
 partial.relationship$methods(
 	summarize.ref.grid = function(rg) {
-		lsm <- lsmeans(rg, .self$settings$x.names)
+	  "Calculate predictions and intervals using lsmeans."
+	  lsm <- lsmeans(rg, .self$settings$x.names)
 		if (length(lsm@post.beta) == 1 & all(is.na(lsm@post.beta))) {
 			return(.self$summarize.ref.grid.without.mcmc(lsm))
 		}
@@ -163,8 +153,6 @@ partial.relationship$methods(
 )
 
 
-#------------------------------------------------------------------------------
-#	クラスターで予測値を計算するラッパー関数。
 #------------------------------------------------------------------------------
 partial.relationship$methods(
 	predict.stats = function(
@@ -189,7 +177,6 @@ partial.relationship$methods(
 		"
 		on.exit(gc())
 		# Make data for prediction.
-		# 予測用データを作成。
 		replace.values <- new.value.grid[index, ]
 		param.names <- names(new.value.grid)
 		newdata[param.names] <- replace.values
@@ -208,8 +195,6 @@ partial.relationship$methods(
 
 
 #------------------------------------------------------------------------------
-#	偏依存関係を自前で計算する関数。主に機械学習モデル用。
-#------------------------------------------------------------------------------
 partial.relationship$methods(
 	partial.relationship.internal = function() {
 		"
@@ -217,24 +202,18 @@ partial.relationship$methods(
 		Mainly used for machine learning methods.
 		"
 		# prepare combinations of x variables.
-		# 説明変数の組み合わせを用意。
 		grid <- do.call(
 			expand.grid,
 			c(.self$settings$numeric.sequences, .self$settings$factor.levels)
 		)
 		grid <- .self$filter.result(grid)
 		# Run calculation.
-		# 計算実行
 		result <- .self$calculate.relationship(grid)
 		return(result)
 	}
 )
 
 
-#------------------------------------------------------------------------------
-#	予測値を計算する関数。
-#	偏残差の計算にも使う必要があるので
-#	partial.relationship.internalから分離して関数にした。
 #------------------------------------------------------------------------------
 partial.relationship$methods(
 	calculate.relationship = function(grid) {
@@ -265,9 +244,6 @@ partial.relationship$methods(
 
 
 #------------------------------------------------------------------------------
-#	lsmeansの結果から、各グループごとにX軸の値が元のデータの範囲外に
-#	ある予測値を削除する。
-#------------------------------------------------------------------------------
 partial.relationship$methods(
 	filter.result = function(prediction) {
 		"
@@ -288,17 +264,14 @@ partial.relationship$methods(
 			return(prediction)
 		}
 		# Get list of unique factors.
-		# 因子の一覧を作成。
 		factors <- expand.grid(.self$settings$factor.levels)
 		# Split data and prediction for each factor group.
-		# データを因子のグループごとに分割。
 		sep = .self$settings$sep
 		pred.split <- split(prediction, prediction[names(factors)], sep = sep)
 		orig.data.split <- split(
 			.self$settings$data, .self$settings$data[names(factors)], sep = sep
 		)
 		# Filter out out-ranged numeric values.
-		# 範囲外の数値を削除。
 		result <- list()
 		for (i in 1:nrow(factors)) {
 			split.name <- combine.columns(

@@ -6,8 +6,6 @@ THRESHOLD_NROW_FOR_SMALL_DATASET = 1000
 
 
 #------------------------------------------------------------------------------
-#	偏残差を計算するクラス。
-#------------------------------------------------------------------------------
 #'	(Internal) A reference class calculate partial residuals.
 #'
 #'	@field settings
@@ -24,8 +22,6 @@ partial.residual <- setRefClass(
 )
 
 
-#------------------------------------------------------------------------------
-#	偏残差計算クラスを初期化する。
 #------------------------------------------------------------------------------
 partial.residual$methods(
 	initialize = function(settings) {
@@ -63,8 +59,6 @@ partial.residual$methods(
 )
 
 
-#------------------------------------------------------------------------------
-#	偏残差を計算する。
 #------------------------------------------------------------------------------
 #	Assume that creating a model predicts petal length (PL) by petal width (PW)
 #	and sepal length (SL) and species (SP) and their interactions.
@@ -140,9 +134,6 @@ partial.residual$methods(
 
 
 #------------------------------------------------------------------------------
-#	１つの観測値に対して偏残差を計算する。
-#	それぞれの観測値に対してpredictを呼ぶ。
-#------------------------------------------------------------------------------
 partial.residual$methods(
 	get.fit.for.small.data = function(x) {
 		"
@@ -164,9 +155,6 @@ partial.residual$methods(
 )
 
 
-#------------------------------------------------------------------------------
-#	１つの観測値に対して偏残差を計算する。
-# あらかじめ計算しておいた偏依存性の線から残差を計算。
 #------------------------------------------------------------------------------
 partial.residual$methods(
 	get.fit.for.large.data = function(x, relationship) {
@@ -209,8 +197,6 @@ partial.residual$methods(
 
 
 #------------------------------------------------------------------------------
-#	偏残差計算用に推定された関係を１間隔分拡張する。
-#------------------------------------------------------------------------------
 partial.residual$methods(
 	extended.partial.relationship = function() {
 		sequences <- .self$extend.sequences(.self$settings$numeric.sequences)
@@ -226,8 +212,6 @@ partial.residual$methods(
 
 
 #------------------------------------------------------------------------------
-#	pp.settingsのnumeric.sequencesを１つ分拡張したデータを作成する。
-#------------------------------------------------------------------------------
 partial.residual$methods(
 	extend.sequences = function(sequences) {
 		"
@@ -242,8 +226,7 @@ partial.residual$methods(
 	}
 )
 
-#------------------------------------------------------------------------------
-#	lsmeansの結果に合わせた偏残差を計算する。
+
 #------------------------------------------------------------------------------
 partial.residual$methods(
 	calculate.residuals.lsmeans = function() {
@@ -251,7 +234,6 @@ partial.residual$methods(
 		Calculate partial residuals for lsmeans compatible models.
 		"
 		# Prepare names of numeric variables.
-		# 数値型変数の変数名を用意。
 		x.names <- .self$settings$adapter$x.names(type = "base")
 		all.numerics <- x.names[
 			sapply(.self$settings$data[x.names], is.numeric)
@@ -260,7 +242,6 @@ partial.residual$methods(
 			!all.numerics %in% .self$settings$x.names.numeric
 		]
 		# Calculate prediction 1.
-		# 予測値１を計算。
 		data1 <- .self$settings$data
 		for (i in other.numerics) {
 			data1[[i]] <- data1[[i]] - mean(data1[[i]])
@@ -269,13 +250,11 @@ partial.residual$methods(
 		pred1 <- .self$settings$adapter$predict(newdata = data1, type = "link")
 		pred1 <- pred1$fit[, "fit"]
 		# Calculate prediction 2.
-		# 予測値２を計算。
 		data2 <- .self$settings$data
 		data2[all.numerics] <- 0
 		pred2 <- .self$settings$adapter$predict(newdata = data2, type = "link")
 		pred2 <- pred2$fit[, "fit"]
 		# Calculate partial residual.
-		# 偏残差を計算。
 		result <- (
 			.self$settings$adapter$link(
 				.self$settings$data[[.self$settings$adapter$y.names()]]

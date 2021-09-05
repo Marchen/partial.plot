@@ -1,6 +1,4 @@
 #------------------------------------------------------------------------------
-#	データフレームの全ての列を結合して、文字列ベクトルを作る。
-#------------------------------------------------------------------------------
 #'	(Internal) Combine columns into a character vector
 #'
 #'	This function combines all columns in a data.frame to make a character
@@ -18,8 +16,6 @@ combine.columns <- function(data, sep) {
 }
 
 
-#------------------------------------------------------------------------------
-#	偏残差・偏回帰プロットを描画。
 #------------------------------------------------------------------------------
 #'	Partial relationship graph.
 #'
@@ -237,7 +233,6 @@ partial.plot <- function(
 		warning(msg)
 	}
 	# Initialize setting object.
-	# 設定オブジェクトの初期化。
 	if (is(model, "pp.settings")) {
 		settings <- model$copy()
 		settings$update.pars(
