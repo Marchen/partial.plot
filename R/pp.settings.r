@@ -24,7 +24,9 @@ ARG_NAMES <- list(
 		list(graphics:::persp.default),
 		"cex.lab", "font.lab", "cex.axis", "font.axis"
 	),
-	image = arg.names(list(graphics::image.default), "asp", "axes", "bg"),
+	image = arg.names(
+	  list(graphics::image.default), "asp", "axes", "bg", "xaxt", "yaxt"
+	 ),
 	lines = arg.names(
 		list(graphics::lines.default),
 		"lty", "lwd", "lend", "ljoin", "lmitre", "col"
