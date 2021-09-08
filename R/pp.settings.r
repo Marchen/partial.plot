@@ -689,13 +689,28 @@ pp.settings$methods(
 		"
 		Initialize numeric sequences.
 		"
+	  is.3d <- length(.self$x.names.numeric) == 2
 		result <- list()
 		for (name in .self$x.names.numeric) {
-			result[[name]] <- seq(
-				min(.self$data[[name]], na.rm = TRUE),
-				max(.self$data[[name]], na.rm = TRUE),
-				length.out = .self$resolution
-			)
+		lims <- c("xlim", "ylim")
+			for (i in 1:2) {
+				if (
+				is.3d & name == .self$x.names.numeric[i]
+				& lims[i] %in% names(.self$other.pars)
+				) {
+				x <- .self$other.pars[[lims[i]]]
+				result[[name]] <- seq(
+					min(x), max(x),	length.out = .self$resolution
+				)
+				break
+				} else {
+					result[[name]] <- seq(
+							min(.self$data[[name]], na.rm = TRUE),
+							max(.self$data[[name]], na.rm = TRUE),
+						length.out = .self$resolution
+					)
+				}
+			}
 		}
 		.self$numeric.sequences <- result
 	}
