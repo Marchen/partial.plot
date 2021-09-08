@@ -2,13 +2,13 @@
 #	Names of models supported by lsmeans.
 #------------------------------------------------------------------------------
 LSMEANS_COMPATIBLE_MODELS <- c(
-	"glm", glmer = "glmerMod", "glmmadmb", "lm", "lme", lmer = "lmerMod",
+	"glm", glmer = "glmerMod", "lm", "lme", lmer = "lmerMod",
 	"MCMCglmm"
 )
 
 LSMEANS_INCOMPATIBLE_MODELS <- c(
 	cforest = "RandomForest", ctree = "BinaryTree", "gam", "gamm", "gbm",
-	"glmmML", "randomForest", "ranger", "rpart", "svm", "tree"
+	"glmmadmb", "glmmML", "randomForest", "ranger", "rpart", "svm", "tree"
 )
 
 
