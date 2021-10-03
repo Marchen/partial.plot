@@ -527,8 +527,10 @@ model <- glmmML(
     data = party::readingSkills, family = poisson
 )
 # 2D plot.
-info <- partial.plot(model, c("score", "nativeSpeaker"), pch = 16)
-info <- partial.plot(model, c("score", "nativeSpeaker"), pch = 16, type = "link")
+info <- partial.plot(model, c("score", "nativeSpeaker"), pch = 16, n.cores = 1)
+info <- partial.plot(
+    model, c("score", "nativeSpeaker"), pch = 16, type = "link", n.cores = 1
+)
 pp.legend(info, "topleft")
 # 3D plot.
 info <- partial.plot(
