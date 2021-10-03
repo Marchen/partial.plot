@@ -524,7 +524,7 @@ library(glmmML)
 library(viridis)
 model <- glmmML(
     age ~ (shoeSize + score) * nativeSpeaker, cluster = 1:200,
-    data = readingSkills, family = poisson
+    data = party::readingSkills, family = poisson
 )
 # 2D plot.
 info <- partial.plot(model, c("score", "nativeSpeaker"), pch = 16)
