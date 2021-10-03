@@ -1,4 +1,11 @@
-﻿2018-11-09: 0.2.3
+2021-10-03: 0.2.4
+- fix: Extra space in 3D graphs by persp.
+- fix: partial.plot does not accept zlim.
+- fix: support xlim and ylim for 3D plots.
+- fix: xaxt and yaxt were not passed to image function.
+- fix: Support change of emmeans support for glmmadmb.
+
+2018-11-09: 0.2.3
 - Support model.adapter > 0.1.0.
 - Changed the 'extraporate' argument to 'extrapolate'.
 

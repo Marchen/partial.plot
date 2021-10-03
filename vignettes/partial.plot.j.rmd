@@ -806,6 +806,12 @@ barplot(1:10, col = gg.colors(10))
 
 # 更新履歴
 
+* 2021-10-03: 0.2.4
+  * perspによる3Dグラフに余計な余白が含まれていた問題を修正。
+  * partial.plotがzlimを受け付けない問題を修正。
+  * 3Dグラフでxlimとylimをサポートした。
+  * xaxtとyaxtがimage関数に渡されない問題を修正。
+  * emmeansのglmmadmbへのサポート変更への対応。
 * 2018.11.09: 0.2.3
   * model.adapter > 0.1.0をサポート。
   * `extraporate`引数を`extrapolate`に変更した。
