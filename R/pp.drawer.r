@@ -260,7 +260,7 @@ pp.drawer$methods(
 			zlab = .self$settings$zlab, col = col
 		)
 		args <- .self$settings$set.function.args(args)
-		if (identical(.self$settings$fun.3d, persp)) {
+		if (identical(.self$settings$fun.3d, persp) & is.null(args$zlim)) {
 			args$zlim <- range(.self$xy.values()$y)
 		}
 		result <- do.call(.self$settings$fun.3d, args)
