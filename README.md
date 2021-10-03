@@ -7,6 +7,15 @@ Handling of models are based on
 [model.adapter](https://github.com/Marchen/model.adapter) class.
 
 To install the package, please copy&paste following code into your R terminal.
+If your don't have `devtools` package, please install before running install script.
+
+```{r}
+library(devtools)
+install_github("https://github.com/Marchen/model.adapter")
+install_github("https://github.com/Marchen/partial.plot")
+```
+
+Older version could be installed using following code.
 
 ```{r}
 install.packages(
