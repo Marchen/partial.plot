@@ -597,20 +597,24 @@ info <- partial.plot(
 
 ## Test _MCMCglmm()_
 
+Currently not working due to error by predict.MCMCglmm.
+
 ```{R, MCMCglmm, message = FALSE}
-library(MCMCglmm)
-model <- MCMCglmm(
-    Petal.Length ~ (Sepal.Length + Petal.Width) * Species, data = iris,
-    verbose = FALSE
-)
-# 2D plot
-info <- partial.plot(model, c("Sepal.Length", "Species"), pch = 16, data = iris)
-pp.legend(info, "topleft")
-# 3D plot
-info <- partial.plot(
-    model, c("Sepal.Length", "Petal.Width"), pch = 16, col = viridis,
-    fun.3d = persp, data = iris
-)
+# library(MCMCglmm)
+# model <- MCMCglmm(
+#     Petal.Length ~ (Sepal.Length + Petal.Width), data = iris,
+#     verbose = FALSE, nitt = 50000
+# )
+# # 2D plot
+# info <- partial.plot(
+#     model, c("Sepal.Length"), pch = 16, data = iris, n.cores = 1
+# )
+# pp.legend(info, "topleft")
+# # 3D plot
+# info <- partial.plot(
+#     model, c("Sepal.Length", "Petal.Width"), pch = 16, col = viridis,
+#     fun.3d = persp, data = iris
+# )
 ```
 
 ## Test _randomForest()_
