@@ -237,7 +237,7 @@ partial.plot <- function(
 		settings <- model$copy()
 		settings$update.pars(
 			fun.3d, draw.residual, draw.relationship, draw.interval, draw.hist,
-			xlab, ylab, zlab, col, lty, lwd, pch, ...
+			xlab, ylab, zlab, col, lty, lwd, pch, add = add, ...
 		)
 	} else {
 		settings <- pp.settings(
