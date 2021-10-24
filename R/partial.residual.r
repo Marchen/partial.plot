@@ -247,12 +247,16 @@ partial.residual$methods(
 			data1[[i]] <- data1[[i]] - mean(data1[[i]])
 		}
 		data1[.self$settings$x.names.numeric] <- 0
-		pred1 <- .self$settings$adapter$predict(newdata = data1, type = "link")
+		pred1 <- .self$settings$adapter$predict(
+		  newdata = data1, type = "link", interval = "prediction"
+		)
 		pred1 <- pred1$fit[, "fit"]
 		# Calculate prediction 2.
 		data2 <- .self$settings$data
 		data2[all.numerics] <- 0
-		pred2 <- .self$settings$adapter$predict(newdata = data2, type = "link")
+		pred2 <- .self$settings$adapter$predict(
+		  newdata = data2, type = "link", interval = "prediction"
+		)
 		pred2 <- pred2$fit[, "fit"]
 		# Calculate partial residual.
 		result <- (
