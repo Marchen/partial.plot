@@ -632,7 +632,7 @@ par(mfrow = c(1, 1))
 
 `partial.plot`では説明変数と応答変数の関係の推定に`emmeans`パッケージを使用しています。
 もし対象のモデルに`emmeans`パッケージが対応している場合、説明変数と応答変数の関係は`emmeans`で計算されます。
-今のところ、`lm`、`glm`、`glm.nb`、`lme`、`lmer`、`glmer`、`glmer.nb`、`glmmadmb`、`MCMCglmm`の計算に`emmeans`が使われます。
+今のところ、`lm`、`glm`、`glm.nb`、`lme`、`lmer`、`glmer`、`glmer.nb`、`glmmTMB`、`glmmadmb`、`MCMCglmm`の計算に`emmeans`が使われます。
 モデルに`emmeans`が対応している場合、対象の説明変数以外の変数は平均値に固定され、予測値が計算されます。
 
 対象のモデルに`emmeans`が対応していない場合、計算は`partial.plot`によって行われます。

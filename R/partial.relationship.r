@@ -3,7 +3,7 @@
 #------------------------------------------------------------------------------
 LSMEANS_COMPATIBLE_MODELS <- c(
 	"glm", glmer = "glmerMod", "lm", "lme", lmer = "lmerMod",
-	"MCMCglmm"
+	"MCMCglmm", "glmmTMB"
 )
 
 LSMEANS_INCOMPATIBLE_MODELS <- c(
@@ -97,6 +97,23 @@ partial.relationship$methods(
 
 #------------------------------------------------------------------------------
 partial.relationship$methods(
+  summarize.ref.grid = function(rg) {
+    "Calculate predictions and intervals using lsmeans."
+    lsm <- lsmeans(rg, .self$settings$x.names)
+    if (length(lsm@post.beta) == 1 & all(is.na(lsm@post.beta))) {
+      return(.self$summarize.ref.grid.without.mcmc(lsm))
+    }
+    coda.available <- require(coda)
+    if (coda.available) {
+      return(.self$summarize.ref.grid.with.mcmc(lsm))
+    }
+    return(.self$summarize.ref.grid.without.mcmc(lsm))
+  }
+)
+
+
+#------------------------------------------------------------------------------
+partial.relationship$methods(
 	summarize.ref.grid.without.mcmc = function(lsm) {
 	  "Calculate predictions and intervals using lsmeans without mcmc."
 		result <- summary(lsm, level = .self$settings$interval.levels)
@@ -138,64 +155,6 @@ partial.relationship$methods(
 
 #------------------------------------------------------------------------------
 partial.relationship$methods(
-	summarize.ref.grid = function(rg) {
-	  "Calculate predictions and intervals using lsmeans."
-	  lsm <- lsmeans(rg, .self$settings$x.names)
-		if (length(lsm@post.beta) == 1 & all(is.na(lsm@post.beta))) {
-			return(.self$summarize.ref.grid.without.mcmc(lsm))
-		}
-		coda.available <- require(coda)
-		if (coda.available) {
-			return(.self$summarize.ref.grid.with.mcmc(lsm))
-		}
-		return(.self$summarize.ref.grid.without.mcmc(lsm))
-	}
-)
-
-
-#------------------------------------------------------------------------------
-partial.relationship$methods(
-	predict.stats = function(
-		newdata, predict.fun, new.value.grid, index, levels, type
-	) {
-		"
-		Calculate prediction in cluster.
-
-		\\describe{
-			\\item{\\code{newdata}}{newdata for prediction.}
-			\\item{\\code{predict.fun}}{predict function.}
-			\\item{\\code{new.value.grid}}{
-				a data.frame having all combination of focal values of
-				partial relationship grid.
-			}
-			\\item{\\code{index}}{
-				row index of \\code{new.value.grid} where predicted values
-				are calculated.
-			}
-			\\item{\\code{levels}}{levels of quantiles.}
-		}
-		"
-		on.exit(gc())
-		# Make data for prediction.
-		replace.values <- new.value.grid[index, ]
-		param.names <- names(new.value.grid)
-		newdata[param.names] <- replace.values
-		# Make prediction.
-		prediction <- predict.fun(newdata = newdata, type = type)
-		if (type == "prob") {
-			prediction$fit <- prediction$fit[, .self$settings$positive.class]
-		}
-		quantiles <- quantile(prediction$fit, probs = levels, na.rm = TRUE)
-		result <- c(fit = mean(prediction$fit), quantiles, replace.values)
-		names(result) <- c("fit", "lower", "upper", param.names)
-		result <- as.data.frame(as.list(result))
-		return(result)
-	}
-)
-
-
-#------------------------------------------------------------------------------
-partial.relationship$methods(
 	partial.relationship.internal = function() {
 		"
 		Calculate partial relationship data internally.
@@ -211,6 +170,56 @@ partial.relationship$methods(
 		result <- .self$calculate.relationship(grid)
 		return(result)
 	}
+)
+
+
+#------------------------------------------------------------------------------
+partial.relationship$methods(
+  filter.result = function(prediction) {
+    "
+		Remove out-ranged values from result of lsmeans.
+
+		This internal function removes predicted values those explanatory
+		variable is out of range of original data used for modeling for each
+		group and returns a resultant data.frame.
+
+		\\describe{
+			\\item{prediction}{result of lsmeans.}
+		}
+		"
+    if (
+      length(.self$settings$factor.levels) == 0
+      | .self$settings$extrapolate
+    ) {
+      return(prediction)
+    }
+    # Get list of unique factors.
+    factors <- expand.grid(.self$settings$factor.levels)
+    # Split data and prediction for each factor group.
+    sep = .self$settings$sep
+    pred.split <- split(prediction, prediction[names(factors)], sep = sep)
+    orig.data.split <- split(
+      .self$settings$data, .self$settings$data[names(factors)], sep = sep
+    )
+    # Filter out out-ranged numeric values.
+    result <- list()
+    for (i in 1:nrow(factors)) {
+      split.name <- combine.columns(
+        as.data.frame(factors[i, ]), sep = sep
+      )
+      current.pred <- pred.split[[split.name]]
+      current.data <- orig.data.split[[split.name]]
+      for (numeric.name in .self$settings$x.names.numeric) {
+        var.range <- range(current.data[[numeric.name]])
+        filter <- current.pred[[numeric.name]] >= var.range[1]
+        filter <- filter & current.pred[[numeric.name]] <= var.range[2]
+        current.pred <- current.pred[filter, ]
+      }
+      result[[split.name]] <- current.pred
+    }
+    result <- do.call(rbind, result)
+    return(result)
+  }
 )
 
 
@@ -245,49 +254,40 @@ partial.relationship$methods(
 
 #------------------------------------------------------------------------------
 partial.relationship$methods(
-	filter.result = function(prediction) {
-		"
-		Remove out-ranged values from result of lsmeans.
-
-		This internal function removes predicted values those explanatory
-		variable is out of range of original data used for modeling for each
-		group and returns a resultant data.frame.
+  predict.stats = function(
+    newdata, predict.fun, new.value.grid, index, levels, type
+  ) {
+    "
+		Calculate prediction in cluster.
 
 		\\describe{
-			\\item{prediction}{result of lsmeans.}
+			\\item{\\code{newdata}}{newdata for prediction.}
+			\\item{\\code{predict.fun}}{predict function.}
+			\\item{\\code{new.value.grid}}{
+				a data.frame having all combination of focal values of
+				partial relationship grid.
+			}
+			\\item{\\code{index}}{
+				row index of \\code{new.value.grid} where predicted values
+				are calculated.
+			}
+			\\item{\\code{levels}}{levels of quantiles.}
 		}
 		"
-		if (
-			length(.self$settings$factor.levels) == 0
-			| .self$settings$extrapolate
-		) {
-			return(prediction)
-		}
-		# Get list of unique factors.
-		factors <- expand.grid(.self$settings$factor.levels)
-		# Split data and prediction for each factor group.
-		sep = .self$settings$sep
-		pred.split <- split(prediction, prediction[names(factors)], sep = sep)
-		orig.data.split <- split(
-			.self$settings$data, .self$settings$data[names(factors)], sep = sep
-		)
-		# Filter out out-ranged numeric values.
-		result <- list()
-		for (i in 1:nrow(factors)) {
-			split.name <- combine.columns(
-				as.data.frame(factors[i, ]), sep = sep
-			)
-			current.pred <- pred.split[[split.name]]
-			current.data <- orig.data.split[[split.name]]
-			for (numeric.name in .self$settings$x.names.numeric) {
-				var.range <- range(current.data[[numeric.name]])
-				filter <- current.pred[[numeric.name]] >= var.range[1]
-				filter <- filter & current.pred[[numeric.name]] <= var.range[2]
-				current.pred <- current.pred[filter, ]
-			}
-			result[[split.name]] <- current.pred
-		}
-		result <- do.call(rbind, result)
-		return(result)
-	}
+    on.exit(gc())
+    # Make data for prediction.
+    replace.values <- new.value.grid[index, ]
+    param.names <- names(new.value.grid)
+    newdata[param.names] <- replace.values
+    # Make prediction.
+    prediction <- predict.fun(newdata = newdata, type = type)
+    if (type == "prob") {
+      prediction$fit <- prediction$fit[, .self$settings$positive.class]
+    }
+    quantiles <- quantile(prediction$fit, probs = levels, na.rm = TRUE)
+    result <- c(fit = mean(prediction$fit), quantiles, replace.values)
+    names(result) <- c("fit", "lower", "upper", param.names)
+    result <- as.data.frame(as.list(result))
+    return(result)
+  }
 )

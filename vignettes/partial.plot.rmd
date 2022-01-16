@@ -302,7 +302,7 @@ Support for the models are provided by the `model.adapter` package.
 
 For the estimation of the relationship between the explanatory and response variable, `partial.plot` depends on `emmeans` package.
 If the specified model is supported by `emmeans` package, the predicted relationship is calculated by `emmeans`.
-Currently, `emmeans` is used for `lm`, `glm`, `glm.nb`, `lme`, `lmer`, `glmer`, `glmer.nb`, `glmmadmb` and `MCMCglmm`.
+Currently, `emmeans` is used for `lm`, `glm`, `glm.nb`, `lme`, `lmer`, `glmer`, `glmer.nb`, `glmmTMB`, `glmmadmb` and `MCMCglmm`.
 When the model is supported by `emmeans`, response variables other than focal response variable(s) are fixed at their mean and the relationship is estimated.
 
 When the model is not supported by `emmeans`, the relationship is calculated by `partial.plot`.
