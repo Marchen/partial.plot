@@ -358,6 +358,21 @@ temp$Age <- as.numeric(temp$Age)
 model <- glmer.nb(Days ~ Sex * Age + (1 | Eth), data = temp)
 partial.plot(model, c("Age", "Sex"))
 
+## ---- glmmTMB, message = FALSE, warning = FALSE-------------------------------
+library(glmmTMB)
+model <- glmmTMB(
+    Petal.Length ~ (Sepal.Length + Petal.Width) * Species, data = iris,
+    family = "gaussian"
+)
+# 2D plot
+info <- partial.plot(model, c("Sepal.Length", "Species"), pch = 16)
+pp.legend(info, "topleft")
+# 3D plot
+info <- partial.plot(
+    model, c("Sepal.Length", "Petal.Width"), pch = 16, col = viridis,
+    fun.3d = persp
+)
+
 ## ---- glmmadmb, message = FALSE, warning = FALSE------------------------------
 library(glmmADMB)
 model <- glmmadmb(
