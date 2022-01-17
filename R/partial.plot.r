@@ -120,6 +120,10 @@ combine.columns <- function(data, sep) {
 #'		If NULL is specified, maximum number of logical processors are used.
 #'		This value is ignored when the models compatible with lsmeans are
 #'		specified.
+#'		
+#'	@param draw
+#'    if TRUE, draw partial dependence plot. If FALSE, only calculations of
+#'    plot parameters were done.
 #'
 #'	@param ...
 #'		other graphic parameters passed to poltting functions.
@@ -222,7 +226,8 @@ partial.plot <- function(
 	draw.interval = TRUE, draw.hist = FALSE, interval.levels = 0.95,
 	resolution = NULL, col = gg.colors, lty = "solid", lwd = 1, pch = 16,
 	xlab = NULL, ylab = NULL, zlab = NULL, add = FALSE, sep = " - ",
-	extrapolate = FALSE, n.cores = NULL, extraporate = extrapolate, ...
+	extrapolate = FALSE, n.cores = NULL, draw = TRUE, extraporate = extrapolate,
+	...
 ) {
 	# Warning for deprecation.
 	if (!missing(extraporate)) {
@@ -255,6 +260,6 @@ partial.plot <- function(
 	}
 	# Draw
 	drawer <- pp.drawer(settings)
-	drawer$draw()
+	if (draw) drawer$draw()
 	invisible(settings)
 }

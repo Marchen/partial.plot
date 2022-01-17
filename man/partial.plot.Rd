@@ -28,6 +28,7 @@ partial.plot(
   sep = " - ",
   extrapolate = FALSE,
   n.cores = NULL,
+  draw = TRUE,
   extraporate = extrapolate,
   ...
 )
@@ -114,6 +115,9 @@ relationships.}
 If NULL is specified, maximum number of logical processors are used.
 This value is ignored when the models compatible with lsmeans are
 specified.}
+
+\item{draw}{if TRUE, draw partial dependence plot. If FALSE, only calculations of
+plot parameters were done.}
 
 \item{...}{other graphic parameters passed to poltting functions.
     Possible parameters for each element of the graph is:
