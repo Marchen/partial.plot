@@ -39,6 +39,7 @@ Suggests:
     gam,
     ranger,
     rmarkdown,
+    svglite,
     viridis,
     rgl,
 	coda,

@@ -6,9 +6,7 @@ output:
     html_document:
         fig_width: 6
         fig_height: 6
-        fig_retina: 2
-        dpi: 300
-        dev.args: list(dpi = 300)
+        dev: svglite
 vignette: >
     %\VignetteIndexEntry{Test of partial.plot() for models.}
     %\VignetteEngine{knitr::rmarkdown}
