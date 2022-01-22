@@ -6,8 +6,8 @@ Author: Michio Oguro <mog@ffpri.affrc.go.jp>
 Maintainer: Michio Oguro <mog@ffpri.affrc.go.jp>
 Description: This package provides standard way to plot partial dependence plot
     for statistical/machine learning models. By the virtue of model.adapter
-    package, currently, cforest, ctree, glm, glm.nb, glmer, glmmadmb, glmmML, lm, lme,
-    lmer, MCMCglmm, svm, tree, rpart and ranger are supported.
+    package, currently, cforest, ctree, glm, glm.nb, glmer, glmmadmb, glmmTMB,
+    glmmML, lm, lme, lmer, MCMCglmm, svm, tree, rpart and ranger are supported.
 License: MIT
 Depends:
     R (>= 3.0.0),
@@ -42,7 +42,7 @@ Suggests:
     svglite,
     viridis,
     rgl,
-	coda,
+    coda,
     MASS,
     utils
 VignetteBuilder: knitr
