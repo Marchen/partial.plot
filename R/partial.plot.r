@@ -126,7 +126,7 @@ combine.columns <- function(data, sep) {
 #'    plot parameters were done.
 #'
 #'	@param ...
-#'		other graphic parameters passed to poltting functions.
+#'		other graphic parameters passed to plotting functions.
 #'		Possible parameters for each element of the graph is:
 #'
 #'		\describe{
@@ -174,7 +174,7 @@ combine.columns <- function(data, sep) {
 #'		}
 #'
 #'	@return
-#'		An object of \code{\link{pp.legend}} containing informations which
+#'		An object of \code{\link{pp.legend}} containing information which
 #'		will be used for drawing legend.
 #'
 #'	@details
