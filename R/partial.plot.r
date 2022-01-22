@@ -260,6 +260,8 @@ partial.plot <- function(
 	}
 	# Draw
 	drawer <- pp.drawer(settings)
-	if (draw) drawer$draw()
+	if (draw) {
+	  drawer$draw()
+	}
 	invisible(settings)
 }
