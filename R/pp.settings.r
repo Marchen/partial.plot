@@ -692,7 +692,7 @@ pp.settings$methods(
 	  is.3d <- length(.self$x.names.numeric) == 2
 		result <- list()
 		for (name in .self$x.names.numeric) {
-		lims <- c("xlim", "ylim")
+			lims <- c("xlim", "ylim")
 			for (i in 1:2) {
 				if (
 				is.3d & name == .self$x.names.numeric[i]
