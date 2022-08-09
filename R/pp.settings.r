@@ -689,30 +689,77 @@ pp.settings$methods(
 		"
 		Initialize numeric sequences.
 		"
-	  is.3d <- length(.self$x.names.numeric) == 2
+		if (length(.self$x.names.numeric) == 1) {
+			.self$init.numeric.sequences.2d()
+		} else {
+			.self$init.numeric.sequences.3d()
+		}
+	}
+)
+
+
+#------------------------------------------------------------------------------
+pp.settings$methods(
+	init.numeric.sequences.2d = function() {
+		"
+		Initialize numeric sequences.
+		"
+		result <- list()
+		x.name <- .self$x.names.numeric
+		if ("xlim" %in% names(.self$other.pars) & .self$extrapolate) {
+			xlim <- .self$other.pars[["xlim"]]
+			result[[x.name]] <- seq(
+				min(xlim), max(xlim),	length.out = .self$resolution
+			)
+		} else {
+			result[[x.name]] <- create.numeric.sequence(x.name)
+		}
+		.self$numeric.sequences <- result
+	}
+)
+
+
+#------------------------------------------------------------------------------
+pp.settings$methods(
+	init.numeric.sequences.3d = function() {
+		"
+		Initialize numeric sequences.
+		"
 		result <- list()
 		for (name in .self$x.names.numeric) {
 			lims <- c("xlim", "ylim")
 			for (i in 1:2) {
 				if (
-				is.3d & name == .self$x.names.numeric[i]
-				& lims[i] %in% names(.self$other.pars)
+					name == .self$x.names.numeric[i]
+					& lims[i] %in% names(.self$other.pars)
 				) {
-				x <- .self$other.pars[[lims[i]]]
-				result[[name]] <- seq(
-					min(x), max(x),	length.out = .self$resolution
-				)
-				break
-				} else {
+					x <- .self$other.pars[[lims[i]]]
 					result[[name]] <- seq(
-							min(.self$data[[name]], na.rm = TRUE),
-							max(.self$data[[name]], na.rm = TRUE),
-						length.out = .self$resolution
+						min(x), max(x),	length.out = .self$resolution
 					)
+				} else {
+					result[[name]] <- create.numeric.sequence(name)
 				}
 			}
 		}
 		.self$numeric.sequences <- result
+	}
+)
+
+
+#------------------------------------------------------------------------------
+pp.settings$methods(
+	create.numeric.sequence = function(x.name) {
+		"
+		Create sequence of an explanatory variable
+		based on original range of data.
+		"
+		x <- seq(
+			min(.self$data[[x.name]], na.rm = TRUE),
+			max(.self$data[[x.name]], na.rm = TRUE),
+			length.out = .self$resolution
+		)
+		return(x)
 	}
 )
 
