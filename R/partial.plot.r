@@ -120,7 +120,7 @@ combine.columns <- function(data, sep) {
 #'		If NULL is specified, maximum number of logical processors are used.
 #'		This value is ignored when the models compatible with lsmeans are
 #'		specified.
-#'		
+#'
 #'	@param draw
 #'    if TRUE, draw partial dependence plot. If FALSE, only calculations of
 #'    plot parameters were done.
