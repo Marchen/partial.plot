@@ -8,7 +8,8 @@ LSMEANS_COMPATIBLE_MODELS <- c(
 
 LSMEANS_INCOMPATIBLE_MODELS <- c(
 	cforest = "RandomForest", ctree = "BinaryTree", "gam", "gamm", "gbm",
-	"glmmadmb", "glmmML", "randomForest", "ranger", "rpart", "svm", "tree"
+	"glmmadmb", "glmmML", "randomForest", "ranger", "rpart", "svm", "tree",
+	"averaging"
 )
 
 
