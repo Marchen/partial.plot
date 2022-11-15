@@ -70,6 +70,7 @@ pp.drawer$methods(
 			ylab = .self$settings$ylab
 		)
 		args <- c(args, .self$settings$other.pars)
+		args$add <- NULL
 		do.call(plot, args)
 	}
 )
