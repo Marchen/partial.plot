@@ -462,19 +462,15 @@ pp.settings$methods(
 		"
 		Test correctness of xlab and ylab.
 		"
-		is.error <- function(x) {
-			return(!is.null(x) & !is.character(x) & !is.expression(x))
+		check.error <- function(x, name) {
+			if (!is.atomic(x) & !is.expression(x)) {
+			  stop(sprintf("'%s' should be atomic/expression.", name))
+			}
 		}
-		if (is.error(.self$xlab)) {
-			stop("'xlab' should be NULL/character/expression.")
+		check.error(.self$xlab, "xlab")
+		check.error(.self$ylab, "ylab")
+		check.error(.self$zlab, "zlab")
 		}
-		if (is.error(.self$ylab)) {
-			stop("'ylab' should be NULL/character/expression.")
-		}
-		if (is.error(.self$zlab)) {
-			stop("'zlab' should be NULL/character/expression.")
-		}
-	}
 )
 
 
