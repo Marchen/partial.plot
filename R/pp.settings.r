@@ -142,13 +142,13 @@ if (require(rgl)) {
 #'		and images of numeric variables.
 #'
 #'	@field xlab
-#'		a character or expression specifying used for label of X axis.
+#'		label of X axis.
 #'
 #'	@field ylab
-#'		a character or expression specifying used for label of Y axis.
+#'		label of Y axis.
 #'
 #'	@field zlab
-#'		a character or expression specifying used for label of Z axis.
+#'		label of Z axis.
 #'
 #'	@field add
 #'		logical indicating whether graphic elements are added to existing plot.
