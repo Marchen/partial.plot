@@ -180,7 +180,9 @@ partial.residual$methods(
         }
         index <- Position(function(x) x, apply(index, 1, all))
         if (length(settings$x.names.numeric) == 1) {
-            f <- as.formula(sprintf("fit ~ %s", .self$settings$x.names.numeric))
+            f <- as.formula(
+                sprintf("fit ~ %s", .self$settings$x.names.numeric)
+            )
             d <- relationship[c(index - 1, index),]
         } else {
             x.names <- paste(.self$settings$x.names.numeric, collapse = "+")

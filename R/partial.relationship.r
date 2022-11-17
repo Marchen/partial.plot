@@ -119,7 +119,8 @@ partial.relationship$methods(
         "Calculate predictions and intervals using lsmeans without mcmc."
         result <- summary(lsm, level = .self$settings$interval.levels)
         colnames(result) <- gsub(
-            "^lsmean$|^response$|^prob$|^rate$|^emmean$", "fit", colnames(result)
+            "^lsmean$|^response$|^prob$|^rate$|^emmean$", "fit",
+            colnames(result)
         )
         colnames(result) <- gsub(
             "^lower.CL$|^asymp.LCL$", "lower", colnames(result)

@@ -35,7 +35,9 @@ pp.drawer$methods(
         x.name <- .self$settings$x.names.numeric[1]
         if (.self$settings$draw.relationship) {
             relationship <- .self$settings$relationship
-            if (is.null(relationship$upper) | .self$settings$plot.type == "3D") {
+            if (
+                is.null(relationship$upper) | .self$settings$plot.type == "3D"
+            ) {
                 x <- relationship[[x.name]]
                 y <- relationship$fit
             } else {
