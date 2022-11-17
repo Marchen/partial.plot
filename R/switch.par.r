@@ -114,7 +114,10 @@ make.palette.default <- function(pal, x, ...) {
             names(pal) <- NULL
             return(pal)
         }
-        stop("'pal' should be of length 1 if 'x' is NULL and 'pal' is character.")
+        stop.with.message(
+            "'pal' should be of length 1 if 'x' is NULL",
+            "and 'pal' is character."
+        )
     }
     # Define function retrieving unique values.
     get.unique <- if (is.factor(x)) levels else unique
@@ -133,7 +136,10 @@ make.palette.default <- function(pal, x, ...) {
         # If pal is a non-named vector of length > 1,
         # use the first graphic parameter.
         if (length(pal) < length(get.unique(x))) {
-            stop("'pal' should have larger length than length of unique values in 'x'")
+            stop.with.message(
+                "'pal' should have larger length than length of",
+                "unique values in 'x'"
+            )
         }
         pal <- pal[seq_along(get.unique(x))]
     }

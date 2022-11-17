@@ -418,11 +418,10 @@ pp.settings$methods(
         )
         n.continuous <- sum(var.types == "numeric")
         if (n.continuous > 2) {
-            message <- paste(
+            stop.with.message(
                 "Plotting more than two continuous explanatory variables",
                 "is not supported."
             )
-            stop(message)
         }
     }
 )
@@ -505,8 +504,9 @@ pp.settings$methods(
         if (.self$positive.class != "") {
             l <- levels(.self$data[[.self$adapter$y.names()]])
             if (!.self$positive.class %in% l) {
-                stop(
-                    "The class indicated by 'positive.class'is not in the response variable."
+                stop.with.message(
+                    "The class indicated by 'positive.class'",
+                    "is not in the response variable."
                 )
             }
         }

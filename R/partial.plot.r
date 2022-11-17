@@ -231,11 +231,10 @@ partial.plot <- function(
 ) {
     # Warning for deprecation.
     if (!missing(extraporate)) {
-        msg <- paste(
+        warning.with.message(
             "'extraporate' argument is deprecated and removed in future.\n",
             "Please use 'extrapolate' instead."
         )
-        warning(msg)
     }
     # Initialize setting object.
     if (is(model, "pp.settings")) {

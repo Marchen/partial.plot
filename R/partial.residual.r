@@ -39,11 +39,10 @@ partial.residual$methods(
         initFields(settings = settings)
         # Calculate partial residual if possible.
         if (identical(settings$adapter$link, binomial()$linkfun)) {
-            message <- paste(
+            warning.with.message(
                 "Currently, partial residual can't be calculated",
                 "for logit link function."
             )
-            warning(message)
         } else {
             lsmeans.compatible <- !any(
                 class(settings$model) %in% LSMEANS_INCOMPATIBLE_MODELS
