@@ -702,7 +702,7 @@ pp.settings$methods(
         "
         result <- list()
         x.name <- .self$x.names.numeric
-        if ("xlim" %in% names(.self$other.pars) & .self$extrapolate) {
+        if (!is.null(.self$other.pars$xlim) & .self$extrapolate) {
             xlim <- .self$other.pars[["xlim"]]
             result[[x.name]] <- seq(
                 min(xlim), max(xlim), length.out = .self$resolution
@@ -727,7 +727,7 @@ pp.settings$methods(
             for (i in 1:2) {
                 if (
                     name == .self$x.names.numeric[i]
-                    & lims[i] %in% names(.self$other.pars)
+                    & !is.null(.self$other.pars[[lims[i]]])
                 ) {
                     x <- .self$other.pars[[lims[i]]]
                     result[[name]] <- seq(
