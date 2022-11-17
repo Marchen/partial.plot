@@ -2,7 +2,7 @@
 #   The threshold value of nuber of rows by which calculate.residual() method
 #   separates large and small dataset.
 #------------------------------------------------------------------------------
-THRESHOLD_NROW_FOR_SMALL_DATASET = 1000
+THRESHOLD_NROW_FOR_SMALL_DATASET <- 1000
 
 
 #------------------------------------------------------------------------------

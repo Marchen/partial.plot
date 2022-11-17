@@ -197,7 +197,7 @@ partial.relationship$methods(
         # Get list of unique factors.
         factors <- expand.grid(.self$settings$factor.levels)
         # Split data and prediction for each factor group.
-        sep = .self$settings$sep
+        sep <- .self$settings$sep
         pred.split <- split(prediction, prediction[names(factors)], sep = sep)
         orig.data.split <- split(
             .self$settings$data, .self$settings$data[names(factors)], sep = sep

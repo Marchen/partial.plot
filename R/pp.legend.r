@@ -80,7 +80,7 @@ prepare.args.for.legend = function(settings, legend.args) {
     # Set plot character based on the setting of partial.plot.
     if (settings$draw.residual) {
         if (is.null(legend.args$pch)) {
-            legend.args$pch = 1
+            legend.args$pch <- 1
         }
     } else {
         legend.args$pch <- NULL

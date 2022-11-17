@@ -11,7 +11,7 @@
 #' barplot(1:30, col = gg.colors(30))
 #------------------------------------------------------------------------------
 gg.colors <- function(n){
-    hues = seq(15, 375, length = n + 1)
+    hues <- seq(15, 375, length = n + 1)
     hcl(h = hues, l = 65, c = 100)[1:n]
 }
 
@@ -135,7 +135,7 @@ make.palette.default <- function(pal, x, ...) {
         if (length(pal) < length(get.unique(x))) {
             stop("'pal' should have larger length than length of unique values in 'x'")
         }
-        pal <- pal[1:length(get.unique(x))]
+        pal <- pal[seq_along(get.unique(x))]
     }
     names(pal) <- sort(get.unique(x))
     return(pal)
