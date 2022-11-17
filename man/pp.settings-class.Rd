@@ -73,11 +73,11 @@ predicted relationships.}
 \item{\code{resolution}}{an integer specifying resolution of lines, polygons, wireframes,
 and images of numeric variables.}
 
-\item{\code{xlab}}{a character or expression specifying used for label of X axis.}
+\item{\code{xlab}}{label of X axis.}
 
-\item{\code{ylab}}{a character or expression specifying used for label of Y axis.}
+\item{\code{ylab}}{label of Y axis.}
 
-\item{\code{zlab}}{a character or expression specifying used for label of Z axis.}
+\item{\code{zlab}}{label of Z axis.}
 
 \item{\code{add}}{logical indicating whether graphic elements are added to existing plot.}
 
@@ -86,7 +86,7 @@ and images of numeric variables.}
 \item{\code{extrapolate}}{a logical indicating whether extrapolation is allowed for predicted
 relationships.}
 
-\item{\code{other.pars}}{}
+\item{\code{other.pars}}{a list containing other graphic parameters passed to partial.plot().}
 
 \item{\code{n.cores}}{an integer specifing number of processes used for multiprocessing.}
 
@@ -122,6 +122,9 @@ relationships.}
 
 \item{\code{cluster.apply(X, FUN, ...)}}{Interface for lapply() or clusterApply()}
 
+\item{\code{create.numeric.sequence(x.name)}}{Create sequence of an explanatory variable
+based on original range of data.}
+
 \item{\code{init.factor.levels()}}{Initialize factor levels.}
 
 \item{\code{init.group()}}{Initialize a vector representing data splitting group.}
@@ -133,6 +136,10 @@ relationships.}
 \item{\code{init.multiprocessing()}}{Initialize multiprocessing.}
 
 \item{\code{init.numeric.sequences()}}{Initialize numeric sequences.}
+
+\item{\code{init.numeric.sequences.2d()}}{Initialize numeric sequences.}
+
+\item{\code{init.numeric.sequences.3d()}}{Initialize numeric sequences.}
 
 \item{\code{init.plot.type()}}{Determine plot type (2D/3D).}
 

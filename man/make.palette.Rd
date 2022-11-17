@@ -21,17 +21,17 @@ make.palette(pal, x, ...)
 }
 \value{
 If \code{x} is NULL, a non-named vector of the graphic parameter of
-	length 1.
-	Otherwise, a named vector of graphic parameters with unique values in
-	\code{x} for the name of it.
+   length 1.
+   Otherwise, a named vector of graphic parameters with unique values in
+   \code{x} for the name of it.
 }
 \description{
 (Internal) Make palette of a graphic parameter.
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{default}: Default S3 method, intended to be used for character vector.
+\item \code{make.palette(default)}: Default S3 method, intended to be used for character vector.
 
-\item \code{function}: S3 method for function.
+\item \code{make.palette(`function`)}: S3 method for function.
+
 }}
-

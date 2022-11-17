@@ -46,12 +46,12 @@ in x.}
 }
 \value{
 If \code{unique.pal} is TRUE, this function returns unique named vector
-	of graphic parameters. For this case, this function returns non-named
-	vector of graphic parameter with length 1 if \code{x} is NULL.
-	If \code{unique.pal} is FALSE, this function returns vector of graphic
-	parameters with length equal to the length of \code{x}. For this case,
-	the vector has "palette" attribute which contains named vector
-	of graphic parameters used for the result.
+   of graphic parameters. For this case, this function returns non-named
+   vector of graphic parameter with length 1 if \code{x} is NULL.
+   If \code{unique.pal} is FALSE, this function returns vector of graphic
+   parameters with length equal to the length of \code{x}. For this case,
+   the vector has "palette" attribute which contains named vector
+   of graphic parameters used for the result.
 }
 \description{
 \code{color.ramp} is an alias of \code{switch.par}, which having different
@@ -59,20 +59,20 @@ default value for \code{pal} and may enhance readability in some cases.
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{default}: default S3 method.
+\item \code{switch.par(default)}: default S3 method.
 
-\item \code{numeric}: method for numeric.
+\item \code{switch.par(numeric)}: method for numeric.
+
 }}
-
 \examples{
 #---------------------------------------------------------------------------
 # Example 1: set point color and character based on a character vector.
 #---------------------------------------------------------------------------
 data(iris)
 plot(
-	Sepal.Length ~ Petal.Length, data = iris,
-	col = color.ramp(Species),
-	pch = switch.par(Species)
+    Sepal.Length ~ Petal.Length, data = iris,
+    col = color.ramp(Species),
+    pch = switch.par(Species)
 )
 # Add a legend
 col <- color.ramp(iris$Species, unique.pal = TRUE)
@@ -84,8 +84,8 @@ legend("topleft", legend = names(col), col = col, pch = pch, cex = 1)
 # Example 2: using different color function.
 #---------------------------------------------------------------------------
 plot(
-	Sepal.Length ~ Petal.Length, data = iris, pch = 16,
-	col = color.ramp(Species, pal = rainbow)
+    Sepal.Length ~ Petal.Length, data = iris, pch = 16,
+    col = color.ramp(Species, pal = rainbow)
 )
 col <- color.ramp(iris$Species, pal = rainbow, unique.pal = TRUE)
 legend("topleft", legend = names(col), col = col, pch = 16, cex = 1)
@@ -96,8 +96,8 @@ legend("topleft", legend = names(col), col = col, pch = 16, cex = 1)
 #---------------------------------------------------------------------------
 pal = c(setosa = "blue", versicolor = "red", virginica = "black")
 plot(
-	Sepal.Length ~ Petal.Length, data = iris, pch = 16,
-	col = color.ramp(Species, pal = pal)
+    Sepal.Length ~ Petal.Length, data = iris, pch = 16,
+    col = color.ramp(Species, pal = pal)
 )
 col <- color.ramp(iris$Species, pal = pal, unique.pal = TRUE)
 legend("topleft", legend = names(col), col = col, pch = 16, cex = 1)
@@ -109,8 +109,8 @@ legend("topleft", legend = names(col), col = col, pch = 16, cex = 1)
 iris2 <- iris
 iris2$new.factor <- as.factor(letters[1:2])
 plot(
-	Sepal.Length ~ Petal.Length, data = iris2, pch = 16,
-	col = color.ramp(iris2)
+    Sepal.Length ~ Petal.Length, data = iris2, pch = 16,
+    col = color.ramp(iris2)
 )
 col <- color.ramp(iris2, unique.pal = TRUE)
 legend("topleft", legend = names(col), col = col, pch = 16, cex = 1)

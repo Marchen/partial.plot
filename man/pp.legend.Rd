@@ -22,7 +22,7 @@ Draw legend of partial plot.
 
 data(iris)
 model <- lm(
-	Petal.Length ~ (Sepal.Length + Petal.Width) * Species, data = iris
+    Petal.Length ~ (Sepal.Length + Petal.Width) * Species, data = iris
 )
 info <- partial.plot(model, c("Sepal.Length", "Species"), pch = 16)
 partial.plot.legend(info, "topleft")

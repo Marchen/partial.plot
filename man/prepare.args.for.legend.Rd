@@ -15,7 +15,7 @@ function manually specified by users.}
 }
 \value{
 A list containing arguments used for \code{\link[grahpic]{legend}}
-	function
+   function
 }
 \description{
 This function overwrite arguments of legend() that users did not specify

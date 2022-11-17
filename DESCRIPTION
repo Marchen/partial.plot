@@ -46,7 +46,7 @@ Suggests:
     MASS,
     utils
 VignetteBuilder: knitr
-RoxygenNote: 7.1.1
+RoxygenNote: 7.2.2
 Collate:
     'parman.r'
     'partial.plot.r'
@@ -56,3 +56,4 @@ Collate:
     'pp.drawer.r'
     'pp.legend.r'
     'switch.par.r'
+    'utils.r'

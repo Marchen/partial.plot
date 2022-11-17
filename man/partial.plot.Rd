@@ -82,15 +82,15 @@ values for the \code{model} not supported by lsmeans.}
 
 \item{interval.levels}{values between 0 <= levels <= 1 indicating level(s) of interval.
 
-    For the models supported by \code{\link[emmeans]{lsmeans}},
-    this can be a value indicating confidence interval. Only the first
-    element of the numeric vector is used for confidence intervals.
+   For the models supported by \code{\link[emmeans]{lsmeans}},
+   this can be a value indicating confidence interval. Only the first
+   element of the numeric vector is used for confidence intervals.
 
-    For the models not supported by lsmeans, this can be a value of
-    lower and upper quantile, e.g., \code{values = 0.95} indicates
-    lower quantile is 0.05 and uppter quantile is 0.95.
-    A numeric vector of length two specifying
-    both lower and upper quantiles also can be specified.}
+   For the models not supported by lsmeans, this can be a value of
+   lower and upper quantile, e.g., \code{values = 0.95} indicates
+   lower quantile is 0.05 and uppter quantile is 0.95.
+   A numeric vector of length two specifying
+   both lower and upper quantiles also can be specified.}
 
 \item{resolution}{an integer specifying resolution of lines, polygons, wireframes,
 and images of numeric variables.
@@ -120,55 +120,55 @@ specified.}
 plot parameters were done.}
 
 \item{...}{other graphic parameters passed to plotting functions.
-    Possible parameters for each element of the graph is:
+   Possible parameters for each element of the graph is:
 
-    \describe{
-        \item{Partial relatioship lines}{
-            \code{lty}, \code{lwd}, \code{lend},\code{ljoin},
-            \code{lmitre}, \code{col}, parameters supported by
-            \code{\link[graphics]{lines.default}}.
-        }
-        \item{Interval of partial relationship}{
-            none.
-        }
-        \item{Partial residual points}{
-            \code{pch}, \code{bg}, \code{cex}, \code{col}, parameters
-            supported by \code{\link[graphics]{points.default}}.
-            In the case not drawing interval of partial relationship,
-            all parameters are used.
-        }
-        \item{3D partial relationship by \code{\link[graphics]{persp}}}{
-            \code{cex.lab}, \code{font.lab}, \code{cex.axis},
-            \code{font.axis}, parameters supported by
-            \code{\link[graphics]{persp.default}}.
-        }
-        \item{3D partial relationship by \code{\link[graphics]{image}}}{
-            \code{asp}, \code{axes}, \code{bg}, paramters supported by
-            \code{link[graphics]{image.default}},
-        }
-        \item{3D partial relationship by \code{\link[grpahics]{contour}}}{
-            \code{xaxs}, \code{yaxs}, \code{lab}, \code{col.main},
-            \code{cex.sub}, \code{xpd}, \code{mgp}, \code{cex.axis},
-            \code{col.axis}, \code{font.axis}, \code{xaxp}, \code{yaxp},
-            \code{tck}, \code{tcl}, \code{las}, \code{fg}, \code{xaxt},
-            \code{yaxt}, \code{bty}, parameters supported by
-            \code{\link[graphics]{contour.default}},
-            \code{\link[graphics]{plot.window}},
-            \code{\link[graphics]{title}}, \code{\link[graphics]{Axis}},
-            \code{\link[graphics]{axis}} and \code{\link[graphics]{box}}
-            functions.
-        }
-        \item{3D partial relationship by \code{\link[rgl]{persp3d}}}{
-            \code{col}, parameters supported by
-            \code{\link[rgl]{persp3d.default}},
-            \code{\link[rgl]{surface3d}} and
-            \code{\link[rgl]{rgl.material}} functions.
-        }
-    }}
+   \describe{
+       \item{Partial relatioship lines}{
+           \code{lty}, \code{lwd}, \code{lend},\code{ljoin},
+           \code{lmitre}, \code{col}, parameters supported by
+           \code{\link[graphics]{lines.default}}.
+       }
+       \item{Interval of partial relationship}{
+           none.
+       }
+       \item{Partial residual points}{
+           \code{pch}, \code{bg}, \code{cex}, \code{col}, parameters
+           supported by \code{\link[graphics]{points.default}}.
+           In the case not drawing interval of partial relationship,
+           all parameters are used.
+       }
+       \item{3D partial relationship by \code{\link[graphics]{persp}}}{
+           \code{cex.lab}, \code{font.lab}, \code{cex.axis},
+           \code{font.axis}, parameters supported by
+           \code{\link[graphics]{persp.default}}.
+       }
+       \item{3D partial relationship by \code{\link[graphics]{image}}}{
+           \code{asp}, \code{axes}, \code{bg}, paramters supported by
+           \code{link[graphics]{image.default}},
+       }
+       \item{3D partial relationship by \code{\link[grpahics]{contour}}}{
+           \code{xaxs}, \code{yaxs}, \code{lab}, \code{col.main},
+           \code{cex.sub}, \code{xpd}, \code{mgp}, \code{cex.axis},
+           \code{col.axis}, \code{font.axis}, \code{xaxp}, \code{yaxp},
+           \code{tck}, \code{tcl}, \code{las}, \code{fg}, \code{xaxt},
+           \code{yaxt}, \code{bty}, parameters supported by
+           \code{\link[graphics]{contour.default}},
+           \code{\link[graphics]{plot.window}},
+           \code{\link[graphics]{title}}, \code{\link[graphics]{Axis}},
+           \code{\link[graphics]{axis}} and \code{\link[graphics]{box}}
+           functions.
+       }
+       \item{3D partial relationship by \code{\link[rgl]{persp3d}}}{
+           \code{col}, parameters supported by
+           \code{\link[rgl]{persp3d.default}},
+           \code{\link[rgl]{surface3d}} and
+           \code{\link[rgl]{rgl.material}} functions.
+       }
+   }}
 }
 \value{
 An object of \code{\link{pp.legend}} containing information which
-	will be used for drawing legend.
+   will be used for drawing legend.
 }
 \description{
 Draw partial relationship graph between focal explanatory variables and
@@ -176,15 +176,15 @@ response variable with controlling effects of other explanatory variables.
 }
 \details{
 For models supported by \code{\link[emmeans]{lsmeans}}, this function
-	calculate partial dependence using \code{lsmeans} and adjusted partial
-	residual to match result of \code{lsmeans}.
-	For models having complicated interactions such as machine learning
-	models, partial dependence is calculated by similar way as
-	\code{\link[randomForest]{partialPlot}} function in randomForest
-	package.
+   calculate partial dependence using \code{lsmeans} and adjusted partial
+   residual to match result of \code{lsmeans}.
+   For models having complicated interactions such as machine learning
+   models, partial dependence is calculated by similar way as
+   \code{\link[randomForest]{partialPlot}} function in randomForest
+   package.
 
-	For the detailed explanation, see \code{vignette("partial.plot")}
-	(English) or \code{vignette("partial.plot.j")} (Japanese)
+   For the detailed explanation, see \code{vignette("partial.plot")}
+   (English) or \code{vignette("partial.plot.j")} (Japanese)
 }
 \examples{
 #---------------------------------------------------------------------------
@@ -193,7 +193,7 @@ For models supported by \code{\link[emmeans]{lsmeans}}, this function
 #---------------------------------------------------------------------------
 data(iris)
 model <- lm(
-	Petal.Length ~ (Sepal.Length + Petal.Width) * Species, data = iris
+    Petal.Length ~ (Sepal.Length + Petal.Width) * Species, data = iris
 )
 partial.plot(model, c("Sepal.Length", "Species"), pch = 16)
 partial.plot(model, c("Petal.Width", "Species"), pch = 16)
@@ -203,7 +203,7 @@ partial.plot(model, c("Petal.Width", "Species"), pch = 16)
 # Example 2: no residuals.
 #---------------------------------------------------------------------------
 partial.plot(
-	model, c("Sepal.Length", "Species"), pch = 16, draw.residual = FALSE
+    model, c("Sepal.Length", "Species"), pch = 16, draw.residual = FALSE
 )
 
 
@@ -211,8 +211,8 @@ partial.plot(
 # Example 3: no partial relationship.
 #---------------------------------------------------------------------------
 partial.plot(
-	model, c("Sepal.Length", "Species"), pch = 16,
-	draw.relationship = FALSE
+    model, c("Sepal.Length", "Species"), pch = 16,
+    draw.relationship = FALSE
 )
 
 }
