@@ -705,7 +705,7 @@ pp.settings$methods(
 		if ("xlim" %in% names(.self$other.pars) & .self$extrapolate) {
 			xlim <- .self$other.pars[["xlim"]]
 			result[[x.name]] <- seq(
-				min(xlim), max(xlim),	length.out = .self$resolution
+				min(xlim), max(xlim), length.out = .self$resolution
 			)
 		} else {
 			result[[x.name]] <- create.numeric.sequence(x.name)
