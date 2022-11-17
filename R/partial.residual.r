@@ -110,7 +110,7 @@ partial.residual$methods(
         "
         # Prepare data for partial residual.
         newdata <- lapply(
-            1:nrow(.self$settings$data), "[.data.frame",
+            seq_len(nrow(.self$settings$data)), "[.data.frame",
             x = .self$settings$data,
         )
         # Change calculation method based on the sample size.

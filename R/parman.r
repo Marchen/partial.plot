@@ -88,8 +88,8 @@ par.manager$methods(
         }
         "
         m <- matrix(nrow = nrow(z.matrix) - 1, ncol = ncol(z.matrix) - 1)
-        for (row in 1:(nrow(z.matrix) - 1)) {
-            for (column in 1:(nrow(z.matrix) - 1)) {
+        for (row in seq_len(nrow(z.matrix) - 1)) {
+            for (column in seq_len(nrow(z.matrix) - 1)) {
                 m[row, column] <- mean(
                     z.matrix[row:(row + 1), column:(column + 1)]
                 )

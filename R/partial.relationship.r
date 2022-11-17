@@ -206,7 +206,7 @@ partial.relationship$methods(
         )
         # Filter out out-ranged numeric values.
         result <- list()
-        for (i in 1:nrow(factors)) {
+        for (i in seq_len(nrow(factors))) {
             split.name <- combine.columns(
                 as.data.frame(factors[i, ]), sep = sep
             )
@@ -238,7 +238,7 @@ partial.relationship$methods(
         }
         "
         result <- settings$cluster.apply(
-            X = 1:nrow(grid), FUN = .self$predict.stats,
+            X = seq_len(nrow(grid)), FUN = .self$predict.stats,
             newdata = .self$settings$data,
             predict.fun = .self$settings$adapter$predict,
             new.value.grid = grid, levels = .self$settings$interval.levels,
