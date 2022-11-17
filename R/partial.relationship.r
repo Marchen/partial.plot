@@ -89,7 +89,8 @@ partial.relationship$methods(
             type = .self$settings$type
         )
         lsm <- .self$summarize.ref.grid(rg)
-        # Remove predictions with out-ranged explanatory variable for each group.
+        # Remove predictions for values of explanatory variable which are
+        # outside of original range of the variable for each group.
         lsm <- .self$filter.result(lsm)
         return(as.data.frame(lsm))
     }
