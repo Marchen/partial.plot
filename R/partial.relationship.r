@@ -20,7 +20,7 @@ LSMEANS_INCOMPATIBLE_MODELS <- c(
 #'    data.frame to keep calculated partial relationship data.
 #'
 #' @field data.split
-#'    a list having splitted data.frame for each group specified in x.names.
+#'    a list having split data.frame for each group specified in x.names.
 #'
 #' @field settings
 #'    class settings.
