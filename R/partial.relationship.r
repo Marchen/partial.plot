@@ -54,7 +54,9 @@ partial.relationship$methods(
         .self$settings <- settings
         # Calculate partial relationship data.
         if (!any(class(settings$model) %in% LSMEANS_INCOMPATIBLE_MODELS)) {
-            .self$data <- .self$partial.relationship.lsmeans()
+            .self$data <- as.data.frame(
+                as.list(.self$partial.relationship.lsmeans())
+            )
         } else {
             .self$data <- .self$partial.relationship.internal()
         }
