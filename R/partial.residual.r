@@ -86,7 +86,7 @@ partial.residual$methods(
 #
 #   This can be achieved using predict() with using mean values for
 #   petal width (PW) and adding residual for it.
-#   However, becase MCMCglmm show deviated values from this calculation,
+#   However, because MCMCglmm show deviated values from this calculation,
 #   currently partial residual for MCMCglmm (and models compatible with
 #   lsmeans) are calculated by special method.
 #
