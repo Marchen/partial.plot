@@ -3,7 +3,7 @@
 #------------------------------------------------------------------------------
 LSMEANS_COMPATIBLE_MODELS <- c(
     "glm", glmer = "glmerMod", "lm", "lme", lmer = "lmerMod",
-    "MCMCglmm", "glmmTMB"
+    "MCMCglmm", "glmmTMB", "lmerModLmerTest", "lmerTest"
 )
 
 LSMEANS_INCOMPATIBLE_MODELS <- c(
