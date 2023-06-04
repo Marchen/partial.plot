@@ -93,13 +93,13 @@ pp.drawer$methods(
         if (.self$settings$draw.interval & .self$settings$has.relationship) {
             .self$draw.interval()
         }
+        if (.self$settings$draw.residual & .self$settings$has.residual) {
+            .self$draw.residual()
+        }
         if (
             .self$settings$draw.relationship & .self$settings$has.relationship
         ) {
             .self$draw.relationship()
-        }
-        if (.self$settings$draw.residual & .self$settings$has.residual) {
-            .self$draw.residual()
         }
     }
 )
