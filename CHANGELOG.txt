@@ -1,3 +1,6 @@
+2023-06-04: 0.2.5
+- fix: minor bug fixes.
+
 2021-10-03: 0.2.4
 - fix: Extra space in 3D graphs by persp.
 - fix: partial.plot does not accept zlim.

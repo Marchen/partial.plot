@@ -1,6 +1,6 @@
 Package: partial.plot
-Version: 0.2.4.9999
-Date: 2021-10-03
+Version: 0.2.5
+Date: 2023-06-04
 Title: Partial dependence plot for statistical/machine learning models.
 Author: Michio Oguro <mog@ffpri.affrc.go.jp>
 Maintainer: Michio Oguro <mog@ffpri.affrc.go.jp>
