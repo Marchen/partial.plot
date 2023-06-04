@@ -253,7 +253,7 @@ partial.plot <- function(
         settings$parman <- par.manager(settings$group, col, lty, lwd, pch)
         # Calculate required data.
         partial.relationship(settings)
-        if (settings$type != "prob") {
+        if (settings$type != "prob" & !settings$adapter$zero_inflated) {
             partial.residual(settings)
         }
     }
