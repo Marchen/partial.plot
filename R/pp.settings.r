@@ -46,7 +46,7 @@ ARG_NAMES <- list(
     )
 )
 
-if (require(rgl)) {
+if (suppressWarnings(require(rgl))) {
     ARG_NAMES$persp3d <- arg.names(
         list(rgl:::persp3d.default, rgl::surface3d, rgl::rgl.material), "col"
     )
@@ -829,7 +829,7 @@ pp.settings$methods(
         if (identical(fun, graphics::contour)) {
             return(ARG_NAMES$contour)
         }
-        if (require(rgl)) {
+        if (suppressWarnings(suppressMessages(require(rgl)))) {
             if (identical(fun, rgl::persp3d)) {
                 return(ARG_NAMES$persp3d)
             }
