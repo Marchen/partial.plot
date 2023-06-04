@@ -343,7 +343,7 @@ pp.settings$methods(
 pp.settings$methods(
     update.pars = function(
         fun.3d, draw.residual, draw.relationship, draw.interval, draw.hist,
-        xlab, ylab, zlab, col, lty, lwd, pch, ...
+        xlab, ylab, zlab, col, lty, lwd, pch, add, ...
     ) {
         "
         Update settings of (mainly) graphic parameters for data reusing.
@@ -356,7 +356,8 @@ pp.settings$methods(
             fun.3d = fun.3d, draw.residual = draw.residual,
             draw.relationship = draw.relationship,
             draw.interval = draw.interval, draw.hist = draw.hist,
-            xlab = xlab, ylab = ylab, zlab = zlab, other.pars = list(...)
+            xlab = xlab, ylab = ylab, zlab = zlab, add = add,
+            other.pars = list(...)
         )
         if (!identical(col, gg.colors)) {
             .self$parman$col <- col
