@@ -58,32 +58,33 @@ pp.legend <- function(settings, x, ...) {
 #'    function
 #------------------------------------------------------------------------------
 prepare.args.for.legend = function(settings, legend.args) {
-    # Override arguments of legend() that users did not specify manually.
-    args.to.overwrite <- c(
+    # Prepare arguments of legend() used in partial.plot().
+    args.from.partial.plot <- c(
         settings$parman$legend.pars(),
         list(title = paste0(settings$x.names.factor, collapse = settings$sep))
     )
-    args.to.overwrite <- c(args.to.overwrite, settings$other.pars)
-    for (i in names(args.to.overwrite)) {
-        if (is.null(legend.args[[i]])) {
-            legend.args[[i]] <- args.to.overwrite[[i]]
-        }
-    }
+    args.from.partial.plot <- c(args.from.partial.plot, settings$other.pars)
     # Set line type based on the setting of partial.plot.
     if (settings$draw.relationship) {
-        if (is.null(legend.args$lty)) {
-            legend.args$lty <- "solid"
+        if (is.null(args.from.partial.plot$lty)) {
+            args.from.partial.plot$lty <- "solid"
         }
     } else {
-        legend.args$lty <- NULL
+        args.from.partial.plot$lty <- NULL
     }
     # Set plot character based on the setting of partial.plot.
     if (settings$draw.residual) {
-        if (is.null(legend.args$pch)) {
-            legend.args$pch <- 1
+        if (is.null(args.from.partial.plot$pch)) {
+            args.from.partial.plot$pch <- 1
         }
     } else {
-        legend.args$pch <- NULL
+        args.from.partial.plot$pch <- NULL
+    }
+    # Join arguments specified by user and those from partial.plot.
+    for (i in names(args.from.partial.plot)) {
+        if (is.null(legend.args[[i]])) {
+            legend.args[[i]] <- args.from.partial.plot[[i]]
+        }
     }
     return(legend.args)
 }
