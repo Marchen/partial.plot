@@ -75,7 +75,7 @@ trans.color <- function(colors, alpha = 0.3, mix = "white", ratio = 0.7) {
     # Convert colors
     col1 <- col2rgb(colors) * ratio
     col2 <- col2rgb(mix) * (1 - ratio)
-    col <- apply(col2, 2, "+", col1)
+    col <- col1 + c(col2)
     col <- rgb(t(col), max = 255, alpha = 255 * alpha)
     return(col)
 }
