@@ -103,7 +103,7 @@ partial.relationship$methods(
 partial.relationship$methods(
   summarize.ref.grid = function(rg) {
     "Calculate predictions and intervals using lsmeans."
-    lsm <- lsmeans(rg, .self$settings$x.names)
+    lsm <- emmeans(rg, .self$settings$x.names)
     if (length(lsm@post.beta) == 1 & all(is.na(lsm@post.beta))) {
         return(.self$summarize.ref.grid.without.mcmc(lsm))
     }
