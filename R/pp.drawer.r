@@ -260,7 +260,8 @@ pp.drawer$methods(
             x = unique(relationship[[x.names[1]]]),
             y = unique(relationship[[x.names[2]]]),
             xlab = .self$settings$xlab, ylab = .self$settings$ylab,
-            zlab = .self$settings$zlab, col = col
+            zlab = .self$settings$zlab, col = col,
+            add = .self$settings$add
         )
         args <- .self$settings$set.function.args(args)
         if (identical(.self$settings$fun.3d, persp) & is.null(args$zlim)) {
