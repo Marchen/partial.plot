@@ -463,7 +463,7 @@ pp.settings$methods(
         Test correctness of xlab and ylab.
         "
         check.error <- function(x, name) {
-            if (!is.atomic(x) & !is.expression(x)) {
+            if (!is.atomic(x) & !is.expression(x) & !is.null(x)) {
               stop(sprintf("'%s' should be atomic/expression.", name))
             }
         }
