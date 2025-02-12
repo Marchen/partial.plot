@@ -470,7 +470,7 @@ pp.settings$methods(
         check.error(.self$xlab, "xlab")
         check.error(.self$ylab, "ylab")
         check.error(.self$zlab, "zlab")
-        }
+    }
 )
 
 
